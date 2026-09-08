@@ -1,4 +1,6 @@
-param()
+param(
+  [string]$slug = "holy-osprey-fgkw"
+)
 
 $apiKey = (Get-Content "$HOME\.herenow\credentials").Trim()
 $headers = @{
@@ -21,8 +23,14 @@ $bodyObj = @{
   displayDescription = "Oficialus TV3 laidos Tautos bukiausias balsavimas"
 }
 
-Write-Host "1. Creating site version..."
-$res = Invoke-RestMethod -Uri "https://here.now/api/v1/publish" -Method Post -Headers $headers -Body ($bodyObj | ConvertTo-Json -Depth 5)
+if ($slug) {
+  Write-Host "1. Updating existing site version for '$slug'..."
+  $res = Invoke-RestMethod -Uri "https://here.now/api/v1/publish/$slug" -Method Put -Headers $headers -Body ($bodyObj | ConvertTo-Json -Depth 5)
+} else {
+  Write-Host "1. Creating new site version..."
+  $res = Invoke-RestMethod -Uri "https://here.now/api/v1/publish" -Method Post -Headers $headers -Body ($bodyObj | ConvertTo-Json -Depth 5)
+}
+
 Write-Host "Target: $($res.siteUrl)"
 
 Write-Host "2. Uploading files..."
@@ -49,6 +57,5 @@ $finalizeHeaders = @{
 $finalizeBody = @{ versionId = $res.upload.versionId } | ConvertTo-Json
 $finalRes = Invoke-RestMethod -Uri $res.upload.finalizeUrl -Method Post -Headers $finalizeHeaders -Body $finalizeBody
 
-Write-Host "`n🎉 SITE PUBLISHED SUCCESSFULLY!"
+Write-Host "`n🎉 SITE DEPLOYED SUCCESSFULLY!"
 Write-Host "Live URL: $($finalRes.siteUrl)"
-$finalRes | ConvertTo-Json -Depth 5
