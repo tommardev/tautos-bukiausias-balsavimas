@@ -4,6 +4,12 @@ Smagi, moderni ir interaktyvi vieno puslapio balsavimo platforma, įkvėpta nauj
 
 Ši sistema sukurta draugų kompanijai, kad galėtų balsuoti, sekti rezultatus realiu laiku ir smagiai diskutuoti, kas nusipelnė „Bukiausiojo“ karūnos!
 
+## 🌐 Gyvos Nuorodos Internetu:
+- **Oficialus adresas:** [https://balsavimas-vaciukai.web.app](https://balsavimas-vaciukai.web.app)
+- **Atsarginis adresas:** [https://balsavimas-vaciukai.firebaseapp.com](https://balsavimas-vaciukai.firebaseapp.com)
+
+---
+
 ## ⚡ Pagrindinės Savybės
 
 1. **Privalomas vardo įvedimas**: Kiekvienas balsuojantysis privalo nurodyti savo vardą, kad matytųsi skaidrus audito žurnalas („Kas už ką balsavo“).
@@ -13,21 +19,21 @@ Smagi, moderni ir interaktyvi vieno puslapio balsavimo platforma, įkvėpta nauj
 5. **Modernios grafinės kolonos**: Animuotos, 3D stiliaus vertikalios ir horizontalios diagramos su procentais ir balsų skaičiumi.
 6. **Gėdos pakyla (Top 3)**: Pirmosios 3 vietos su auksiniais klozetais ir „dunce cap“ kepuraitėmis.
 7. **Balsavimo žurnalas (Kas už ką balsavo)**: Išsamus sąrašas su laiko žymomis, vardo paieška ir pasirinkimais.
-8. **Bendras debesų sinchronizavimas**: Rezultatai saugomi debesyje per `api.restful-api.dev` ir sinchronizuojami realiu laiku visiems draugams, atsidariusiems nuorodą (su automatiniu 5 sek. atnaujinimu bei vietine atsargine kopija per `localStorage`).
+8. **Bendras debesų sinchronizavimas**: Rezultatai saugomi debesyje per `api.restful-api.dev` ir sinchronizuojami realiu laiku visiems draugams, atsidariusiems nuorodą (su automatiniu 6 sek. atnaujinimu bei vietine atsargine kopija per `localStorage`).
 9. **Garso efektai ir konfeti**: Žaismingi garso signalai (per Web Audio API) ir konfeti pliūpsnis atidavus balsą.
 
-## 🚀 Paleidimas vietoje
+---
 
-Atidarykite `index.html` bet kurioje naršyklėje arba paleiskite vietinį serverį:
+## 🚀 Kaip atnaujinti svetainę (Deploy)
 
-```bash
-# Naudojant Python:
-python -m http.server 8000
+Norėdami atnaujinti svetainę atlikę pakeitimus, tiesiog paleiskite:
 
-# Arba npx serve:
-npx serve .
+```powershell
+.\deploy-firebase.ps1
 ```
 
-## 🌐 Publikavimas
+arba:
 
-Projektas sukonfigūruotas greitam publikavimui į **here.now** naudojant įdiegtą `here-now` įrankį.
+```bash
+npx -y firebase-tools@latest deploy --only hosting
+```
