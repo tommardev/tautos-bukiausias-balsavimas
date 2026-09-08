@@ -4,7 +4,7 @@
     "ignore": [
       "firebase.json",
       ".firebaserc",
-      "publish.ps1",
+      "deploy-firebase.ps1",
       "**/.*",
       "**/node_modules/**"
     ],
