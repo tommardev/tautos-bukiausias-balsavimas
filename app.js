@@ -1,9 +1,9 @@
 /**
  * Tautos Bukiausias 2026 – TV3 Balsavimo Platforma
- * Client Logic, Cloud Sync, Chart Engine & Sound Effects
+ * Client State, Idempotent DOM Rendering, and Cloud Sync.
+ * Clean, lightweight, zero-bloat standard.
  */
 
-// Cloud Sync Endpoint (api.restful-api.dev shared cloud object)
 const CLOUD_SYNC_URL = "https://api.restful-api.dev/objects/ff808181a067127101a08072620147f6";
 const LOCAL_STORAGE_KEY = "tautos_bukiausias_v3_state";
 
@@ -13,7 +13,7 @@ const DEFAULT_CONTESTANTS = [
     id: "oksana",
     name: "Oksana Pikul",
     alias: "„Oksana Pikel“",
-    tagline: "Eterio titruose virto „Pikel“, o Neilą Armstrongą supainiojo su Gagarinu Mėnulyje! 🚀",
+    tagline: "Eterio titruose virto „Pikel“, o Neilą Armstrongą supainiojo su Gagarinu Mėnulyje!",
     avatar: "💄",
     category: "pupil",
     categoryLabel: "Mados & Titrų Auka"
@@ -22,7 +22,7 @@ const DEFAULT_CONTESTANTS = [
     id: "ausra",
     name: "Aušra Maldeikienė",
     alias: "„Brandas Maldeikienė (Seibutytė)“",
-    tagline: "„Aš už nieką neatsakinga, aš galiu būti pati bukiausia, man dzin!“ 📢",
+    tagline: "„Aš už nieką neatsakinga, aš galiu būti pati bukiausia, man dzin!“",
     avatar: "💶",
     category: "pupil",
     categoryLabel: "Ekonominė Filosofija"
@@ -31,7 +31,7 @@ const DEFAULT_CONTESTANTS = [
     id: "simona",
     name: "Simona Lipnė",
     alias: "„Greit Nebe Lipnė“",
-    tagline: "Trynukų mama ir eterio žvaigždė: „Lionei net konkurso nereikia, ana jau bukiausia“ 🛍️",
+    tagline: "Trynukų mama ir eterio žvaigždė: „Lionei net konkurso nereikia, ana jau bukiausia“",
     avatar: "👶",
     category: "pupil",
     categoryLabel: "Influencerių Katedra"
@@ -40,7 +40,7 @@ const DEFAULT_CONTESTANTS = [
     id: "danas",
     name: "Danas Rapšys",
     alias: "„Vandens Profesorius“",
-    tagline: "Per pamokas slapčia valgė bandeles, o vandens paslaptys vis dar neįmintos! 🥐",
+    tagline: "Per pamokas slapčia valgė bandeles, o vandens paslaptys vis dar neįmintos!",
     avatar: "🏊",
     category: "pupil",
     categoryLabel: "Olimpinis Plaukimas"
@@ -49,7 +49,7 @@ const DEFAULT_CONTESTANTS = [
     id: "zilvinas",
     name: "Žilvinas Grigaitis",
     alias: "„Šampano ir Lėktuvų Lordas“",
-    tagline: "Lėktuvuose praleido pusę gyvenimo, mados ir sagų ekspertas bet kokiu oru 🍾",
+    tagline: "Lėktuvuose praleido pusę gyvenimo, mados ir sagų ekspertas bet kokiu oru.",
     avatar: "🥂",
     category: "pupil",
     categoryLabel: "Pasaulio Elitas"
@@ -58,8 +58,8 @@ const DEFAULT_CONTESTANTS = [
     id: "ineta",
     name: "Ineta Stasiulytė",
     alias: "„Nežinojimo Deivė“",
-    tagline: "Aistringa tango šokėja: „Faktų nežinojimas nė vieno nepaverčia blogu žmogumi!“ 💃",
-    avatar: "🎭",
+    tagline: "Aistringa tango šokėja: „Faktų nežinojimas nė vieno nepaverčia blogu žmogumi!“",
+    avatar: "💃",
     category: "pupil",
     categoryLabel: "Teatras & Šokiai"
   },
@@ -67,7 +67,7 @@ const DEFAULT_CONTESTANTS = [
     id: "ironvytas",
     name: "Vytautas Medineckas (Ironvytas)",
     alias: "„Dvi Pažymių Knygelės“",
-    tagline: "3 metus turėjo 2 pažymių knygeles (vieną mamai, kitą mokytojams) ir 120 kg raumenų 🏋️",
+    tagline: "3 metus turėjo 2 pažymių knygeles (vieną mamai, kitą mokytojams) ir 120 kg raumenų.",
     avatar: "💪",
     category: "pupil",
     categoryLabel: "Raumenų Reperis"
@@ -76,7 +76,7 @@ const DEFAULT_CONTESTANTS = [
     id: "gabrielius",
     name: "Gabrielius Vagelis",
     alias: "„Mados Kankinys“",
-    tagline: "Švarkai gigantiški, plaukai nepajudinami, o atsakymų ieškoma stiliuje 🧥",
+    tagline: "Švarkai gigantiški, plaukai nepajudinami, o atsakymų ieškoma stiliuje.",
     avatar: "🎤",
     category: "pupil",
     categoryLabel: "Pop Scenos Auka"
@@ -85,7 +85,7 @@ const DEFAULT_CONTESTANTS = [
     id: "agne",
     name: "Agnė Turskienė",
     alias: "„Maldeikienės Marti“",
-    tagline: "Kibernetinio saugumo specialistė, bet anytos temperamento nesuvaldė 💻",
+    tagline: "Kibernetinio saugumo specialistė, bet anytos temperamento nesuvaldė.",
     avatar: "🛡️",
     category: "pupil",
     categoryLabel: "IT & Šeimyninė Karma"
@@ -94,7 +94,7 @@ const DEFAULT_CONTESTANTS = [
     id: "kaniusonis",
     name: "Vytautas Kaniušonis",
     alias: "„Amžinas Avantiūristas“",
-    tagline: "Teatro vilkas, kuris sutiko dalyvauti vos išgirdęs žodį „bukiausias“ 🎬",
+    tagline: "Teatro vilkas, kuris sutiko dalyvauti vos išgirdęs žodį „bukiausias“.",
     avatar: "🎩",
     category: "pupil",
     categoryLabel: "Kino Grandas"
@@ -103,7 +103,7 @@ const DEFAULT_CONTESTANTS = [
     id: "joana",
     name: "Joana Bartaškienė",
     alias: "„58 Metai Aerobikos“",
-    tagline: "Tikra energijos bomba: „Meilė gyvenimui į pensiją neina, smegenis pamaitinsim!“ 🤸",
+    tagline: "Tikra energijos bomba: „Meilė gyvenimui į pensiją neina, smegenis pamaitinsim!“",
     avatar: "⚡",
     category: "pupil",
     categoryLabel: "Sporto Legenda"
@@ -112,7 +112,7 @@ const DEFAULT_CONTESTANTS = [
     id: "rumsas",
     name: "Vytautas Rumšas Jr.",
     alias: "„Grimas Nepadės“",
-    tagline: "„Jeigu esi durnas – joks TV grimas čia nepadės!“ 🤡",
+    tagline: "„Jeigu esi durnas – joks TV grimas čia nepadės!“",
     avatar: "📺",
     category: "pupil",
     categoryLabel: "TV Vedėjų Elitas"
@@ -121,7 +121,7 @@ const DEFAULT_CONTESTANTS = [
     id: "katleris",
     name: "Mantas Katleris (Mokytojas)",
     alias: "„Klasės Valandėlės Pirmūnas“",
-    tagline: "Tikybos pamokų bėglys ir klasės valandėlių lyderis 🍺",
+    tagline: "Tikybos pamokų bėglys ir klasės valandėlių lyderis.",
     avatar: "👨‍🏫",
     category: "teacher",
     categoryLabel: "Mokytojų Taryba"
@@ -130,18 +130,11 @@ const DEFAULT_CONTESTANTS = [
     id: "bartusevicius",
     name: "Mantas Bartuševičius (Mokytojas)",
     alias: "„Penktoko Matematika“",
-    tagline: "Matematikos žinių turi lygiai tiek pat, kiek penktokas per vasaros atostogas 📐",
+    tagline: "Matematikos žinių turi lygiai tiek pat, kiek penktokas per vasaros atostogas.",
     avatar: "🧑‍🏫",
     category: "teacher",
     categoryLabel: "Mokytojų Taryba"
   }
-];
-
-// Funny random voter nicknames generator
-const RANDOM_NICKNAMES = [
-  "Klasės Genijus", "Kaimo Einšteinas", "Gudrusis Karolis", "Trolių Karalienė",
-  "TV3 Žiūrovas", "Bandelės Fanatikas", "Anoniminis Bukius", "Pirmūnas Be Diplomo",
-  "Dunce Karalius", "Manto Katlerio Pusbrolis", "Tango Ekspertas", "Mėnulio Gagarinas"
 ];
 
 // Application State
@@ -164,113 +157,34 @@ let appState = {
     bartusevicius: 4
   },
   voterLedger: [
-    { voter: "Mantas K.", choices: ["oksana", "rumsas", "simona"], timestamp: "2026-09-08 11:30", note: "Klasės lyderiai!" },
-    { voter: "Karolis", choices: ["simona", "ausra", "ironvytas"], timestamp: "2026-09-08 12:15", note: "Dėl 2 pažymių knygelių" },
-    { voter: "Monika", choices: ["oksana", "zilvinas", "gabrielius"], timestamp: "2026-09-08 12:40", note: "Stilius ir Gagarinai" }
+    { voter: "Mantas K.", choices: ["oksana", "rumsas", "simona"], timestamp: "11:30" },
+    { voter: "Karolis", choices: ["simona", "ausra", "ironvytas"], timestamp: "12:15" },
+    { voter: "Monika", choices: ["oksana", "zilvinas", "gabrielius"], timestamp: "12:40" }
   ],
   selectedCandidates: new Set(),
   activeFilter: "all",
   searchQuery: "",
-  viewMode: "columns", // 'columns' | 'list'
-  soundEnabled: true,
   isSyncing: false
 };
-
-// Simple Web Audio API Synthesizer (No external mp3 needed!)
-let audioCtx = null;
-function getAudioContext() {
-  if (!audioCtx) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (AudioContext) audioCtx = new AudioContext();
-  }
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-  return audioCtx;
-}
-
-function playSound(type) {
-  if (!appState.soundEnabled) return;
-  try {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-    const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    if (type === 'select') {
-      // High bright blip
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(520, now);
-      osc.frequency.exponentialRampToValueAtTime(780, now + 0.08);
-      gain.gain.setValueAtTime(0.2, now);
-      gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
-      osc.start(now);
-      osc.stop(now + 0.1);
-    } else if (type === 'unselect') {
-      // Lower slide down
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(600, now);
-      osc.frequency.exponentialRampToValueAtTime(320, now + 0.08);
-      gain.gain.setValueAtTime(0.15, now);
-      gain.gain.linearRampToValueAtTime(0.01, now + 0.09);
-      osc.start(now);
-      osc.stop(now + 0.09);
-    } else if (type === 'vote') {
-      // Cheerful fanfare chord
-      const freqs = [440, 554.37, 659.25, 880];
-      freqs.forEach((f, i) => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = 'triangle';
-        o.frequency.setValueAtTime(f, now + i * 0.05);
-        g.gain.setValueAtTime(0.15, now + i * 0.05);
-        g.gain.linearRampToValueAtTime(0.01, now + i * 0.05 + 0.35);
-        o.connect(g);
-        g.connect(ctx.destination);
-        o.start(now + i * 0.05);
-        o.stop(now + i * 0.05 + 0.4);
-      });
-    } else if (type === 'warn') {
-      // Boing buzzer
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(160, now);
-      osc.frequency.linearRampToValueAtTime(110, now + 0.18);
-      gain.gain.setValueAtTime(0.25, now);
-      gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
-      osc.start(now);
-      osc.stop(now + 0.2);
-    }
-  } catch (e) {
-    console.log("Audio not supported or blocked", e);
-  }
-}
 
 // ==========================================================================
 // Cloud Sync Logic
 // ==========================================================================
 async function fetchCloudState() {
-  setSyncStatus("🟡 Tikrinamas debesis...", "pending");
   try {
     const response = await fetch(CLOUD_SYNC_URL, { cache: "no-store" });
-    if (!response.ok) throw new Error("Cloud fetch failed: " + response.status);
-    const data = await response.json();
-    if (data && data.data) {
-      mergeCloudData(data.data);
-      setSyncStatus("🟢 Debesis: Sinchronizuota", "success");
+    if (!response.ok) throw new Error("Cloud fetch status: " + response.status);
+    const result = await response.json();
+    if (result && result.data) {
+      mergeCloudData(result.data);
     }
   } catch (err) {
-    console.warn("Could not reach cloud storage, using local cache:", err);
-    setSyncStatus("🟠 Veikia vietiškai (Atsarginis)", "offline");
     loadLocalFallback();
   }
 }
 
 async function pushCloudState() {
   appState.isSyncing = true;
-  setSyncStatus("⏳ Išsaugoma debesyje...", "pending");
   saveLocalFallback();
 
   const payload = {
@@ -283,16 +197,13 @@ async function pushCloudState() {
   };
 
   try {
-    const response = await fetch(CLOUD_SYNC_URL, {
+    await fetch(CLOUD_SYNC_URL, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    if (!response.ok) throw new Error("Cloud put failed: " + response.status);
-    setSyncStatus("🟢 Debesis: Išsaugota tiesiogiai", "success");
   } catch (err) {
-    console.error("Cloud push error:", err);
-    setSyncStatus("🟠 Išsaugota vietiškai (Debesis nepasiekiamas)", "offline");
+    console.warn("Offline state saved locally:", err);
   } finally {
     appState.isSyncing = false;
   }
@@ -302,10 +213,10 @@ function mergeCloudData(cloudData) {
   if (cloudData.votes) {
     appState.votes = { ...appState.votes, ...cloudData.votes };
   }
-  if (cloudData.voterLedger && Array.isArray(cloudData.voterLedger)) {
+  if (Array.isArray(cloudData.voterLedger)) {
     appState.voterLedger = cloudData.voterLedger;
   }
-  if (cloudData.customContestants && Array.isArray(cloudData.customContestants)) {
+  if (Array.isArray(cloudData.customContestants)) {
     cloudData.customContestants.forEach(customC => {
       if (!appState.contestants.some(c => c.id === customC.id)) {
         appState.contestants.push(customC);
@@ -333,7 +244,7 @@ function loadLocalFallback() {
       const parsed = JSON.parse(raw);
       if (parsed.votes) appState.votes = parsed.votes;
       if (parsed.voterLedger) appState.voterLedger = parsed.voterLedger;
-      if (parsed.contestants && parsed.contestants.length > 0) {
+      if (Array.isArray(parsed.contestants) && parsed.contestants.length > 0) {
         appState.contestants = parsed.contestants;
       }
       renderAll();
@@ -341,38 +252,68 @@ function loadLocalFallback() {
   } catch (e) {}
 }
 
-function setSyncStatus(text, type) {
-  const el = document.getElementById("syncStatusText");
-  const dot = document.querySelector(".live-dot");
-  if (el) el.textContent = text;
-  if (dot) {
-    dot.style.background = type === "success" ? "var(--color-cyan)" : (type === "pending" ? "var(--color-gold)" : "var(--color-orange)");
-    dot.style.boxShadow = `0 0 10px ${dot.style.background}`;
-  }
-}
-
 // ==========================================================================
-// Rendering Engine
+// Central Rendering Engine (Idempotent)
 // ==========================================================================
 function renderAll() {
+  renderLeaderboard();
   renderContestants();
-  renderTicker();
-  renderAnalytics();
-  renderLedger();
-  updateSelectionControls();
+  renderActivity();
+  updateDockControls();
 }
 
-// Render Contestant Cards
+// Top Section: Live Horizontal Leaderboard
+function renderLeaderboard() {
+  const container = document.getElementById("leaderboardList");
+  if (!container) return;
+
+  const contestantsWithVotes = appState.contestants.map(c => ({
+    ...c,
+    voteCount: appState.votes[c.id] || 0
+  })).sort((a, b) => b.voteCount - a.voteCount);
+
+  const totalVotes = Object.values(appState.votes).reduce((sum, v) => sum + v, 0) || 1;
+
+  container.innerHTML = contestantsWithVotes.map((c, idx) => {
+    const rank = idx + 1;
+    const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
+    const pct = Math.round((c.voteCount / totalVotes) * 100);
+    const voteText = `${c.voteCount} ${c.voteCount === 1 ? 'balsas' : 'balsų'}`;
+
+    return `
+      <div class="leaderboard-row ${rankClass}">
+        <span class="leaderboard-rank">#${rank}</span>
+        <span class="leaderboard-avatar">${c.avatar}</span>
+        <div class="leaderboard-details">
+          <div class="leaderboard-names">
+            <span class="leaderboard-name">${escapeHTML(c.name)}</span>
+            <span class="leaderboard-alias">${escapeHTML(c.alias)}</span>
+          </div>
+          <div class="leaderboard-bar-track">
+            <div class="leaderboard-bar-fill" style="width: ${pct}%;"></div>
+          </div>
+        </div>
+        <div class="leaderboard-stats">
+          <div class="leaderboard-votes">${c.voteCount}</div>
+          <div class="leaderboard-pct">${pct}%</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// Middle Section: Contestant Cards Roster
 function renderContestants() {
   const grid = document.getElementById("contestantsGrid");
   if (!grid) return;
 
+  const query = appState.searchQuery.toLowerCase();
   const filtered = appState.contestants.filter(c => {
     const matchesCategory = appState.activeFilter === "all" || c.category === appState.activeFilter;
-    const matchesSearch = !appState.searchQuery || 
-      c.name.toLowerCase().includes(appState.searchQuery.toLowerCase()) ||
-      c.alias.toLowerCase().includes(appState.searchQuery.toLowerCase()) ||
-      c.tagline.toLowerCase().includes(appState.searchQuery.toLowerCase());
+    const matchesSearch = !query || 
+      c.name.toLowerCase().includes(query) ||
+      c.alias.toLowerCase().includes(query) ||
+      c.tagline.toLowerCase().includes(query);
     return matchesCategory && matchesSearch;
   });
 
@@ -385,34 +326,36 @@ function renderContestants() {
     const isSelected = appState.selectedCandidates.has(c.id);
     const isDisabled = !isSelected && isMaxReached;
     const voteCount = appState.votes[c.id] || 0;
+    const voteLabel = `${voteCount} ${voteCount === 1 ? 'balsas' : 'balsai'}`;
 
     return `
       <article 
         class="contestant-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" 
         data-id="${c.id}"
-        tabindex="0"
+        tabindex="${isDisabled ? '-1' : '0'}"
         role="button"
         aria-pressed="${isSelected}"
+        aria-label="${escapeHTML(c.name)}, ${voteLabel}"
       >
         <div class="card-top">
-          <div class="avatar-wrapper">${c.avatar}</div>
-          <div class="card-select-checkbox">${isSelected ? '✓' : ''}</div>
+          <span class="card-avatar">${c.avatar}</span>
+          <span class="card-check">${isSelected ? '✓' : ''}</span>
         </div>
-        <div class="card-meta">
-          <span class="category-tag">${c.categoryLabel || 'Kandidatas'}</span>
-          <h3 class="contestant-name">${c.name}</h3>
-          <div class="contestant-alias">${c.alias}</div>
-          <p class="contestant-tagline">${c.tagline}</p>
+        <div class="card-body">
+          <div class="card-category-tag">${escapeHTML(c.categoryLabel || 'Kandidatas')}</div>
+          <h3 class="contestant-name">${escapeHTML(c.name)}</h3>
+          <div class="contestant-alias">${escapeHTML(c.alias)}</div>
+          <p class="contestant-tagline">${escapeHTML(c.tagline)}</p>
         </div>
         <div class="card-footer">
-          <span class="vote-count-badge">🗳️ ${voteCount} ${voteCount === 1 ? 'balsas' : 'balsai'}</span>
-          <span class="pick-action-hint">${isSelected ? 'Pasirinkta' : (isDisabled ? 'Laisvų vietų: 0' : 'Pasirinkti')}</span>
+          <span class="card-vote-count">${voteLabel}</span>
+          <span class="card-action-status">${isSelected ? 'Pasirinkta' : (isDisabled ? 'Laisvų vietų: 0' : 'Pasirinkti')}</span>
         </div>
       </article>
     `;
   }).join("");
 
-  // Attach card click handlers
+  // Card click & keyboard selection handlers
   grid.querySelectorAll(".contestant-card").forEach(card => {
     card.addEventListener("click", () => {
       const id = card.getAttribute("data-id");
@@ -431,238 +374,99 @@ function renderContestants() {
 function toggleCandidate(id) {
   if (appState.selectedCandidates.has(id)) {
     appState.selectedCandidates.delete(id);
-    playSound('unselect');
   } else {
     if (appState.selectedCandidates.size >= 3) {
-      playSound('warn');
-      showToast("⚠️ Daugiausiai galima pasirinkti 3 kandidatus!", "toast-error");
+      showToast("Daugiausiai galima pasirinkti 3 kandidatus!", "toast-error");
       return;
     }
     appState.selectedCandidates.add(id);
-    playSound('select');
   }
 
-  updateSelectionControls();
+  updateDockControls();
   renderContestants();
 }
 
-function updateSelectionControls() {
+function updateDockControls() {
   const selectedCount = appState.selectedCandidates.size;
-  const countDisplay = document.getElementById("selectedCount");
-  const instruction = document.getElementById("counterInstruction");
+  const countEl = document.getElementById("selectedCount");
+  const instructionEl = document.getElementById("counterInstruction");
   const submitBtn = document.getElementById("submitVoteBtn");
+  const dock = document.getElementById("votingDock");
   const voterName = (document.getElementById("voterNameInput")?.value || "").trim();
-  const panelInner = document.querySelector(".control-panel-inner");
 
-  if (countDisplay) countDisplay.textContent = selectedCount;
+  if (countEl) countEl.textContent = selectedCount;
 
-  if (instruction) {
-    if (selectedCount === 0) instruction.textContent = "Pasirink iki 3 labiausiai nusipelniusių";
-    else if (selectedCount === 1) instruction.textContent = "Gali pasirinkti dar 2 kandidatus";
-    else if (selectedCount === 2) instruction.textContent = "Gali pasirinkti dar 1 kandidatą";
-    else instruction.textContent = "🎉 Pasirinkta maksimali norma (3 iš 3)";
+  if (instructionEl) {
+    if (selectedCount === 0) instructionEl.textContent = "Iki 3 kandidatų";
+    else if (selectedCount === 1) instructionEl.textContent = "Galite pasirinkti dar 2";
+    else if (selectedCount === 2) instructionEl.textContent = "Galite pasirinkti dar 1";
+    else instructionEl.textContent = "Pasirinkta norma (3 iš 3)";
   }
 
-  if (panelInner) {
-    if (selectedCount > 0) panelInner.classList.add("active-selection");
-    else panelInner.classList.remove("active-selection");
+  if (dock) {
+    if (selectedCount > 0) dock.classList.add("active");
+    else dock.classList.remove("active");
   }
 
   if (submitBtn) {
-    // Disabled if 0 selected or name is empty
-    const canSubmit = selectedCount > 0 && voterName.length >= 2;
-    submitBtn.disabled = !canSubmit;
+    submitBtn.disabled = !(selectedCount > 0 && voterName.length >= 2);
   }
 }
 
-// Render Results & Graph Columns
-function renderAnalytics() {
-  const contestantsWithVotes = appState.contestants.map(c => ({
-    ...c,
-    voteCount: appState.votes[c.id] || 0
-  })).sort((a, b) => b.voteCount - a.voteCount);
-
-  const totalVotes = Object.values(appState.votes).reduce((sum, v) => sum + v, 0) || 1;
-  const maxVotes = Math.max(...contestantsWithVotes.map(c => c.voteCount), 1);
-
-  renderPodium(contestantsWithVotes);
-  renderColumns(contestantsWithVotes, maxVotes, totalVotes);
-  renderLeaderboardList(contestantsWithVotes, totalVotes);
-}
-
-// Top 3 Podium
-function renderPodium(sortedContestants) {
-  const podiumEl = document.getElementById("podiumContainer");
-  if (!podiumEl) return;
-
-  const top1 = sortedContestants[0] || { name: "Nėra", alias: "", voteCount: 0, avatar: "👑" };
-  const top2 = sortedContestants[1] || { name: "Nėra", alias: "", voteCount: 0, avatar: "🥈" };
-  const top3 = sortedContestants[2] || { name: "Nėra", alias: "", voteCount: 0, avatar: "🥉" };
-
-  podiumEl.innerHTML = `
-    <!-- 2nd Place -->
-    <div class="podium-step podium-2">
-      <div class="podium-avatar">${top2.avatar}</div>
-      <div class="podium-name">${top2.name}</div>
-      <div class="podium-alias">${top2.alias}</div>
-      <div class="podium-box">
-        <span class="podium-trophy">🎓</span>
-        <span class="podium-rank">#2</span>
-        <span class="podium-votes-count">${top2.voteCount} balsų</span>
-      </div>
-    </div>
-
-    <!-- 1st Place (DUMBEST LEADER) -->
-    <div class="podium-step podium-1">
-      <div class="podium-avatar">${top1.avatar}</div>
-      <div class="podium-name">${top1.name}</div>
-      <div class="podium-alias">${top1.alias}</div>
-      <div class="podium-box">
-        <span class="podium-trophy">🚽👑</span>
-        <span class="podium-rank">#1 BUKIAUSIAS</span>
-        <span class="podium-votes-count">${top1.voteCount} balsų</span>
-      </div>
-    </div>
-
-    <!-- 3rd Place -->
-    <div class="podium-step podium-3">
-      <div class="podium-avatar">${top3.avatar}</div>
-      <div class="podium-name">${top3.name}</div>
-      <div class="podium-alias">${top3.alias}</div>
-      <div class="podium-box">
-        <span class="podium-trophy">🥉</span>
-        <span class="podium-rank">#3</span>
-        <span class="podium-votes-count">${top3.voteCount} balsų</span>
-      </div>
-    </div>
-  `;
-}
-
-// 3D Graph Columns
-function renderColumns(sortedContestants, maxVotes, totalVotes) {
-  const grid = document.getElementById("columnsGrid");
-  if (!grid) return;
-
-  grid.innerHTML = sortedContestants.map((c, idx) => {
-    const pct = Math.round((c.voteCount / totalVotes) * 100);
-    // Relative height from 10% to 92% of column grid
-    const heightPct = Math.max(10, Math.round((c.voteCount / maxVotes) * 88));
-    const isTop = idx === 0 && c.voteCount > 0;
-
-    return `
-      <div class="column-item" title="${c.name} (${c.alias}): ${c.voteCount} balsų (${pct}%)">
-        <span class="column-pill-val">${c.voteCount}</span>
-        <div class="column-bar ${isTop ? 'top-rank' : ''}" style="height: ${heightPct}%;"></div>
-        <div class="column-label">
-          <span class="column-avatar">${c.avatar}</span>
-          <span class="column-name-abbr">${c.name.split(" ")[0]}</span>
-          <span class="column-percent">${pct}%</span>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-// Leaderboard List
-function renderLeaderboardList(sortedContestants, totalVotes) {
-  const list = document.getElementById("leaderboardList");
-  if (!list) return;
-
-  list.innerHTML = sortedContestants.map((c, idx) => {
-    const pct = Math.round((c.voteCount / totalVotes) * 100);
-    return `
-      <div class="leaderboard-item">
-        <span class="leaderboard-rank">#${idx + 1}</span>
-        <span class="leaderboard-avatar">${c.avatar}</span>
-        <div class="leaderboard-info">
-          <div class="leaderboard-names">
-            <span class="leaderboard-name">${c.name}</span>
-            <span class="leaderboard-alias">${c.alias}</span>
-          </div>
-          <div class="leaderboard-bar-track">
-            <div class="leaderboard-bar-fill" style="width: ${pct}%;"></div>
-          </div>
-        </div>
-        <div class="leaderboard-stats">
-          <div class="leaderboard-votes">${c.voteCount}</div>
-          <div class="leaderboard-pct">${pct}%</div>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-// Render Voter Audit Ledger ("Kas už ką balsavo")
-function renderLedger() {
-  const tbody = document.getElementById("ledgerTableBody");
-  const emptyMsg = document.getElementById("emptyLedgerMsg");
+// Bottom Section: Recent Activity / Audit Feed
+function renderActivity() {
+  const listEl = document.getElementById("activityList");
+  const emptyMsg = document.getElementById("emptyActivityMsg");
   const totalBadge = document.getElementById("totalVotersBadge");
-  if (!tbody) return;
+  if (!listEl) return;
 
-  const ledger = [...appState.voterLedger].reverse(); // Newest first
+  const ledger = [...appState.voterLedger].reverse();
 
   if (totalBadge) {
-    totalBadge.textContent = `Iš viso balsavo: ${ledger.length} draugų`;
+    totalBadge.textContent = `Balsavo: ${ledger.length}`;
   }
 
   if (ledger.length === 0) {
-    tbody.innerHTML = "";
+    listEl.innerHTML = "";
     if (emptyMsg) emptyMsg.classList.remove("hidden");
     return;
   }
 
   if (emptyMsg) emptyMsg.classList.add("hidden");
 
-  tbody.innerHTML = ledger.map(item => {
-    const candidateBadges = item.choices.map(id => {
+  listEl.innerHTML = ledger.slice(0, 15).map(item => {
+    const candidateChips = item.choices.map(id => {
       const c = appState.contestants.find(cand => cand.id === id);
-      return `<span class="choice-tag">${c ? c.avatar + ' ' + c.name : id}</span>`;
-    }).join(" ");
+      return `<span class="choice-chip">${c ? c.avatar + ' ' + escapeHTML(c.name) : id}</span>`;
+    }).join("");
 
     return `
-      <tr>
-        <td><small style="color: var(--text-muted);">${item.timestamp || 'ką tik'}</small></td>
-        <td>
-          <div class="voter-name-cell">
-            <span class="voter-avatar-icon">👤</span>
-            <span>${escapeHTML(item.voter)}</span>
-          </div>
-        </td>
-        <td><div class="choices-badges">${candidateBadges}</div></td>
-        <td><span style="font-size: 0.8rem; color: var(--text-muted);">${escapeHTML(item.note || 'Atidavė balsus')}</span></td>
-      </tr>
+      <div class="activity-item">
+        <div class="activity-voter-info">
+          <span class="activity-time">${escapeHTML(item.timestamp || '')}</span>
+          <span class="activity-voter-name">${escapeHTML(item.voter)}</span>
+        </div>
+        <div class="activity-choices">
+          ${candidateChips}
+        </div>
+      </div>
     `;
   }).join("");
 }
 
-// News Ticker
-function renderTicker() {
-  const marquee = document.getElementById("tickerMarquee");
-  if (!marquee) return;
-
-  const topC = [...appState.contestants].sort((a, b) => (appState.votes[b.id] || 0) - (appState.votes[a.id] || 0))[0];
-  const totalVoters = appState.voterLedger.length;
-
-  marquee.innerHTML = `
-    🔥 Naujausi reitingai: <strong>${topC.name} (${topC.alias})</strong> pirmauja kovoje dėl Tautos Bukiausio titulo su <strong>${appState.votes[topC.id] || 0} balsais!</strong> • Jau atiduota ${totalVoters} draugų balsų! • TV3 klasės mokytojai Katleris ir Bartuševičius šokiruoti!
-  `;
-}
-
-// Submit Vote Handler
+// Vote Submission
 async function handleVoteSubmit() {
   const voterNameInput = document.getElementById("voterNameInput");
   const voterName = (voterNameInput?.value || "").trim();
 
-  if (!voterName) {
-    playSound('warn');
-    showToast("⚠️ Įvesk savo vardą! Tai privaloma balsų apskaitai.", "toast-error");
+  if (!voterName || voterName.length < 2) {
+    showToast("Įveskite savo vardą balsavimui!", "toast-error");
     voterNameInput?.focus();
     return;
   }
 
   if (appState.selectedCandidates.size === 0) {
-    playSound('warn');
-    showToast("⚠️ Pasirink bent 1 kandidatą (iki 3)!", "toast-error");
+    showToast("Pasirinkite bent 1 kandidatą!", "toast-error");
     return;
   }
 
@@ -673,29 +477,35 @@ async function handleVoteSubmit() {
     appState.votes[id] = (appState.votes[id] || 0) + 1;
   });
 
-  // Record in audit ledger
+  // Timestamp
   const now = new Date();
   const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-  
+
+  // Prepend to ledger
   appState.voterLedger.push({
     voter: voterName,
     choices: selectedIds,
-    timestamp: timeStr,
-    note: `Atidavė ${selectedIds.length} ${selectedIds.length === 1 ? 'balsą' : 'balsus'}`
+    timestamp: timeStr
   });
 
-  // Trigger celebration
-  playSound('vote');
-  triggerConfetti();
+  // Subtle confetti victory burst (respecting reduced-motion)
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && typeof confetti === "function") {
+    confetti({
+      particleCount: 50,
+      spread: 60,
+      origin: { y: 0.7 },
+      colors: ['#F59E0B', '#D97706', '#FFFFFF']
+    });
+  }
 
   // Clear selections
   appState.selectedCandidates.clear();
-  updateSelectionControls();
+  updateDockControls();
   renderAll();
 
-  showToast(`🎉 Ačiū, ${voterName}! Tavo balsai sėkmingai užfiksuoti!`, "toast-party");
+  showToast(`Ačiū, ${voterName}! Tavo balsas sėkmingai užfiksuotas.`, "toast-success");
 
-  // Push to cloud
+  // Push to cloud in background
   await pushCloudState();
 }
 
@@ -722,30 +532,17 @@ async function handleAddContestant(e) {
     tagline: tagline,
     avatar: avatar,
     category: "custom",
-    categoryLabel: "Draugų Pasiūlytas"
+    categoryLabel: "Pasiūlytas Draugų"
   };
 
   appState.contestants.push(newCandidate);
-  appState.votes[newId] = 1; // Initial boost
+  appState.votes[newId] = 1;
 
   closeAddModal();
   renderAll();
-  showToast(`🥳 ${name} sėkmingai įtrauktas į Tautos Bukiausius!`, "toast-success");
-  playSound('vote');
+  showToast(`${name} įtrauktas į kandidatų sąrašą!`, "toast-success");
 
   await pushCloudState();
-}
-
-// Confetti Effect
-function triggerConfetti() {
-  if (typeof confetti === 'function') {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#FFE600', '#FF2A85', '#00F5D4', '#9D4EDD']
-    });
-  }
 }
 
 // Toast Helper
@@ -760,9 +557,9 @@ function showToast(message, type = "toast-success") {
 
   setTimeout(() => {
     toast.style.opacity = '0';
-    toast.style.transform = 'translateX(100%)';
-    setTimeout(() => toast.remove(), 300);
-  }, 4000);
+    toast.style.transform = 'scale(0.95)';
+    setTimeout(() => toast.remove(), 220);
+  }, 3500);
 }
 
 function escapeHTML(str) {
@@ -773,6 +570,7 @@ function escapeHTML(str) {
 
 function openAddModal() {
   document.getElementById("addContestantModal")?.classList.remove("hidden");
+  document.getElementById("newCandidateName")?.focus();
 }
 
 function closeAddModal() {
@@ -784,115 +582,68 @@ function closeAddModal() {
 // Initialization & Event Listeners
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Initial Local / Cloud Sync
+  // 1. Initial State Hydration & Cloud Sync
   loadLocalFallback();
   fetchCloudState();
 
-  // Background auto-polling every 6 seconds for friends' votes
+  // Background quiet cloud sync every 10 seconds
   setInterval(() => {
     if (!appState.isSyncing) {
       fetchCloudState();
     }
-  }, 6000);
+  }, 10000);
 
-  // 2. Voter Name & Submit Listener
-  const nameInput = document.getElementById("voterNameInput");
-  nameInput?.addEventListener("input", () => {
-    updateSelectionControls();
-  });
+  // 2. Voter Name Input & Submit
+  const voterInput = document.getElementById("voterNameInput");
+  voterInput?.addEventListener("input", updateDockControls);
 
   document.getElementById("submitVoteBtn")?.addEventListener("click", handleVoteSubmit);
 
-  // Random Nickname Button
-  document.getElementById("randomNickBtn")?.addEventListener("click", () => {
-    playSound('select');
-    const randomNick = RANDOM_NICKNAMES[Math.floor(Math.random() * RANDOM_NICKNAMES.length)];
-    if (nameInput) {
-      nameInput.value = randomNick;
-      updateSelectionControls();
-    }
-  });
-
-  // Sound Toggle
-  document.getElementById("soundToggleBtn")?.addEventListener("click", () => {
-    appState.soundEnabled = !appState.soundEnabled;
-    const icon = document.getElementById("soundIcon");
-    if (icon) icon.textContent = appState.soundEnabled ? "🔊" : "🔇";
-    showToast(appState.soundEnabled ? "Garso efektai įjungti" : "Garso efektai išjungti");
-  });
-
-  // Manual Cloud Sync
-  document.getElementById("manualSyncBtn")?.addEventListener("click", () => {
-    playSound('select');
-    fetchCloudState();
-    showToast("🔄 Duomenys atnaujinti tiesiai iš debesies!");
-  });
-
-  // Category Filters
+  // 3. Category Filter Pills
   document.querySelectorAll(".filter-pill").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".filter-pill").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       appState.activeFilter = btn.getAttribute("data-category");
-      playSound('select');
       renderContestants();
     });
   });
 
-  // Search Filter
-  document.getElementById("searchContestantsInput")?.addEventListener("input", (e) => {
+  // 4. Search Filter
+  document.getElementById("searchInput")?.addEventListener("input", (e) => {
     appState.searchQuery = e.target.value;
     renderContestants();
   });
 
-  // View Mode Toggles
-  document.getElementById("viewColumnsBtn")?.addEventListener("click", () => {
-    appState.viewMode = "columns";
-    document.getElementById("viewColumnsBtn")?.classList.add("active");
-    document.getElementById("viewListBtn")?.classList.remove("active");
-    document.getElementById("columnsChartContainer")?.classList.remove("hidden");
-    document.getElementById("leaderboardContainer")?.classList.add("hidden");
-    playSound('select');
-  });
-
-  document.getElementById("viewListBtn")?.addEventListener("click", () => {
-    appState.viewMode = "list";
-    document.getElementById("viewListBtn")?.classList.add("active");
-    document.getElementById("viewColumnsBtn")?.classList.remove("active");
-    document.getElementById("columnsChartContainer")?.classList.add("hidden");
-    document.getElementById("leaderboardContainer")?.classList.remove("hidden");
-    playSound('select');
-  });
-
-  // Modal Open / Close
+  // 5. Modal Dialog Events
   document.getElementById("openAddModalBtn")?.addEventListener("click", openAddModal);
   document.getElementById("closeModalBtn")?.addEventListener("click", closeAddModal);
   document.getElementById("cancelAddBtn")?.addEventListener("click", closeAddModal);
   document.getElementById("addContestantForm")?.addEventListener("submit", handleAddContestant);
 
-  // Modal Emoji Picker
-  document.querySelectorAll(".emoji-opt").forEach(btn => {
+  // Emoji Selector inside Modal
+  document.querySelectorAll(".emoji-btn").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".emoji-opt").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".emoji-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       const emojiInput = document.getElementById("selectedEmoji");
       if (emojiInput) emojiInput.value = btn.getAttribute("data-emoji");
-      playSound('select');
     });
   });
 
-  // Clear data button
-  document.getElementById("clearDataBtn")?.addEventListener("click", () => {
-    if (confirm("Ar tikrai norite išvalyti visus atiduotus balsus ir atstatyti pradinius duomenis?")) {
+  // 6. Reset Data (Discrete test reset in footer)
+  document.getElementById("resetDataBtn")?.addEventListener("click", () => {
+    if (confirm("Ar tikrai norite atstatyti visus balsus ir pradėti iš naujo?")) {
       appState.votes = {};
       DEFAULT_CONTESTANTS.forEach(c => appState.votes[c.id] = 0);
       appState.voterLedger = [];
       saveLocalFallback();
       pushCloudState();
       renderAll();
-      showToast("Visi balsai atstatyti į nulį.", "toast-success");
+      showToast("Visi balsai sėkmingai atstatyti.", "toast-success");
     }
   });
 
+  // Initial render
   renderAll();
 });
