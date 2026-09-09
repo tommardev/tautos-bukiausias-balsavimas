@@ -1,13 +1,15 @@
 /**
- * Modern Votes Bar Chart Component
- * High-clarity vertical column bar chart taking ~half-screen space.
+ * Modern Votes Bar Chart Component (powered by Chart.js & ChartDataLabels)
+ * Industry-standard, high-clarity bar chart taking ~half screen space.
  * Built according to Emil Kowalski & Karpathy simplicity standards.
  */
 
 import { escapeHTML } from "../utils/dom.js";
 
+let chartInstance = null;
+
 /**
- * Formats contestant name to fit cleanly in compact column layout.
+ * Formats contestant name for clean display.
  * e.g., "Petras Gražulis" -> "Petras G."
  * @param {string} fullName 
  * @returns {string}
@@ -20,25 +22,7 @@ function formatShortName(fullName) {
 }
 
 /**
- * Computes readable Y-axis tick values with comfortable visual headroom.
- * @param {number} maxVotes 
- * @returns {{ yMax: number, ticks: number[] }}
- */
-function computeYAxisScale(maxVotes) {
-  // Ensure minimum scale headroom of at least 4
-  const ceiling = Math.max(maxVotes + (maxVotes > 10 ? 2 : 1), 4);
-  const step = ceiling <= 6 ? 1 : (ceiling <= 15 ? 3 : Math.ceil(ceiling / 5));
-  const yMax = Math.ceil(ceiling / step) * step;
-
-  const ticks = [];
-  for (let val = 0; val <= yMax; val += step) {
-    ticks.push(val);
-  }
-  return { yMax, ticks };
-}
-
-/**
- * Renders the modern votes bar chart into #votesChartContainer.
+ * Renders or updates the modern votes bar chart in #votesChartContainer.
  * @param {Object} state 
  */
 export function renderChart(state) {
@@ -52,83 +36,201 @@ export function renderChart(state) {
 
   const totalVotes = Object.values(state.votes).reduce((sum, v) => sum + v, 0) || 0;
   const maxVotes = Math.max(...contestantsWithVotes.map(c => c.voteCount), 0);
-  const { yMax, ticks } = computeYAxisScale(maxVotes);
 
   const leader = contestantsWithVotes[0];
   const leaderLabel = totalVotes > 0 && leader && leader.voteCount > 0
     ? `Dabartinis lyderis: <strong>${escapeHTML(leader.name)}</strong> (${leader.voteCount} ${leader.voteCount === 1 ? 'balsas' : 'balsai'})`
     : "Balsavimas atidarytas • Atiduokite savo balsą žemiau";
 
-  container.innerHTML = `
-    <div class="chart-meta-bar">
-      <div class="chart-summary-info">
-        <span class="chart-leader-highlight">${leaderLabel}</span>
-      </div>
-      <div class="chart-total-pill">
-        Iš viso balsų: <strong>${totalVotes}</strong>
-      </div>
-    </div>
-
-    <div class="votes-chart" role="region" aria-label="Balsavimo rezultatų stulpelinė diagrama">
-      <!-- Y-Axis Grid Reference Lines -->
-      <div class="chart-grid" aria-hidden="true">
-        ${ticks.map(tick => {
-          const bottomPct = yMax > 0 ? (tick / yMax) * 100 : 0;
-          return `
-            <div class="chart-grid-line" style="bottom: ${bottomPct}%;">
-              <span class="grid-tick-label">${tick}</span>
-            </div>
-          `;
-        }).join("")}
-      </div>
-
-      <!-- Scrollable Columns Track -->
-      <div class="chart-scroll-area">
-        <div class="chart-columns-track">
-          ${contestantsWithVotes.map((c, idx) => {
-            const rank = idx + 1;
-            const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
-            const pct = totalVotes > 0 ? Math.round((c.voteCount / totalVotes) * 100) : 0;
-            const heightPct = yMax > 0 ? Math.max(Math.round((c.voteCount / yMax) * 100), 4) : 4;
-            const shortName = formatShortName(c.name);
-            const isSelected = state.selectedCandidates.has(c.id);
-
-            return `
-              <div 
-                class="chart-col ${rankClass} ${isSelected ? 'selected' : ''}" 
-                data-id="${c.id}"
-                title="${escapeHTML(c.name)} (${escapeHTML(c.alias)}): ${c.voteCount} ${c.voteCount === 1 ? 'balsas' : 'balsai'} (${pct}%) – #${rank} vieta"
-              >
-                <!-- Top Value Header -->
-                <div class="chart-col-head">
-                  <span class="chart-col-votes">${c.voteCount}</span>
-                  <span class="chart-col-pct">${pct}%</span>
-                </div>
-
-                <!-- Proportional Bar Pillar -->
-                <div class="chart-bar-slot">
-                  <div 
-                    class="chart-bar-pillar" 
-                    style="height: ${heightPct}%;"
-                    aria-valuenow="${c.voteCount}" 
-                    aria-valuemin="0" 
-                    aria-valuemax="${yMax}"
-                  >
-                    <div class="pillar-cap"></div>
-                  </div>
-                </div>
-
-                <!-- Bottom Candidate Anchor -->
-                <div class="chart-col-base">
-                  <span class="chart-col-avatar">${c.avatar}</span>
-                  <span class="chart-col-rank">#${rank}</span>
-                  <span class="chart-col-name">${escapeHTML(shortName)}</span>
-                </div>
-              </div>
-            `;
-          }).join("")}
+  // Check if wrapper markup already exists
+  let canvas = document.getElementById("votesChartCanvas");
+  if (!canvas) {
+    container.innerHTML = `
+      <div class="chart-meta-bar">
+        <div class="chart-summary-info">
+          <span class="chart-leader-highlight" id="chartLeaderHighlight">${leaderLabel}</span>
+        </div>
+        <div class="chart-total-pill">
+          Iš viso balsų: <strong id="chartTotalVotes">${totalVotes}</strong>
         </div>
       </div>
-    </div>
-  `;
+      <div class="votes-chart-canvas-container">
+        <canvas id="votesChartCanvas" aria-label="Balsavimo rezultatų stulpelinė diagrama" role="img"></canvas>
+      </div>
+    `;
+    canvas = document.getElementById("votesChartCanvas");
+  } else {
+    // Update text labels
+    const leaderEl = document.getElementById("chartLeaderHighlight");
+    const totalEl = document.getElementById("chartTotalVotes");
+    if (leaderEl) leaderEl.innerHTML = leaderLabel;
+    if (totalEl) totalEl.textContent = totalVotes;
+  }
+
+  if (!canvas || typeof window.Chart === "undefined") return;
+
+  // Labels: emoji + short name
+  const labels = contestantsWithVotes.map(c => `${c.avatar} ${formatShortName(c.name)}`);
+  const data = contestantsWithVotes.map(c => c.voteCount);
+
+  // Background colors: Gold (#1), Silver (#2), Bronze (#3), Slate (Others)
+  const bgColors = contestantsWithVotes.map((c, idx) => {
+    if (idx === 0) return '#F59E0B'; // Gold
+    if (idx === 1) return '#CBD5E1'; // Silver
+    if (idx === 2) return '#F97316'; // Bronze
+    return 'rgba(148, 163, 184, 0.45)'; // Slate
+  });
+
+  const borderColors = contestantsWithVotes.map((c, idx) => {
+    if (idx === 0) return '#D97706';
+    if (idx === 1) return '#94A3B8';
+    if (idx === 2) return '#EA580C';
+    return 'rgba(255, 255, 255, 0.2)';
+  });
+
+  const yHeadroom = Math.max(maxVotes + (maxVotes > 10 ? 3 : 2), 4);
+
+  // If chart already exists, update data smoothly
+  if (chartInstance) {
+    chartInstance.data.labels = labels;
+    chartInstance.data.datasets[0].data = data;
+    chartInstance.data.datasets[0].backgroundColor = bgColors;
+    chartInstance.data.datasets[0].borderColor = borderColors;
+    chartInstance.options.scales.y.suggestedMax = yHeadroom;
+    chartInstance.update();
+    return;
+  }
+
+  // Register datalabels plugin if available
+  const plugins = [];
+  if (typeof window.ChartDataLabels !== "undefined") {
+    plugins.push(window.ChartDataLabels);
+  }
+
+  const ctx = canvas.getContext("2d");
+  chartInstance = new window.Chart(ctx, {
+    type: "bar",
+    plugins,
+    data: {
+      labels,
+      datasets: [{
+        label: "Balsai",
+        data,
+        backgroundColor: bgColors,
+        borderColor: borderColors,
+        borderWidth: 1.5,
+        borderRadius: 6,
+        borderSkipped: false,
+        hoverBackgroundColor: contestantsWithVotes.map((c, idx) => {
+          if (idx === 0) return '#FBBF24';
+          if (idx === 1) return '#E2E8F0';
+          if (idx === 2) return '#FB923C';
+          return 'rgba(245, 158, 11, 0.7)';
+        })
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 220,
+        easing: "easeOutQuart"
+      },
+      layout: {
+        padding: {
+          top: 24,
+          bottom: 4,
+          left: 4,
+          right: 8
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        datalabels: {
+          display: true,
+          align: "top",
+          anchor: "end",
+          offset: 4,
+          color: (ctx) => (ctx.dataIndex === 0 ? "#F59E0B" : "#F8FAFC"),
+          font: {
+            family: "'Space Grotesk', monospace, sans-serif",
+            weight: "700",
+            size: 11
+          },
+          formatter: (val) => (val > 0 ? val : "")
+        },
+        tooltip: {
+          enabled: true,
+          backgroundColor: "#12131c",
+          borderColor: "#F59E0B",
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 8,
+          titleColor: "#FFFFFF",
+          titleFont: {
+            family: "'Outfit', sans-serif",
+            size: 13,
+            weight: "700"
+          },
+          bodyColor: "#CBD5E1",
+          bodyFont: {
+            family: "'Outfit', sans-serif",
+            size: 12
+          },
+          callbacks: {
+            title: (items) => {
+              const c = contestantsWithVotes[items[0].dataIndex];
+              return `${c.avatar} ${c.name}`;
+            },
+            label: (item) => {
+              const c = contestantsWithVotes[item.dataIndex];
+              const pct = totalVotes > 0 ? Math.round((c.voteCount / totalVotes) * 100) : 0;
+              return [
+                `Titulas: ${c.alias}`,
+                `Balsai: ${c.voteCount} (${pct}% visų balsų)`,
+                `Rikiuotė: #${item.dataIndex + 1} vieta`
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            color: "#CBD5E1",
+            font: {
+              family: "'Outfit', sans-serif",
+              size: 11,
+              weight: "600"
+            },
+            maxRotation: 45,
+            minRotation: 0,
+            autoSkip: false
+          }
+        },
+        y: {
+          beginAtZero: true,
+          suggestedMax: yHeadroom,
+          grid: {
+            color: "rgba(255, 255, 255, 0.07)",
+            drawBorder: false
+          },
+          ticks: {
+            color: "#94A3B8",
+            font: {
+              family: "'Space Grotesk', monospace",
+              size: 11
+            },
+            precision: 0,
+            stepSize: maxVotes <= 6 ? 1 : undefined
+          }
+        }
+      }
+    }
+  });
 }
