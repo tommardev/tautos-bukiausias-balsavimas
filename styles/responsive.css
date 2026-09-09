@@ -29,10 +29,44 @@
   .standings-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 16px;
+  }
+
+  .standings-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .view-toggle-group {
+    width: 100%;
+  }
+
+  .btn-view-toggle {
+    flex: 1;
+    justify-content: center;
   }
 
   .btn-cta-vote {
     width: 100%;
+  }
+
+  .votes-chart {
+    padding-left: 36px;
+    padding-right: 12px;
+    height: 350px;
+  }
+
+  .chart-grid {
+    left: 36px;
+    right: 12px;
+  }
+
+  .chart-meta-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 
   .leaderboard-row {

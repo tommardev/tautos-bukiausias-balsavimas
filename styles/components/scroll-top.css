@@ -1,0 +1,74 @@
+/* ==========================================================================
+   Modern "Scroll to Top" Floating Action Button
+   Tactile, subtle, and accessible (Emil Kowalski Standard)
+   ========================================================================== */
+
+.scroll-to-top-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 90;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  outline: none;
+
+  /* Natural Emil Kowalski entrance / exit */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px) scale(0.95);
+  transition: opacity var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.scroll-to-top-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.scroll-to-top-btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: var(--color-gold);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.scroll-to-top-btn:active {
+  transform: scale(0.97);
+}
+
+.scroll-to-top-btn:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Mobile: float cleanly above sticky voting dock */
+@media (max-width: 640px) {
+  .scroll-to-top-btn {
+    bottom: 84px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-to-top-btn {
+    transition: none !important;
+    transform: none !important;
+  }
+}

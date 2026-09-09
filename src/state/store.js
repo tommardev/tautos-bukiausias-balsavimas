@@ -12,7 +12,8 @@ const state = {
   selectedCandidates: new Set(),
   activeFilter: "all",
   searchQuery: "",
-  isSyncing: false
+  isSyncing: false,
+  standingsView: "chart"
 };
 
 const listeners = new Set();
@@ -98,6 +99,17 @@ export function setFilter(category) {
 export function setSearchQuery(query) {
   state.searchQuery = (query || "").trim();
   notify();
+}
+
+/**
+ * Sets the standings display view mode ('chart' | 'list').
+ * @param {'chart' | 'list'} view 
+ */
+export function setStandingsView(view) {
+  if (view === "chart" || view === "list") {
+    state.standingsView = view;
+    notify();
+  }
 }
 
 /**

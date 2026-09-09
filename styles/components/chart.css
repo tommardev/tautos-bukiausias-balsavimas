@@ -1,0 +1,357 @@
+/* ==========================================================================
+   Main Votes Bar Chart (~Half Screen Space) & View Switcher
+   Modern, crisp poll chart adhering to Emil Kowalski & Karpathy standards.
+   ========================================================================== */
+
+/* Standings Header Actions (Segmented Control & Vote CTA) */
+.standings-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* View Toggle Segmented Control */
+.view-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+
+.btn-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  font-family: var(--font-main);
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  outline: none;
+  transition: background-color var(--duration-fast) var(--ease-out), 
+              color var(--duration-fast) var(--ease-out), 
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.btn-view-toggle:hover:not(.active) {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.btn-view-toggle:active {
+  transform: scale(0.97);
+}
+
+.btn-view-toggle.active {
+  background: var(--bg-surface-active);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow-sm);
+}
+
+.toggle-icon {
+  flex-shrink: 0;
+}
+
+/* Main Votes Chart Container */
+.votes-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Meta Bar above Chart */
+.chart-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.85rem;
+}
+
+.chart-leader-highlight {
+  color: var(--text-secondary);
+}
+
+.chart-leader-highlight strong {
+  color: var(--color-gold);
+  font-weight: 700;
+}
+
+.chart-total-pill {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.chart-total-pill strong {
+  color: var(--text-primary);
+}
+
+/* Chart Canvas (~Half Screen Height) */
+.votes-chart {
+  position: relative;
+  height: clamp(360px, 48vh, 480px);
+  min-height: 350px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px 20px 16px 44px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Y-Axis Horizontal Grid Reference Lines */
+.chart-grid {
+  position: absolute;
+  top: 24px;
+  bottom: 60px;
+  left: 44px;
+  right: 20px;
+  pointer-events: none;
+}
+
+.chart-grid-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.grid-tick-label {
+  position: absolute;
+  left: -36px;
+  top: -8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  width: 28px;
+  text-align: right;
+}
+
+/* Scroll Area for Columns Track */
+.chart-scroll-area {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.chart-scroll-area::-webkit-scrollbar {
+  height: 4px;
+}
+
+.chart-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-pill);
+}
+
+/* Columns Track */
+.chart-columns-track {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  height: 100%;
+  min-width: 100%;
+  gap: 8px;
+  padding: 0 4px;
+  box-sizing: border-box;
+}
+
+/* Individual Bar Column */
+.chart-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 52px;
+  max-width: 76px;
+  height: 100%;
+  cursor: pointer;
+  user-select: none;
+  border-radius: var(--radius-sm);
+  padding: 4px 2px;
+  box-sizing: border-box;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.chart-col:hover {
+  background: rgba(255, 255, 255, 0.03);
+  transform: translateY(-2px);
+}
+
+.chart-col:active {
+  transform: scale(0.97);
+}
+
+/* Top Value Badge */
+.chart-col-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 36px;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+  font-family: var(--font-mono);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.chart-col-votes {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.chart-col.rank-1 .chart-col-votes {
+  color: var(--color-gold);
+  font-weight: 800;
+}
+
+.chart-col-pct {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+/* Pillar Slot & Bar Pillar */
+.chart-bar-slot {
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 2px;
+}
+
+.chart-bar-pillar {
+  width: 72%;
+  max-width: 32px;
+  min-width: 18px;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.06) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
+  position: relative;
+  transition: height var(--duration-normal) var(--ease-out), 
+              background var(--duration-fast) var(--ease-out), 
+              border-color var(--duration-fast) var(--ease-out);
+}
+
+.pillar-cap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 6px 6px 0 0;
+}
+
+/* Top 3 Ranks Pillar Accents */
+.chart-col.rank-1 .chart-bar-pillar {
+  background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%);
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+}
+
+.chart-col.rank-1 .pillar-cap {
+  background: #FDE68A;
+}
+
+.chart-col.rank-2 .chart-bar-pillar {
+  background: linear-gradient(180deg, #CBD5E1 0%, #64748B 100%);
+  border-color: rgba(203, 213, 225, 0.4);
+}
+
+.chart-col.rank-2 .pillar-cap {
+  background: #FFFFFF;
+}
+
+.chart-col.rank-3 .chart-bar-pillar {
+  background: linear-gradient(180deg, #F97316 0%, #B45309 100%);
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+.chart-col.rank-3 .pillar-cap {
+  background: #FDBA74;
+}
+
+/* Hover on column emphasizes pillar */
+.chart-col:hover .chart-bar-pillar {
+  filter: brightness(1.15);
+}
+
+/* Selected state highlight */
+.chart-col.selected .chart-bar-pillar {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 1px;
+}
+
+/* Bottom Candidate Anchor */
+.chart-col-base {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  height: 48px;
+  margin-top: 8px;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.chart-col-avatar {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.chart-col-rank {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.chart-col.rank-1 .chart-col-rank {
+  color: var(--color-gold);
+}
+.chart-col.rank-2 .chart-col-rank {
+  color: #CBD5E1;
+}
+.chart-col.rank-3 .chart-col-rank {
+  color: #F97316;
+}
+
+.chart-col-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+}

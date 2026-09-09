@@ -8,9 +8,11 @@
 @import url("./styles/base.css");
 @import url("./styles/components/header.css");
 @import url("./styles/components/leaderboard.css");
+@import url("./styles/components/chart.css");
 @import url("./styles/components/contestants.css");
 @import url("./styles/components/dock.css");
 @import url("./styles/components/activity.css");
 @import url("./styles/components/modal.css");
 @import url("./styles/components/toast.css");
+@import url("./styles/components/scroll-top.css");
 @import url("./styles/responsive.css");

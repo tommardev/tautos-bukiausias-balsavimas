@@ -9,6 +9,7 @@ import {
   subscribe, 
   setFilter, 
   setSearchQuery, 
+  setStandingsView,
   recordVote, 
   resetAllData, 
   hydrateFromLocalStorage 
@@ -101,10 +102,44 @@ function initApp() {
     setSearchQuery(e.target.value);
   });
 
-  // 8. Initialize modal handlers
+  // 8. View switcher buttons (Chart vs List)
+  document.getElementById("viewChartBtn")?.addEventListener("click", () => {
+    setStandingsView("chart");
+  });
+  document.getElementById("viewListBtn")?.addEventListener("click", () => {
+    setStandingsView("list");
+  });
+
+  // 9. Scroll to top floating button
+  const scrollTopBtn = document.getElementById("scrollToTopBtn");
+  let scrollTicking = false;
+
+  window.addEventListener("scroll", () => {
+    if (!scrollTicking) {
+      window.requestAnimationFrame(() => {
+        if (window.scrollY > 280) {
+          scrollTopBtn?.classList.add("visible");
+        } else {
+          scrollTopBtn?.classList.remove("visible");
+        }
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  }, { passive: true });
+
+  scrollTopBtn?.addEventListener("click", () => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ 
+      top: 0, 
+      behavior: prefersReducedMotion ? "auto" : "smooth" 
+    });
+  });
+
+  // 10. Initialize modal handlers
   initModal();
 
-  // 9. Reset data button (Discrete test reset in footer)
+  // 11. Reset data button (Discrete test reset in footer)
   document.getElementById("resetDataBtn")?.addEventListener("click", () => {
     if (confirm("Ar tikrai norite atstatyti visus balsus ir pradėti iš naujo?")) {
       resetAllData();
@@ -114,7 +149,7 @@ function initApp() {
     }
   });
 
-  // 10. Initial render pass
+  // 12. Initial render pass
   renderAll(getState());
 }
 

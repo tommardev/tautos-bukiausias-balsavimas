@@ -42,13 +42,43 @@
           </h2>
           <p class="standings-desc">Dabartinė Tautos Bukiausio lyderių rikiuotė pagal atiduotus balsus</p>
         </div>
-        <a href="#votingSection" id="scrollVoteCta" class="btn-cta-vote">
-          Balsuoti dabar &darr;
-        </a>
+
+        <div class="standings-actions">
+          <div class="view-toggle-group" id="viewToggleGroup" role="group" aria-label="Rezultatų rodinys">
+            <button type="button" class="btn-view-toggle active" id="viewChartBtn" data-view="chart" aria-pressed="true" title="Rodyti stulpelinę diagramą">
+              <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+              <span>Diagrama</span>
+            </button>
+            <button type="button" class="btn-view-toggle" id="viewListBtn" data-view="list" aria-pressed="false" title="Rodyti išsamų sąrašą">
+              <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+              <span>Sąrašas</span>
+            </button>
+          </div>
+
+          <a href="#votingSection" id="scrollVoteCta" class="btn-cta-vote">
+            Balsuoti dabar &darr;
+          </a>
+        </div>
       </div>
 
-      <!-- Horizontal Leaderboard Bars -->
-      <div class="leaderboard-list" id="leaderboardList">
+      <!-- Main High-Clarity Votes Bar Chart (~half-screen space) -->
+      <div class="votes-chart-container" id="votesChartContainer">
+        <!-- Injected dynamically by UI components -->
+      </div>
+
+      <!-- Horizontal Leaderboard Bars (Optional Selectable via Button) -->
+      <div class="leaderboard-list hidden" id="leaderboardList">
         <!-- Injected dynamically by UI components -->
       </div>
     </section>
@@ -197,6 +227,13 @@
 
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scroll to Top Floating Button -->
+  <button type="button" id="scrollToTopBtn" class="scroll-to-top-btn" aria-label="Grįžti į viršų" title="Grįžti į viršų">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
 
   <script type="module" src="./src/main.js"></script>
 </body>
