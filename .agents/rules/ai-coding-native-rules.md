@@ -16,6 +16,7 @@ Coding work follows coleam00 skills. Do not invent a parallel process. Cole deci
 # Tools (always)
 
 - Docs/APIs: Context7 MCP for library/API docs, setup, migrations, and to confirm current usage patterns - prefer it over training memory and client web search.
+- Web Search & Research: Exa MCP (`https://mcp.exa.ai`) using `web_search_exa`, `web_search_advanced_exa`, `web_fetch_exa`, and `agent_run` for live web lookups and page fetching.
 - GitHub: `gh` CLI only (no GitHub MCP).
 - Deps: Sonatype MCP before adding or upgrading packages.
 - UI from Figma: FigmaLocal MCP + the Figma MCP flow, token-driven layout. Only when I gave a Figma URL/node or asked to implement a design.

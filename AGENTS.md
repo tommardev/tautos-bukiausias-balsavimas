@@ -49,6 +49,7 @@ GEMINI.md                               Antigravity native instructions pointer
 ## Tools
 
 - Docs/APIs: Context7 MCP - prefer over client web search and training memory for Web Audio, Canvas Confetti, and Firebase Hosting docs.
+- Web Search & Research: Exa MCP (`https://mcp.exa.ai`) - use `web_search_exa`, `web_search_advanced_exa`, `web_fetch_exa`, and `agent_run` for neural web search, page fetching, and deep research.
 - Dependencies: Sonatype MCP - prefer for version selection and security before adding any npm packages.
 - GitHub: `gh` CLI only (no GitHub MCP).
 

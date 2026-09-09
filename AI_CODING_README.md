@@ -114,12 +114,14 @@ Antigravity uses native MCP servers configured in `~/.gemini/config/mcp_config.j
 - **Context7 MCP**: Library and API documentation lookups.
 - **Sonatype MCP**: Dependency version checking and vulnerability scans.
 - **Modern Web Guidance Plugin**: Modern web practices and frontend guidance.
+- **Exa MCP** (`https://mcp.exa.ai`): Neural web search, page fetching (`web_fetch_exa`), and deep multi-source research (`agent_run`).
 
 Inspect active MCP servers in Antigravity IDE under **Additional Options (...) > MCP Servers**.
 
 ## Tools the agent should use
 
 - Library / API docs: Context7 MCP (not training memory or generic web search)
+- Web search & research: Exa MCP (`web_search_exa`, `web_search_advanced_exa`, `web_fetch_exa`, `agent_run`) for live internet data and articles.
 - New or upgraded packages: Sonatype MCP before pinning
 - GitHub: `gh` CLI only (no GitHub MCP)
 
