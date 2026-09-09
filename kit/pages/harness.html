@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Step 1 · Prepare the harness</title>
+    <meta
+      name="description"
+      content="Harness first: first-time writes plugins/skills/native rules; join restores this machine only."
+    />
+    <!--
+    CODING AGENT — step 1 detail page (humans). Execute from disk:
+    Kit root = parent of this pages/ folder.
+    Classify join vs first-time first (discovery.md). Join = machine-local only.
+    Read ../skills/prepare-project-for-agents/SKILL.md then references/harness.md.
+    Run npx skills experimental_install --yes from the host root. Do not skip this step.
+    Host = git toplevel. Do not commit unless asked. Do not rewrite team files on join.
+  -->
+    <link rel="stylesheet" href="kit.css" />
+  </head>
+  <body>
+    <div class="skip-group">
+      <a class="skip" href="#humans">Skip to for humans</a>
+      <a class="skip" href="#for-agents">Skip to agent instructions</a>
+    </div>
+
+    <div class="wrap">
+      <header class="site-header">
+        <a class="site-mark" href="../START_HERE.html">AI Coding kit</a>
+        <nav class="site-nav" aria-label="Kit pages">
+          <a href="../START_HERE.html">Overview</a>
+          <a href="harness.html" aria-current="page">1 · Harness</a>
+          <a href="prepare-project.html">2 · Project rules</a>
+        </nav>
+      </header>
+
+      <section class="human-hero" id="humans" aria-labelledby="human-kicker">
+        <p class="human-kicker" id="human-kicker">For humans · Step 1 of 2</p>
+        <h1>Prepare the harness</h1>
+        <p class="lede">
+          Put the agent <em>runtime</em> in place before writing project
+          conventions. First-time: the agent writes the files and restores
+          skills. Joining a prepared clone: the files are already in git; the
+          agent only restores skills on this machine. You install missing Cursor
+          marketplace plugins once (<code>/add-plugin</code> — there is no CLI).
+        </p>
+      </section>
+
+      <div class="layout">
+        <main class="page-main">
+          <p class="callout">
+            First time on a host? Open
+            <a href="https://github.com/tm-modulasoft/AI_Coding_project_prepare"
+              >this kit on GitHub</a
+            >, paste the README prompt into an agent on the local project. The
+            agent fetches <code>kit/</code> and restores skills from GitHub.
+            Joining a repo that already has <code>AGENTS.md</code>,
+            <code>skills-lock.json</code>, and
+            <code>AI_CODING_README.md</code>? Same prompt — restore this machine
+            only; do not rewrite those files. Or follow
+            <code>AI_CODING_README.md</code> on the clone.
+          </p>
+
+          <h2 id="join">Joining a prepared project</h2>
+          <p>
+            Skills installs are gitignored (<code>.agents/skills/</code>).
+            Cursor marketplace plugins and API keys live on the developer’s
+            machine. Committed files are the team’s workflow — leave them.
+          </p>
+          <ol class="steps">
+            <li>
+              From the repo root:
+              <code>npx skills experimental_install --yes</code>
+            </li>
+            <li>
+              Paste <code>/add-plugin …</code> only for plugins missing on this
+              machine, then reload.
+            </li>
+            <li>
+              Connect Context7 and Sonatype keys in Customize. Never commit
+              keys.
+            </li>
+            <li>
+              Read <code>AI_CODING_README.md</code> and
+              <code>AI_CODING_LEARN.md</code>.
+            </li>
+          </ol>
+          <p>
+            Do not fetch <code>kit/</code> for join. Do not recopy harness
+            defaults over existing <code>.cursor/</code>,
+            <code>skills-lock.json</code>, or <code>AI_CODING_*</code> files.
+          </p>
+
+          <h2 id="what">What this step writes (first-time)</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>.cursor/settings.json</code></td>
+                <td>
+                  IDE client defaults. Enables the default plugin set after you
+                  install them.
+                </td>
+              </tr>
+              <tr>
+                <td><code>.cursor/cli.json</code></td>
+                <td>
+                  CLI client project layer (permissions only). Global CLI prefs
+                  stay in your user <code>cli-config.json</code>.
+                </td>
+              </tr>
+              <tr>
+                <td><code>skills-lock.json</code></td>
+                <td>
+                  Copied from kit
+                  <code>harness-defaults/skills-lock.json</code> if the host has
+                  none. Commit this file.
+                </td>
+              </tr>
+              <tr>
+                <td><code>AI_CODING_README.md</code></td>
+                <td>
+                  Human cheat sheet copied from kit
+                  <code>harness-defaults/AI_CODING_README.md</code>. Workflow,
+                  why Cole and Addy, skill cmds, plugins. Not a second
+                  <code>AGENTS.md</code>.
+                </td>
+              </tr>
+              <tr>
+                <td><code>AI_CODING_LEARN.md</code></td>
+                <td>
+                  Mandatory intros and tutorials from
+                  <code>harness-defaults/AI_CODING_LEARN.md</code>.
+                </td>
+              </tr>
+              <tr>
+                <td><code>.gitignore</code></td>
+                <td>
+                  Ignores <code>.agents/skills/</code> so restored installs stay
+                  off git.
+                </td>
+              </tr>
+              <tr>
+                <td><code>.cursor/rules/ai-coding-native-rules.mdc</code></td>
+                <td>
+                  Always-on native rule. Body from kit
+                  <code>harness-defaults/ai-coding-native-rules.md</code>.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 id="skills">Skills install (agent runs this)</h2>
+          <p>
+            The lockfile
+            <a href="../harness-defaults/skills-lock.json"
+              ><code>harness-defaults/skills-lock.json</code></a
+            >
+            lists GitHub skill sources. After it is copied to the host git root,
+            the agent <strong>must</strong> restore them (network). You should
+            not clone skill repos yourself. Fallback if the agent failed:
+          </p>
+          <div class="slip">
+            <div class="slip-head">
+              <p>Host git root</p>
+              <button type="button" class="btn" data-copy="skills-cmd">
+                Copy command
+              </button>
+            </div>
+            <pre class="copy-source" id="skills-cmd">
+npx skills experimental_install --yes</pre
+            >
+            <p
+              class="status"
+              data-status-for="skills-cmd"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </div>
+          <p>
+            Installs land in <code>.agents/skills/</code> (gitignored). The
+            lockfile stays tracked. Other clients (Cursor CLI, Claude Code,
+            Codex, …) can use the same canonical folder.
+          </p>
+
+          <h2 id="plugins">Plugins (you, only if missing)</h2>
+          <p>
+            Writing <code>settings.json</code> does not download marketplace
+            plugins, and there is no shell command that does. If the agent says
+            a plugin is not already on this machine, paste that line in Cursor
+            chat on the host:
+          </p>
+          <div class="slip">
+            <div class="slip-head">
+              <p>Cursor chat</p>
+              <button type="button" class="btn" data-copy="plugin-cmds">
+                Copy commands
+              </button>
+            </div>
+            <pre class="copy-source" id="plugin-cmds">
+/add-plugin cursor-team-kit
+/add-plugin context7-plugin
+/add-plugin sonatype-cursor-plugin
+/add-plugin modern-web-guidance</pre
+            >
+            <p
+              class="status"
+              data-status-for="plugin-cmds"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </div>
+          <p>
+            Then reload the window. Context7 and Sonatype need a key in
+            Customize (<code>"key": true</code> in settings). Never commit the
+            key. Skip any plugin the agent reports as already installed.
+          </p>
+          <p>
+            Default plugin block the agent merges into
+            <code>.cursor/settings.json</code>:
+          </p>
+          <pre>
+{
+  "plugins": {
+    "cursor-team-kit": { "enabled": true },
+    "context7-plugin": { "enabled": true, "key": true },
+    "sonatype-cursor-plugin": { "enabled": true, "key": true },
+    "modern-web-guidance": { "enabled": true }
+  }
+}</pre
+          >
+
+          <h2 id="native">Native rules (always-on)</h2>
+          <p>
+            Cursor loads <code>.cursor/rules/*.mdc</code> with
+            <code>alwaysApply: true</code> on every chat — project-level
+            pre-prompt. The kit copies
+            <code>harness-defaults/ai-coding-native-rules.md</code> into
+            <code>ai-coding-native-rules.mdc</code> only. Step 2 does not add
+            globbed project <code>.mdc</code> files; when-to-load lives in
+            <code>AGENTS.md</code> Pointers so non-Cursor harnesses see it.
+            Optional: paste the same body into Customize → Rules → User Rules if
+            you want the house workflow on every repo on this machine.
+          </p>
+          <p>
+            If a tool cannot load that rule file, step 2 still writes a short
+            <strong>Tools</strong> stanza in <code>AGENTS.md</code>: Context7
+            MCP for library docs (not client search), Sonatype for versions and
+            security, <code>gh</code> for GitHub.
+          </p>
+
+          <h2 id="cli">IDE and CLI defaults</h2>
+          <ul>
+            <li>
+              <strong>IDE:</strong> project
+              <code>.cursor/settings.json</code> (plugins above).
+            </li>
+            <li>
+              <strong>CLI:</strong> project <code>.cursor/cli.json</code> —
+              permissions only. Do not overwrite global
+              <code>~/.cursor/cli-config.json</code> unless you asked.
+            </li>
+          </ul>
+
+          <div class="next-step" aria-labelledby="next-step-heading">
+            <p class="section-label">Step 1 of 2</p>
+            <h2 id="next-step-heading">Next step</h2>
+            <p>
+              When the harness files are in place, write the project rules
+              (<code>AGENTS.md</code> with Pointers, helpers, shims only for
+              tools that cannot read <code>AGENTS.md</code>, host README
+              gap-fill). Skip this on a prepared clone (join). Do not add
+              globbed project <code>.cursor/rules/*.mdc</code>.
+            </p>
+            <a class="btn" href="prepare-project.html"
+              >Go to step 2 · Prepare project rules</a
+            >
+          </div>
+
+          <h2 id="teardown">After both steps</h2>
+          <p>
+            If <code>kit/</code> was fetched from GitHub into the host only to
+            run first-time prepare, delete that folder when you are happy with
+            the harness + <code>AGENTS.md</code>. It is not needed at runtime.
+            Keep <code>AI_CODING_README.md</code> and
+            <code>AI_CODING_LEARN.md</code>. Do not delete <code>kit/</code> in
+            this GitHub repo. Join should not fetch <code>kit/</code>.
+          </p>
+        </main>
+
+        <aside class="rail" aria-label="Raw files">
+          <h2>Raw files</h2>
+          <ul>
+            <li>
+              <a
+                href="../skills/prepare-project-for-agents/references/harness.md"
+                >harness.md</a
+              >
+            </li>
+            <li>
+              <a href="../harness-defaults/ai-coding-native-rules.md"
+                >ai-coding-native-rules.md</a
+              >
+            </li>
+            <li>
+              <a href="../harness-defaults/skills-lock.json"
+                >skills-lock.json</a
+              >
+            </li>
+            <li>
+              <a href="../harness-defaults/AI_CODING_README.md"
+                >AI_CODING_README.md</a
+              >
+            </li>
+            <li>
+              <a href="../harness-defaults/AI_CODING_LEARN.md"
+                >AI_CODING_LEARN.md</a
+              >
+            </li>
+            <li>
+              <a href="../harness-defaults/cursor-settings.json"
+                >cursor-settings.json</a
+              >
+            </li>
+            <li><a href="../harness-defaults/cli.json">cli.json</a></li>
+            <li>
+              <a href="../skills/prepare-project-for-agents/SKILL.md"
+                >SKILL.md</a
+              >
+            </li>
+          </ul>
+        </aside>
+      </div>
+
+      <section class="agent-hint" id="for-agents">
+        <h2>For coding agents</h2>
+        <ol>
+          <li>Kit root is the parent of <code>pages/</code>.</li>
+          <li>
+            Classify join vs first-time. Join: restore skills, missing plugins,
+            keys; do not overwrite committed files; skip step 2.
+          </li>
+          <li>
+            Read <code>skills/prepare-project-for-agents/SKILL.md</code>, then
+            <code>references/harness.md</code> (Join section when already
+            prepared).
+          </li>
+          <li>
+            First-time: write host files. You <strong>must</strong> run
+            <code>npx skills experimental_install --yes</code> from the host
+            root (join runs the same command).
+          </li>
+          <li>
+            Check <code>~/.cursor/plugins/</code> before nagging. Put missing
+            <code>/add-plugin</code> lines at the top of your next message. Then
+            step 2 unless <code>--harness-only</code> or join.
+          </li>
+        </ol>
+      </section>
+
+      <footer>
+        <a href="../START_HERE.html">Back to overview</a>. This page must work
+        as a local file.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        function wire(id) {
+          var btn = document.querySelector('[data-copy="' + id + '"]');
+          var source = document.getElementById(id);
+          var status = document.querySelector('[data-status-for="' + id + '"]');
+          if (!btn || !source) return;
+          btn.addEventListener("click", function () {
+            var text = source.textContent.replace(/^\s+|\s+$/g, "");
+            function ok() {
+              if (status) status.textContent = "Copied.";
+            }
+            function fail() {
+              if (status)
+                status.textContent =
+                  "Copy failed. Select the text and copy manually.";
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(ok).catch(fail);
+            } else {
+              fail();
+            }
+          });
+        }
+        wire("plugin-cmds");
+        wire("skills-cmd");
+      })();
+    </script>
+  </body>
+</html>

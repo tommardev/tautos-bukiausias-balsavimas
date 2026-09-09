@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Step 2 · Prepare project rules</title>
+    <meta
+      name="description"
+      content="Step 2 (first-time only): lean AGENTS.md with Pointers, helpers, shims only for tools that cannot read AGENTS.md, host README gap-fill. Skip when joining a prepared clone."
+    />
+    <!--
+    CODING AGENT — step 2 detail page (humans). Execute from disk:
+    Kit root = parent of this pages/ folder.
+    Finish step 1 (references/harness.md) first. Skip this page on join.
+    Then SKILL.md, instruction-prompt.md, golden-rules.md.
+    Pointers in AGENTS.md = when-to-load. Do not write globbed project .mdc.
+    Host README: gap-fill or create; keep existing structure when it already covers the jobs.
+    Host = git toplevel. Do not commit unless asked.
+  -->
+    <link rel="stylesheet" href="kit.css" />
+  </head>
+  <body>
+    <div class="skip-group">
+      <a class="skip" href="#humans">Skip to for humans</a>
+      <a class="skip" href="#for-agents">Skip to agent instructions</a>
+    </div>
+
+    <div class="wrap">
+      <header class="site-header">
+        <a class="site-mark" href="../START_HERE.html">AI Coding kit</a>
+        <nav class="site-nav" aria-label="Kit pages">
+          <a href="../START_HERE.html">Overview</a>
+          <a href="harness.html">1 · Harness</a>
+          <a href="prepare-project.html" aria-current="page"
+            >2 · Project rules</a
+          >
+        </nav>
+      </header>
+
+      <section class="human-hero" id="humans" aria-labelledby="human-kicker">
+        <p class="human-kicker" id="human-kicker">For humans · Step 2 of 2</p>
+        <h1>Prepare project rules</h1>
+        <p class="lede">
+          After the harness exists, the agent writes a lean
+          <code>AGENTS.md</code> spine (including when-to-load Pointers),
+          on-demand helpers, thin shims only for tools that cannot read
+          <code>AGENTS.md</code>, and a gap-fill of this project's human
+          <code>README.md</code> (creates it if missing). Skip this step when
+          joining a clone that is already prepared — those files are the team’s
+          committed workflow. It does not invent a stack. Golden defaults apply
+          only where this project is silent; the project's own standards win
+          when they are more correct or specific — including an existing README
+          structure that already covers the usual jobs.
+        </p>
+      </section>
+
+      <div class="layout">
+        <main class="page-main">
+          <section
+            class="get-started"
+            id="humans-how"
+            aria-labelledby="humans-how-heading"
+          >
+            <p class="section-label">What you do</p>
+            <h2 id="humans-how-heading">Your checklist</h2>
+            <p>
+              Joining a prepared repo? Stop. Use
+              <a href="harness.html#join">step 1 · Joining</a> (or
+              <code>AI_CODING_README.md</code>). Do not re-run this step.
+            </p>
+            <ol class="steps">
+              <li>
+                <strong>Port the kit</strong> if it is not already in the target
+                repo — paste the prompt from the
+                <a
+                  href="https://github.com/tm-modulasoft/AI_Coding_project_prepare"
+                  >GitHub README</a
+                >
+                into an agent opened on that local project.
+              </li>
+              <li>
+                Finish <a href="harness.html">step 1</a> (or let the agent do
+                both steps from the bootstrap prompt).
+              </li>
+              <li>
+                Review what the agent writes: root <code>AGENTS.md</code> (with
+                Pointers to helpers), host <code>README.md</code> (created or
+                gap-filled, not reshaped if it already covers the jobs),
+                <code>AI_CODING_README.md</code>,
+                <code>AI_CODING_LEARN.md</code>, helpers under
+                <code>docs/agents/</code>, and thin shims only where a tool
+                cannot read <code>AGENTS.md</code>
+                (<code>CLAUDE.md</code>, Copilot). It should not write globbed
+                project Cursor rules, and should not commit unless you ask.
+              </li>
+              <li>
+                When you are done,
+                <strong>delete the fetched <code>kit/</code> folder</strong>
+                from the host (recommended). Keep the harness files,
+                <code>AI_CODING_README.md</code>,
+                <code>AI_CODING_LEARN.md</code>, <code>AGENTS.md</code>, and the
+                project <code>README.md</code>. Do not delete
+                <code>kit/</code> in this GitHub repo.
+              </li>
+            </ol>
+          </section>
+
+          <h2 id="produces">What the skill writes</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>AGENTS.md</code></td>
+                <td>
+                  Always-on spine. Open format (<a href="https://agents.md"
+                    >agents.md</a
+                  >). Commands, map, seams, boundaries, Tools, precedence (chat
+                  → repo → golden → floors), and Pointers (when-editing → helper
+                  to Read). Any AGENTS.md-compatible harness loads this file.
+                </td>
+              </tr>
+              <tr>
+                <td><code>README.md</code></td>
+                <td>
+                  Human project README (GitHub-visible). Created if missing;
+                  otherwise gap-filled. Existing headings and order stay when
+                  they already cover the usual jobs (what / why / how to run /
+                  help / license). Agent pointer lines added if absent. Commands
+                  must match <code>AGENTS.md</code>.
+                </td>
+              </tr>
+              <tr>
+                <td><code>AI_CODING_README.md</code></td>
+                <td>
+                  Human cheat sheet (copied in step 1). Workflow, why Cole and
+                  Addy, skill cmds, plugins. Agents still read
+                  <code>AGENTS.md</code>.
+                </td>
+              </tr>
+              <tr>
+                <td><code>AI_CODING_LEARN.md</code></td>
+                <td>Mandatory intros and tutorial links (copied in step 1).</td>
+              </tr>
+              <tr>
+                <td><code>docs/agents/*</code></td>
+                <td>
+                  On-demand: stack, conventions, Excluded/Canonical/Language,
+                  UI/UX, theming, testing. Bullets tagged <code>repo:</code> /
+                  <code>golden:</code> / <code>overridden:</code>.
+                </td>
+              </tr>
+              <tr>
+                <td><code>CLAUDE.md</code></td>
+                <td>One-line import: <code>@AGENTS.md</code>.</td>
+              </tr>
+              <tr>
+                <td><code>.github/copilot-instructions.md</code></td>
+                <td>Thin pointer at <code>AGENTS.md</code>.</td>
+              </tr>
+              <tr>
+                <td>Do not write</td>
+                <td>
+                  Globbed project <code>.cursor/rules/*.mdc</code>. When-to-load
+                  is Pointers in <code>AGENTS.md</code>. (Native always-on house
+                  rules stay in step 1.)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 id="tools">Tools stanza (portable)</h2>
+          <p>
+            Even when Cursor native rules exist, <code>AGENTS.md</code> gets a
+            short Tools block so other clients follow the same defaults:
+          </p>
+          <ul>
+            <li>
+              Library/framework docs: Context7 MCP, not client web search or
+              training memory.
+            </li>
+            <li>
+              Package versions and security: Sonatype MCP before adding or
+              pinning dependencies.
+            </li>
+            <li>GitHub: <code>gh</code> CLI only (no GitHub MCP).</li>
+          </ul>
+
+          <h2 id="precedence">How rules are chosen</h2>
+          <p>
+            Agents must not invent a second style guide, and must not average
+            conflicts. Named golden defaults (WCAG 2.2 AA, design tokens,
+            official language guides, OWASP, AGENTS.md spec) apply only where
+            this project is silent. Details live in
+            <a
+              href="../skills/prepare-project-for-agents/references/golden-rules.md"
+              ><code>golden-rules.md</code></a
+            >.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Wins when</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>User chat</td>
+                <td>Always</td>
+              </tr>
+              <tr>
+                <td>
+                  This project's code, linters, tokens, existing agent files
+                </td>
+                <td>
+                  Taste, architecture, naming, formatting — including when
+                  stricter or more specific than a common default
+                </td>
+              </tr>
+              <tr>
+                <td>Golden default</td>
+                <td>
+                  The project is silent and the rule applies to this stack
+                </td>
+              </tr>
+              <tr>
+                <td>Safety / accessibility floor</td>
+                <td>
+                  Never copy a dangerous or inaccessible habit as the canonical
+                  way
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="prev-step" aria-labelledby="prev-step-heading">
+            <p class="section-label">Step 2 of 2</p>
+            <h2 id="prev-step-heading">Previous step</h2>
+            <p>Prepare the harness — plugins, skills lock, and native rules.</p>
+            <a class="btn" href="harness.html"
+              >Go to step 1 · Prepare the harness</a
+            >
+          </div>
+        </main>
+
+        <aside class="rail" aria-label="Raw files">
+          <h2>Raw files</h2>
+          <ul>
+            <li>
+              <a href="../skills/prepare-project-for-agents/SKILL.md"
+                >SKILL.md</a
+              >
+            </li>
+            <li>
+              <a
+                href="../skills/prepare-project-for-agents/references/instruction-prompt.md"
+                >instruction-prompt.md</a
+              >
+            </li>
+            <li>
+              <a
+                href="../skills/prepare-project-for-agents/references/discovery.md"
+                >discovery.md</a
+              >
+            </li>
+            <li>
+              <a
+                href="../skills/prepare-project-for-agents/references/writing-rules.md"
+                >writing-rules.md</a
+              >
+            </li>
+            <li>
+              <a
+                href="../skills/prepare-project-for-agents/references/golden-rules.md"
+                >golden-rules.md</a
+              >
+            </li>
+            <li>
+              <a href="../skills/prepare-project-for-agents/templates/AGENTS.md"
+                >template AGENTS.md</a
+              >
+            </li>
+            <li>
+              <a href="../skills/prepare-project-for-agents/templates/README.md"
+                >template README.md</a
+              >
+            </li>
+            <li>
+              <a href="../skills/prepare-project-for-agents/templates/report.md"
+                >template report.md</a
+              >
+            </li>
+            <li><a href="../prompts/bootstrap.md">bootstrap.md</a></li>
+          </ul>
+        </aside>
+      </div>
+
+      <section class="agent-hint" id="for-agents">
+        <h2>For coding agents</h2>
+        <ol>
+          <li>Kit root is the parent of <code>pages/</code>.</li>
+          <li>
+            Harness first unless <code>--instructions-only</code>. Skip this
+            whole step on join (already prepared).
+          </li>
+          <li>
+            Read <code>instruction-prompt.md</code> and
+            <code>golden-rules.md</code> before writing <code>AGENTS.md</code>
+            and gap-filling the host README.
+          </li>
+          <li>
+            Include the Tools stanza and a Pointers table (when-editing →
+            helper). Do not write globbed project Cursor
+            <code>.mdc</code> rules. Do not copy <code>golden-rules.md</code> or
+            the full native-rules body into <code>AGENTS.md</code>.
+          </li>
+          <li>
+            If this <code>kit/</code> folder was fetched from GitHub for setup,
+            ask before deleting it (recommended: yes).
+          </li>
+        </ol>
+      </section>
+
+      <footer>
+        <a href="../START_HERE.html">Back to overview</a>. This page must work
+        as a local file.
+      </footer>
+    </div>
+  </body>
+</html>

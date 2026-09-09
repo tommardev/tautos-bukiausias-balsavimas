@@ -1,0 +1,18 @@
+{
+  "plugins": {
+    "cursor-team-kit": {
+      "enabled": true
+    },
+    "context7-plugin": {
+      "enabled": true,
+      "key": true
+    },
+    "sonatype-cursor-plugin": {
+      "enabled": true,
+      "key": true
+    },
+    "modern-web-guidance": {
+      "enabled": true
+    }
+  }
+}

@@ -5,3 +5,6 @@ node_modules/
 .vscode/
 .idea/
 .firebase/
+
+# Installed agent skills (restore with: npx skills experimental_install --yes)
+.agents/skills/

@@ -1,4 +1,4 @@
-# 🤡 Lietuvos / Tautos Bukiausias – Balsavimo Sistema (2026)
+﻿# 🤡 Lietuvos / Tautos Bukiausias - Balsavimo Sistema (2026)
 
 Smagi, moderni ir interaktyvi vieno puslapio balsavimo platforma, įkvėpta naujo TV3 projekto **„Tautos bukiausias“** (vedėjai Mantas Katleris ir Mantas Bartuševičius).
 
@@ -10,7 +10,7 @@ Smagi, moderni ir interaktyvi vieno puslapio balsavimo platforma, įkvėpta nauj
 
 ---
 
-## ⚡ Pagrindinės Savybės
+## 🚀 Pagrindinės Savybės
 
 1. **Privalomas vardo įvedimas**: Kiekvienas balsuojantysis privalo nurodyti savo vardą, kad matytųsi skaidrus audito žurnalas („Kas už ką balsavo“).
 2. **Iki 3 pasirinkimų**: Galima pasirinkti nuo 1 iki 3 kandidatų vienu metu.
@@ -24,7 +24,19 @@ Smagi, moderni ir interaktyvi vieno puslapio balsavimo platforma, įkvėpta nauj
 
 ---
 
-## 🚀 Kaip atnaujinti svetainę (Deploy)
+## 💻 Vietinis Paleidimas (Local Development)
+
+Kadangi tai yra grynas vieno puslapio statinis tinklalapis, jį paleisti vietoje galima bet kokiu statiniu serveriu:
+
+```bash
+npx -y serve .
+```
+
+arba tiesiog atverkite `index.html` savo naršyklėje.
+
+---
+
+## 📦 Kaip atnaujinti svetainę (Deploy)
 
 Norėdami atnaujinti svetainę atlikę pakeitimus, tiesiog paleiskite:
 
@@ -37,3 +49,11 @@ arba:
 ```bash
 npx -y firebase-tools@latest deploy --only hosting
 ```
+
+---
+
+## 🤖 AI Agentinis Programavimas
+
+- Coding agents: `AGENTS.md`.
+- Humans (AI workflow): `AI_CODING_README.md`. Intros: `AI_CODING_LEARN.md`.
+- Naujam komandos nariui klonuotoje saugykloje: atkurti įgūdžius su `npx skills experimental_install --yes`, patikrinti Antigravity MCP serverius (Context7, Sonatype).
