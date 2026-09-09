@@ -1,0 +1,47 @@
+/* ==========================================================================
+   Header Section
+   ========================================================================== */
+
+.app-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.channel-pill {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  background: var(--color-gold-subtle);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 14px;
+}
+
+.show-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.highlight-text {
+  color: var(--color-gold);
+}
+
+.show-subtitle {
+  max-width: 680px;
+  margin: 0 auto;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.show-subtitle strong {
+  color: var(--text-primary);
+}

@@ -10,8 +10,8 @@ Manifests and config files (`firebase.json`, `index.html`) are this project's st
 
 - **Client Runtime:** Modern Evergreen Web Browsers (ES2022+, HTML5, CSS3).
 - **Markup & Templates:** Vanilla HTML5 (`index.html`).
-- **Styling:** Custom CSS3 design system with CSS custom properties (`style.css`), no build step.
-- **Client Logic:** Vanilla JavaScript (`app.js`), modular and zero-bundler.
+- **Styling:** Custom CSS3 design system with CSS custom properties (`styles/tokens.css`, `styles/components/`), imported in `style.css`, no build step.
+- **Client Logic:** Vanilla JavaScript Native ES Modules (`src/main.js`, `src/state/`, `src/services/`, `src/ui/`), modular and zero-bundler.
 - **Celebration Effects:** Canvas Confetti v1.9.3 (`cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js`), loaded via pinned CDN script.
 - **Fonts:** Google Fonts (`Outfit` weights 400–700, `Space Grotesk` weights 500/700).
 
@@ -20,7 +20,7 @@ Manifests and config files (`firebase.json`, `index.html`) are this project's st
 ## Persistence & Cloud Synchronization
 
 - **Shared Cloud Object:** RESTful API Dev object store via `fetch` (`https://api.restful-api.dev/objects/ff808181a067127101a08072620147f6`).
-- **Client Persistence:** Browser `localStorage` key `tautos_bukiausias_v3_state` (`app.js:8`).
+- **Client Persistence:** Browser `localStorage` key `tautos_bukiausias_v3_state` (`src/config/constants.js`).
 
 ---
 

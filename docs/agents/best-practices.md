@@ -9,19 +9,18 @@ Host project standard (`repo:`) wins on taste, architecture, and anything alread
 ## Client Architecture & DOM
 
 ### Canonical
-- Direct DOM queries using `document.getElementById` and `document.querySelector` (`app.js`).
-- Full UI re-render through centralized, idempotent `renderAll()` after state changes (`app.js:357-364`):
+- Direct DOM queries using `document.getElementById` and `document.querySelector`.
+- Full UI re-render through centralized, idempotent `renderAll(state)` triggered by store subscriptions (`src/ui/render.js`):
 ```javascript
-function renderAll() {
-  renderContestants();
-  renderPodium();
-  renderLeaderboard();
-  renderLog();
-  updateSummaryStats();
+export function renderAll(state) {
+  renderLeaderboard(state);
+  renderContestants(state);
+  renderActivity(state);
+  updateDockControls(state);
 }
 ```
-- HTML Living Standard: Keep DOM updates idempotent, escape dynamic text strings before rendering (`escapeHtml()`).
-- Event delegation for dynamically created lists (`contestantsGrid`).
+- HTML Living Standard: Keep DOM updates idempotent, escape dynamic text strings before rendering (`escapeHTML()`).
+- Event delegation and targeted listeners for interactive lists (`contestantsGrid`).
 
 ### Excluded
 - Single Page App frameworks (React, Vue, Angular) — this project is deliberately vanilla HTML/JS/CSS.
@@ -36,16 +35,16 @@ function renderAll() {
 ## State Management & Sync
 
 ### Canonical
-- Single state object `appState` holding contestants, selected candidates (max 3), filter category, and audit log.
-- Cloud sync via RESTful API with local fallback:
+- Single state container in `src/state/store.js` holding contestants, selected candidates (max 3), filter category, search query, and audit log, with subscriber notification on state changes.
+- Cloud sync via RESTful API with local fallback (`src/services/api.js`):
 ```javascript
 const response = await fetch(CLOUD_SYNC_URL, { cache: "no-store" });
 const data = await response.json();
 ```
-- Dual persistence with graceful conflict resolution and offline `localStorage` fallback.
+- Dual persistence with graceful conflict resolution and offline `localStorage` fallback (`src/services/storage.js`).
 
 ### Excluded
-- Complex state management libraries (Redux, MobX, Pinia) — plain object mutation + `renderAll()` is the project standard.
+- Complex state management libraries (Redux, MobX, Pinia) — lightweight single store + `subscribe(renderAll)` is the project standard.
 
 ---
 

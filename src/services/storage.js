@@ -1,0 +1,37 @@
+/**
+ * LocalStorage Persistence Service
+ */
+
+import { LOCAL_STORAGE_KEY } from "../config/constants.js";
+
+/**
+ * Saves relevant state fields to localStorage as offline fallback.
+ * @param {Object} state 
+ */
+export function saveLocalFallback(state) {
+  try {
+    const payload = {
+      votes: state.votes,
+      voterLedger: state.voterLedger,
+      contestants: state.contestants
+    };
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payload));
+  } catch (err) {
+    console.warn("Unable to save state to localStorage:", err);
+  }
+}
+
+/**
+ * Loads cached state from localStorage.
+ * @returns {Object|null}
+ */
+export function loadLocalFallback() {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (err) {
+    console.warn("Unable to parse state from localStorage:", err);
+    return null;
+  }
+}

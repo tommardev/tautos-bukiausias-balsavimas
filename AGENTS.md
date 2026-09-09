@@ -42,8 +42,19 @@ README.md                               Human project README (GitHub-visible)
 AI_CODING_README.md                     Human cheat sheet (workflow, skill cmds)
 AI_CODING_LEARN.md                      Mandatory intros and tutorials
 index.html                              Single-page app markup & layout
-style.css                               Design tokens, animations, responsive layout
-app.js                                  Client state, cloud sync, DOM renderers
+style.css                               Master stylesheet importing styles/ modules
+styles/                                 Modular CSS stylesheets
+  tokens.css                            Design tokens, CSS variables, typography & motion
+  base.css                              CSS reset, base body, app container, utilities
+  components/                           Component styles (header, leaderboard, cards, dock, activity, modal, toast)
+  responsive.css                        Media queries & reduced motion
+src/                                    Modular Vanilla ES2022+ JavaScript
+  main.js                               Bootstrap entrypoint & event controller
+  config/                               Constants and contestant roster data
+  state/                                Reactive single store (appState & subscribers)
+  services/                             Cloud API sync & localStorage fallback
+  ui/                                   UI components & central render coordinator
+  utils/                                DOM and animation effects utilities
 firebase.json                           Firebase Hosting configuration & rewrites
 deploy-firebase.ps1                     PowerShell script for Firebase Hosting deployment
 docs/agents/                            On-demand documentation helpers for agents
@@ -52,11 +63,12 @@ GEMINI.md                               Antigravity native instructions pointer
 ```
 
 **Seams** (where new work plugs in):
-- Contestant roster: `DEFAULT_CONTESTANTS` array in `app.js`
-- State & Data models: `appState` structure in `app.js`
-- Markup & Components: Semantic containers in `index.html`
-- Styles & Tokens: CSS custom properties in `style.css` `:root`
-- Cloud Sync: `fetchCloudState` / `pushCloudState` in `app.js`
+- Contestant roster: `DEFAULT_CONTESTANTS` array in `src/config/contestants.data.js`
+- State & Data models: `state` structure and mutations in `src/state/store.js`
+- Cloud Sync: `fetchCloudState` / `pushCloudState` in `src/services/api.js`
+- UI Rendering: Components in `src/ui/` coordinated by `src/ui/render.js`
+- Styles & Tokens: Design tokens in `styles/tokens.css` and component sheets in `styles/components/`
+- Markup & Containers: Semantic containers in `index.html`
 
 ## Commands
 
@@ -73,9 +85,9 @@ GEMINI.md                               Antigravity native instructions pointer
 
 ## Conventions
 
-- Vanilla ES2022+ JavaScript without a build step or bundler (`repo:` `app.js`).
-- Centralized `renderAll()` pass after modifying `appState` (`repo:` `app.js:357`).
-- All styling driven by `:root` custom properties in `style.css` (`repo:` `style.css:8-37`).
+- Vanilla ES2022+ Native ES Modules without a build step or bundler (`repo:` `src/main.js`).
+- Centralized `renderAll()` pass after modifying state via store subscribers (`repo:` `src/ui/render.js`).
+- All styling driven by `:root` custom properties in `styles/tokens.css`.
 - Lithuanian UI text and show-specific humor preserved in copy and character text (`repo:` `index.html`).
 
 ## Boundaries

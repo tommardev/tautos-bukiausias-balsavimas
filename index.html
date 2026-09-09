@@ -49,7 +49,7 @@
 
       <!-- Horizontal Leaderboard Bars -->
       <div class="leaderboard-list" id="leaderboardList">
-        <!-- Injected dynamically by app.js -->
+        <!-- Injected dynamically by UI components -->
       </div>
     </section>
 
@@ -85,7 +85,7 @@
 
       <!-- Candidates Grid -->
       <div class="contestants-grid" id="contestantsGrid">
-        <!-- Injected dynamically by app.js -->
+        <!-- Injected dynamically by UI components -->
       </div>
 
       <!-- Focused Voting Action Dock -->
@@ -135,7 +135,7 @@
       </div>
 
       <div class="activity-list" id="activityList">
-        <!-- Injected dynamically by app.js -->
+        <!-- Injected dynamically by UI components -->
       </div>
       <div class="empty-activity-msg hidden" id="emptyActivityMsg">
         Balsų kol kas nėra. Būk pirmasis atidavęs balsą!
@@ -198,6 +198,6 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
-  <script src="app.js" defer></script>
+  <script type="module" src="./src/main.js"></script>
 </body>
 </html>

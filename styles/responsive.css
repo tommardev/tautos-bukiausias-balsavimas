@@ -1,0 +1,60 @@
+/* ==========================================================================
+   Accessibility, Reduced Motion & Responsive Breakpoints
+   ========================================================================== */
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .app-container {
+    padding: 20px 14px 70px;
+  }
+
+  .standings-section {
+    padding: 20px 16px;
+  }
+
+  .standings-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-cta-vote {
+    width: 100%;
+  }
+
+  .leaderboard-row {
+    grid-template-columns: 28px 28px 1fr 65px;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .leaderboard-avatar {
+    font-size: 1.2rem;
+  }
+
+  .dock-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dock-status-counter {
+    justify-content: space-between;
+  }
+
+  .btn-submit-vote {
+    width: 100%;
+  }
+}

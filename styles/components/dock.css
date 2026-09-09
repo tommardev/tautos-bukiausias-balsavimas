@@ -1,0 +1,126 @@
+/* ==========================================================================
+   Voting Action Dock (Sticky / Persistent)
+   ========================================================================== */
+
+.voting-dock {
+  position: sticky;
+  bottom: 20px;
+  z-index: 100;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-lg);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.voting-dock.active {
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.dock-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.voter-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 240px;
+}
+
+.dock-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.required-star {
+  color: var(--color-gold);
+}
+
+.voter-input {
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 0.92rem;
+  padding: 9px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  outline: none;
+  width: 100%;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.voter-input:focus {
+  border-color: var(--border-selected);
+}
+
+.voter-input::placeholder {
+  color: var(--text-muted);
+}
+
+.dock-status-counter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.counter-fraction {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-gold);
+}
+
+.counter-fraction span {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.counter-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.counter-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.counter-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.btn-submit-vote {
+  background-color: var(--color-gold);
+  color: #090a0f;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out), opacity var(--duration-fast) var(--ease-out);
+}
+
+.btn-submit-vote:hover:not(:disabled) {
+  background-color: var(--color-gold-hover);
+}
+
+.btn-submit-vote:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-submit-vote:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
