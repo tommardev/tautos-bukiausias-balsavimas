@@ -14,7 +14,9 @@
 }
 
 .toast {
-  background: var(--bg-surface);
+  background: rgba(18, 19, 28, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--text-primary);
   border: 1px solid var(--border-subtle-hover);
   padding: 12px 18px;
@@ -23,8 +25,20 @@
   box-shadow: var(--shadow-lg);
   pointer-events: auto;
   opacity: 1;
-  transform: scale(1);
-  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+  transform: translateY(0) scale(1);
+  transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  animation: toastEnter var(--duration-fast) var(--ease-out) forwards;
+}
+
+@keyframes toastEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .toast.toast-success {

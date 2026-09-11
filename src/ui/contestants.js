@@ -56,8 +56,10 @@ export function renderContestants(state) {
         aria-label="${escapeHTML(c.name)}, ${voteLabel}"
       >
         <div class="card-top">
-          <span class="card-avatar">${c.avatar}</span>
-          <span class="card-check">${isSelected ? '✓' : ''}</span>
+          <div class="card-avatar-pod">
+            <span class="card-avatar">${c.avatar}</span>
+          </div>
+          <span class="card-check" aria-hidden="true">${isSelected ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}</span>
         </div>
         <div class="card-body">
           <div class="card-category-tag">${escapeHTML(c.categoryLabel || 'Kandidatas')}</div>

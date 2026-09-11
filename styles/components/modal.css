@@ -88,11 +88,12 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   outline: none;
-  transition: border-color var(--duration-fast) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .form-input:focus, .form-textarea:focus {
   border-color: var(--border-selected);
+  box-shadow: var(--shadow-focus);
 }
 
 .form-textarea {

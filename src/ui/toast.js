@@ -18,7 +18,7 @@ export function showToast(message, type = "toast-success") {
 
   setTimeout(() => {
     toast.style.opacity = '0';
-    toast.style.transform = 'scale(0.95)';
-    setTimeout(() => toast.remove(), 220);
+    toast.style.transform = 'translateY(6px) scale(0.96)';
+    setTimeout(() => toast.remove(), 180);
   }, 3500);
 }

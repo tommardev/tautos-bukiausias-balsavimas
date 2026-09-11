@@ -6,16 +6,27 @@
   position: sticky;
   bottom: 20px;
   z-index: 100;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  background: rgba(18, 19, 28, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
   padding: 16px 20px;
   box-shadow: var(--shadow-lg);
-  transition: border-color var(--duration-fast) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .voting-dock.active {
-  border-color: rgba(245, 158, 11, 0.4);
+  border-color: rgba(245, 158, 11, 0.45);
+  box-shadow: var(--shadow-lg), 0 0 24px rgba(245, 158, 11, 0.08);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .voting-dock {
+    background: var(--bg-surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 .dock-inner {
@@ -53,11 +64,12 @@
   border-radius: var(--radius-md);
   outline: none;
   width: 100%;
-  transition: border-color var(--duration-fast) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .voter-input:focus {
   border-color: var(--border-selected);
+  box-shadow: var(--shadow-focus);
 }
 
 .voter-input::placeholder {

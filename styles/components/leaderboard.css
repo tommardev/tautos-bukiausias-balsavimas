@@ -116,6 +116,14 @@
   background: rgba(245, 158, 11, 0.04);
 }
 
+.leaderboard-row.rank-2 {
+  border-color: rgba(203, 213, 225, 0.2);
+}
+
+.leaderboard-row.rank-3 {
+  border-color: rgba(234, 88, 12, 0.2);
+}
+
 .leaderboard-rank {
   font-size: 0.85rem;
   font-weight: 700;
@@ -131,7 +139,7 @@
   color: #CBD5E1;
 }
 .leaderboard-row.rank-3 .leaderboard-rank {
-  color: #D97706;
+  color: #EA580C;
 }
 
 .leaderboard-avatar {
@@ -178,9 +186,21 @@
 
 .leaderboard-bar-fill {
   height: 100%;
-  background-color: var(--color-gold);
+  background-color: rgba(148, 163, 184, 0.4);
   border-radius: var(--radius-pill);
   transition: width var(--duration-normal) var(--ease-out);
+}
+
+.leaderboard-row.rank-1 .leaderboard-bar-fill {
+  background-color: var(--color-gold);
+}
+
+.leaderboard-row.rank-2 .leaderboard-bar-fill {
+  background-color: #CBD5E1;
+}
+
+.leaderboard-row.rank-3 .leaderboard-bar-fill {
+  background-color: #EA580C;
 }
 
 .leaderboard-stats {

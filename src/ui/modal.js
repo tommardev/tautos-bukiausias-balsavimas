@@ -62,10 +62,25 @@ export async function handleAddContestantSubmit(e) {
  * Initializes modal dialog event listeners.
  */
 export function initModal() {
+  const modalOverlay = document.getElementById("addContestantModal");
   document.getElementById("openAddModalBtn")?.addEventListener("click", openAddModal);
   document.getElementById("closeModalBtn")?.addEventListener("click", closeAddModal);
   document.getElementById("cancelAddBtn")?.addEventListener("click", closeAddModal);
   document.getElementById("addContestantForm")?.addEventListener("submit", handleAddContestantSubmit);
+
+  // Click outside to dismiss
+  modalOverlay?.addEventListener("click", (e) => {
+    if (e.target === modalOverlay) {
+      closeAddModal();
+    }
+  });
+
+  // Escape key to dismiss
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modalOverlay && !modalOverlay.classList.contains("hidden")) {
+      closeAddModal();
+    }
+  });
 
   // Emoji buttons selector
   document.querySelectorAll(".emoji-btn").forEach(btn => {
