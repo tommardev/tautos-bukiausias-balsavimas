@@ -37,12 +37,23 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ---
 
-## Architectural Principles
+## Architectural Principles (Simple, Fast, No Extra Layers)
 
-This repository follows a strict **zero-build, vanilla web standard**:
-- **Native ES Modules (ES2022+):** Code is modularized under `src/` (`main.js`, `config/`, `state/`, `services/`, `ui/`, `utils/`) without bundlers (no Webpack, Vite, or Babel).
-- **Design Tokens & Modular CSS:** Styling is structured under `styles/` (`tokens.css`, `base.css`, `components/`, `responsive.css`) using CSS custom properties (`:root`).
+This repository follows a strict **zero-build, zero-bloat vanilla web standard**:
+- **Native ES Modules (ES2022+):** Code is modularized under `src/` (`main.js`, `config/`, `state/`, `services/`, `ui/`, `utils/`) running directly in evergreen browsers without bundlers (no Webpack, Vite, Babel, or compilation pipeline).
+- **Design Tokens & Modular CSS:** Styling is structured under `styles/` (`tokens.css`, `base.css`, `components/`, `responsive.css`) using native CSS custom properties (`:root`).
 - **Single Source of Truth:** Centralized state in `src/state/store.js` with idempotent render passes via `src/ui/render.js`.
+- **No Extra Frameworks or Heavy Libraries:** Do not add React, Vue, Svelte, Tailwind, or complex build tooling. Keep it simple and instant to load.
+
+---
+
+## Security & Anti-Tampering Standards
+
+To ensure the public voting system remains robust, trustworthy, and safe against malicious tampering:
+1. **XSS Prevention (Mandatory):** All user-supplied strings (voter names, custom contestant additions, aliases) must pass through `escapeHTML()` before DOM insertion. Never use raw `innerHTML` with unsanitized values.
+2. **Zero Credentials / Secrets:** Never commit `.env` files, Firebase service account keys, private PEMs, or personal tokens. Use `.gitignore` at all times.
+3. **Firestore Schema Integrity:** Any changes to state must conform to the Firestore validation schema in `firestore.rules`. Never introduce unchecked collections or arbitrary write permissions.
+4. **No Production Backdoors:** Never expose mutating administrative or data-wiping functions on the global `window` object in production.
 
 ---
 
@@ -80,11 +91,15 @@ We maintain high design engineering standards (Apple/Linear-grade restraint):
    - `chore:` maintenance tasks
 
 3. **Verify your changes locally:**
-   - Test candidate selection (max 3) and vote submission.
+   - Run JavaScript syntax verification:
+     ```bash
+     npm run test:syntax
+     ```
+   - Test candidate selection (max 3) and vote submission in your browser.
    - Verify Chart.js bar chart and list view switching.
    - Verify cloud sync status and offline `localStorage` fallback.
    - Test responsive layout on both desktop and mobile viewports.
 
 4. **Submit a Pull Request:**
-   - Push your branch and open a PR against `main`.
-   - Complete the PR template checklist.
+   - Push your branch to your fork and open a PR against `master`.
+   - Complete the PR template checklist. Our CI will automatically validate syntax, JSON formatting, and scan for secret leaks.

@@ -30,7 +30,7 @@ const VOTE_COOLDOWN_MS = 5000;
  */
 async function handleVoteSubmit() {
   const voterNameInput = document.getElementById("voterNameInput");
-  const voterName = (voterNameInput?.value || "").trim();
+  const voterName = (voterNameInput?.value || "").trim().slice(0, 40);
 
   if (!voterName || voterName.length < 2) {
     showToast("Įveskite savo vardą balsavimui!", "toast-error");
@@ -176,27 +176,19 @@ function initApp() {
   // 10. Initialize modal handlers
   initModal();
 
-  // 11. Optional developer debug console helper
+  // 11. Developer debug console helper (Strictly restricted to localhost, safe local reset only)
   if (typeof window !== "undefined") {
-    window.__TAUTOS_DEBUG__ = {
-      resetLocal: () => {
-        resetAllData();
-        saveLocalFallback(getState());
-        renderAll(getState());
-        console.log("Local voting state reset.");
-      },
-      resetCloud: async () => {
-        resetAllData();
-        await pushCloudState();
-        renderAll(getState());
-        console.log("Cloud voting state reset.");
-      },
-      cleanOrphanVotes: async () => {
-        await pushCloudState();
-        renderAll(getState());
-        console.log("Orphan votes cleaned from cloud.");
-      }
-    };
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    if (isLocal) {
+      window.__TAUTOS_DEBUG__ = {
+        resetLocal: () => {
+          resetAllData();
+          saveLocalFallback(getState());
+          renderAll(getState());
+          console.log("Local voting state reset.");
+        }
+      };
+    }
   }
 
   // 12. Version tracking badge

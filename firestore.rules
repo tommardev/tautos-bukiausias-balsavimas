@@ -7,16 +7,32 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Helper functions for validating the voting state document
+    function isValidVotingPayload(data) {
+      return data.keys().toSet().hasOnly(['votes', 'customContestants', 'voterLedger', 'updatedAt'])
+        && data.votes is map
+        && data.votes.size() <= 70
+        && data.customContestants is list
+        && data.customContestants.size() <= 50
+        && data.voterLedger is list
+        && data.voterLedger.size() <= 100
+        && data.updatedAt is int
+        && data.updatedAt > 0;
+    }
+
+    // Prevents overwriting with stale timestamps or stripping existing candidate keys
+    function isSafeUpdate(currentDoc, incomingDoc) {
+      return currentDoc == null || (
+        incomingDoc.updatedAt >= currentDoc.data.updatedAt
+        && incomingDoc.votes.keys().toSet().hasAll(currentDoc.data.votes.keys().toSet())
+      );
+    }
+
     // Scoped rules for voting state document
     match /voting/state {
       allow read: if true;
-      allow write: if request.resource.data.keys().toSet().hasOnly(['votes', 'customContestants', 'voterLedger', 'updatedAt'])
-        && request.resource.data.votes is map
-        && request.resource.data.customContestants is list
-        && request.resource.data.customContestants.size() <= 50
-        && request.resource.data.voterLedger is list
-        && request.resource.data.voterLedger.size() <= 100
-        && request.resource.data.updatedAt is int;
+      allow write: if isValidVotingPayload(request.resource.data)
+        && isSafeUpdate(resource, request.resource.data);
     }
   }
 }

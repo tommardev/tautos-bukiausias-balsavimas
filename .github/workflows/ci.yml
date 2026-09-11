@@ -1,0 +1,56 @@
+name: CI & Security Audit
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  validate:
+    name: Validate Code & Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check JavaScript Syntax
+        run: |
+          echo "🔍 Checking JavaScript syntax on all ES modules..."
+          find src/ -name "*.js" -exec node --check {} +
+          echo "✅ All JavaScript files passed syntax verification."
+
+      - name: Validate JSON Files
+        run: |
+          echo "🔍 Validating JSON files..."
+          node -e '
+            const files = ["package.json", "firebase.json", "firestore.indexes.json"];
+            const fs = require("fs");
+            for (const file of files) {
+              try {
+                JSON.parse(fs.readFileSync(file, "utf8"));
+                console.log(`✅ ${file} is valid JSON.`);
+              } catch (e) {
+                console.error(`❌ Invalid JSON in ${file}:`, e.message);
+                process.exit(1);
+              }
+            }
+          '
+
+      - name: Secret Leak Prevention Scan
+        run: |
+          echo "🔍 Scanning for accidental secret or private key leaks..."
+          if grep -rnE "BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY" --exclude-dir=".git" .; then
+            echo "❌ Found potential private key committed in files!"
+            exit 1
+          fi
+          if find . -name "*.pem" -o -name "*.key" -o -name "*serviceAccount*.json" | grep -v "^\./\.git"; then
+            echo "❌ Found sensitive credential file that should be gitignored!"
+            exit 1
+          fi
+          echo "✅ No secrets or private keys detected in repository."

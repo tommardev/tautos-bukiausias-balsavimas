@@ -3,6 +3,8 @@
 [![Version](https://img.shields.io/badge/version-v1.3.1-amber.svg)](https://github.com/tommardev/tautos-bukiausias-balsavimas/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Hosting](https://img.shields.io/badge/hosting-Firebase_Live-orange.svg)](https://balsavimas-vaciukai.web.app)
+[![CI](https://github.com/tommardev/tautos-bukiausias-balsavimas/actions/workflows/ci.yml/badge.svg)](https://github.com/tommardev/tautos-bukiausias-balsavimas/actions)
+[![Security Policy](https://img.shields.io/badge/security-hardened-green.svg)](SECURITY.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 Smagi, moderni ir interaktyvi vieno puslapio atvirojo kodo balsavimo platforma, įkvėpta naujo TV3 projekto **„Tautos bukiausias“** (vedėjai Mantas Katleris ir Mantas Bartuševičius).
@@ -74,7 +76,8 @@ npx -y firebase-tools@latest deploy --only hosting
 - **HTML5 & CSS3:** Semantinis žymėjimas, moduliniai stiliai (`styles/tokens.css`, `styles/components/`, `styles/responsive.css`).
 - **JavaScript (ES2022+):** Gryni vietiniai ES moduliai (`src/main.js`, `src/state/`, `src/services/`, `src/ui/`, `src/utils/`).
 - **Išorinės bibliotekos (CDN):** Chart.js 4.4.7 + chartjs-plugin-datalabels, Canvas Confetti 1.9.3.
-- **Debesis:** RESTful API debesų sinchronizavimas + Firebase Hosting.
+- **Debesis ir Sinchronizacija:** Firebase Cloud Firestore realaus laiko WebSocket sinchronizacija (`firestore.rules`) + Firebase Hosting (`balsavimas-vaciukai`).
+- **Saugumas:** Griežta XSS apsauga (`escapeHTML`), CSP antraštės, apsauga nuo balsų trynimo ir auditavimo žurnalas.
 
 ---
 

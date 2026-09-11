@@ -5,9 +5,10 @@
   "type": "module",
   "main": "src/main.js",
   "scripts": {
-    "start": "npx serve .",
-    "dev": "npx serve .",
-    "deploy": "firebase deploy --only hosting"
+    "start": "npx -y serve .",
+    "dev": "npx -y serve .",
+    "test:syntax": "node --check src/main.js",
+    "deploy": "npx -y firebase-tools@latest deploy --only hosting,firestore:rules"
   },
   "repository": {
     "type": "git",
