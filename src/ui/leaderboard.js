@@ -19,41 +19,6 @@ export function renderLeaderboard(state) {
 
   const totalVotes = Object.values(state.votes).reduce((sum, v) => sum + v, 0) || 1;
 
-  // Toggle visibility of Chart vs List containers based on standingsView
-  const chartContainer = document.getElementById("votesChartContainer");
-  const chartBtn = document.getElementById("viewChartBtn");
-  const listBtn = document.getElementById("viewListBtn");
-
-  const isChart = state.standingsView !== "list";
-
-  if (chartContainer) {
-    if (isChart) {
-      chartContainer.classList.remove("hidden");
-    } else {
-      chartContainer.classList.add("hidden");
-    }
-  }
-
-  if (isChart) {
-    container.classList.add("hidden");
-  } else {
-    container.classList.remove("hidden");
-  }
-
-  if (chartBtn && listBtn) {
-    if (isChart) {
-      chartBtn.classList.add("active");
-      chartBtn.setAttribute("aria-pressed", "true");
-      listBtn.classList.remove("active");
-      listBtn.setAttribute("aria-pressed", "false");
-    } else {
-      chartBtn.classList.remove("active");
-      chartBtn.setAttribute("aria-pressed", "false");
-      listBtn.classList.add("active");
-      listBtn.setAttribute("aria-pressed", "true");
-    }
-  }
-
   container.innerHTML = contestantsWithVotes.map((c, idx) => {
     const rank = idx + 1;
     const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));

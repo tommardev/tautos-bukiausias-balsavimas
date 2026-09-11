@@ -37,9 +37,9 @@ graph TD
 | :--- | :--- | :---: | :---: | :---: |
 | **Batch 1** | Critical Security & Firestore Hardening | 4 | 4 / 4 | `[x]` Completed |
 | **Batch 2** | Concurrency, State & Network Resilience | 4 | 4 / 4 | `[x]` Completed |
-| **Batch 3** | UI Performance & Event Delegation | 2 | 0 / 2 | `[ ]` Pending |
+| **Batch 3** | UI Performance & Event Delegation | 2 | 2 / 2 | `[x]` Completed |
 | **Batch 4** | WCAG 2.1 AA Accessibility & UX Polish | 7 | 0 / 7 | `[ ]` Pending |
-| **Total** | | **17** | **8 / 17** | **47%** |
+| **Total** | | **17** | **10 / 17** | **59%** |
 
 ---
 
@@ -106,17 +106,17 @@ graph TD
 ### Batch 3: UI Performance & Event Delegation
 *Agent Helper Docs:* [`docs/agents/ui-ux.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/docs/agents/ui-ux.md), [`docs/agents/theming.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/docs/agents/theming.md)
 
-- [ ] **Task 3.1: Event Delegation in Contestants Grid**
+- [x] **Task 3.1: Event Delegation in Contestants Grid**
   - **Files:** [`src/ui/contestants.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/contestants.js)
   - **Goal:** Replace per-card `addEventListener` calls with a single delegated click/keydown listener on `#contestantsGrid`.
   - **Verification:** Toggling candidate cards works seamlessly. No listener accumulation.
-  - **Agent Log:**
+  - **Agent Log:** Completed 2026-09-11. Replaced per-card click and keydown listeners with idempotent delegated listeners on #contestantsGrid.
 
-- [ ] **Task 3.2: Search Debounce & Render View Isolation**
+- [x] **Task 3.2: Search Debounce & Render View Isolation**
   - **Files:** [`src/main.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/main.js), [`src/ui/render.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/render.js), [`src/ui/leaderboard.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/leaderboard.js)
   - **Goal:** Debounce search input by 150ms. In `render.js`, only render `renderChart` when `standingsView === "chart"` and `renderLeaderboard` when `standingsView === "list"`. Decouple chart visibility logic from `leaderboard.js`.
-  - **Verification:** Fast typing in search bar triggers only 1 render pass after typing pauses.
-  - **Agent Log:**
+  - **Verification:** Fast typing in search bar triggers only 1 render pass after typing pauses. View switching isolates Chart.js and list renders cleanly.
+  - **Agent Log:** Completed 2026-09-11. Search input debounced by 150ms. View switcher visibility decoupled into render.js; renderChart and renderLeaderboard called conditionally based on active standingsView.
 
 ---
 

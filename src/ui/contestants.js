@@ -18,12 +18,43 @@ export function handleCandidateToggle(id) {
 }
 
 /**
+ * Attaches a single delegated click and keydown listener to the contestants grid.
+ * @param {HTMLElement} grid 
+ */
+function initDelegatedGridListeners(grid) {
+  if (!grid || grid.dataset.delegated === "true") return;
+
+  grid.addEventListener("click", (e) => {
+    const card = e.target.closest(".contestant-card");
+    if (card) {
+      const id = card.getAttribute("data-id");
+      if (id) handleCandidateToggle(id);
+    }
+  });
+
+  grid.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      const card = e.target.closest(".contestant-card");
+      if (card) {
+        e.preventDefault();
+        const id = card.getAttribute("data-id");
+        if (id) handleCandidateToggle(id);
+      }
+    }
+  });
+
+  grid.dataset.delegated = "true";
+}
+
+/**
  * Renders filtered contestant cards into #contestantsGrid.
  * @param {Object} state 
  */
 export function renderContestants(state) {
   const grid = document.getElementById("contestantsGrid");
   if (!grid) return;
+
+  initDelegatedGridListeners(grid);
 
   const query = state.searchQuery.toLowerCase();
   const filtered = state.contestants.filter(c => {
@@ -74,19 +105,4 @@ export function renderContestants(state) {
       </article>
     `;
   }).join("");
-
-  // Attach card selection event listeners
-  grid.querySelectorAll(".contestant-card").forEach(card => {
-    card.addEventListener("click", () => {
-      const id = card.getAttribute("data-id");
-      if (id) handleCandidateToggle(id);
-    });
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        const id = card.getAttribute("data-id");
-        if (id) handleCandidateToggle(id);
-      }
-    });
-  });
 }

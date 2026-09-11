@@ -119,9 +119,13 @@ function initApp() {
     });
   });
 
-  // 7. Search filter input
+  // 7. Search filter input (debounced by 150ms to prevent render cascade on fast typing)
+  let searchDebounceTimer = null;
   document.getElementById("searchInput")?.addEventListener("input", (e) => {
-    setSearchQuery(e.target.value);
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => {
+      setSearchQuery(e.target.value);
+    }, 150);
   });
 
   // 8. View switcher buttons (Chart vs List)
