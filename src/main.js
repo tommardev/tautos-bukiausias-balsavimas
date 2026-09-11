@@ -14,7 +14,7 @@ import {
   resetAllData, 
   hydrateFromLocalStorage 
 } from "./state/store.js";
-import { fetchCloudState, pushCloudState } from "./services/api.js";
+import { fetchCloudState, pushCloudState, initRealtimeCloudSync } from "./services/api.js";
 import { loadLocalFallback, saveLocalFallback } from "./services/storage.js";
 import { renderAll } from "./ui/render.js";
 import { updateDockControls } from "./ui/dock.js";
@@ -64,19 +64,14 @@ function initApp() {
   // 1. Subscribe render coordinator to store updates
   subscribe(renderAll);
 
-  // 2. Hydrate from localStorage fallback then sync with cloud
+  // 2. Hydrate from localStorage fallback immediately for instant first paint
   const localFallback = loadLocalFallback();
   if (localFallback) {
     hydrateFromLocalStorage(localFallback);
   }
-  fetchCloudState();
 
-  // 3. Periodic background quiet cloud sync
-  setInterval(() => {
-    if (!getState().isSyncing) {
-      fetchCloudState();
-    }
-  }, CLOUD_SYNC_INTERVAL_MS);
+  // 3. Connect to live Realtime Cloud Firestore sync (instant push updates across all devices)
+  initRealtimeCloudSync();
 
   // 4. Voter Name input listener
   const voterInput = document.getElementById("voterNameInput");

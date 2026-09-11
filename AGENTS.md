@@ -124,6 +124,6 @@ This file is the index. Helpers are not always-on. Before you edit an area, **Re
 
 ## Gotchas
 
-- Shared cloud sync endpoint: `CLOUD_SYNC_URL` points to `api.restful-api.dev`. Any user can read/write shared state; validate incoming payloads before merging.
-- Firebase deployment path: `firebase.json` specifies `"public": "."` so all non-dot non-ignored root files are published.
+- Shared cloud sync: Native Firebase Cloud Firestore real-time listener (`onSnapshot`) on `balsavimas-vaciukai`. Provides real-time synchronization across all devices without rate limits.
+- Firebase deployment path: `firebase.json` specifies `"public": "."` with Cache-Control headers to ensure immediate client cache busting.
 - Accessibility: Respect `prefers-reduced-motion` for all transitions and confetti celebrations.

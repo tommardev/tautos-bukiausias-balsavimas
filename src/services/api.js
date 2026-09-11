@@ -1,25 +1,91 @@
 /**
- * Cloud Sync API Service (RESTful API Dev Object Storage)
+ * Cloud Sync API Service (Firebase Cloud Firestore Live Synchronization)
  */
 
-import { CLOUD_SYNC_URL } from "../config/constants.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { 
+  getFirestore, 
+  doc, 
+  onSnapshot, 
+  setDoc, 
+  getDoc 
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
 import { getState, mergeCloudData, setSyncing } from "../state/store.js";
 import { saveLocalFallback, loadLocalFallback } from "./storage.js";
 
 /**
- * Fetches latest shared state from the cloud endpoint.
+ * Official Firebase Web configuration for project 'balsavimas-vaciukai'.
+ */
+const FIREBASE_CONFIG = {
+  projectId: "balsavimas-vaciukai",
+  appId: "1:177762418820:web:3fab2a5ca684f38fbd42d1",
+  storageBucket: "balsavimas-vaciukai.firebasestorage.app",
+  apiKey: "AIzaSyCblD0bX7q8BlQjt4HCq2_ax2TCNc6Mp7k",
+  authDomain: "balsavimas-vaciukai.firebaseapp.com",
+  messagingSenderId: "177762418820"
+};
+
+let dbInstance = null;
+let stateDocRef = null;
+
+/**
+ * Lazily initializes and returns the Firestore instance and state document reference.
+ */
+function getFirestoreInstance() {
+  if (!dbInstance) {
+    const app = initializeApp(FIREBASE_CONFIG, "tautos-bukiausias-prod");
+    dbInstance = getFirestore(app);
+    stateDocRef = doc(dbInstance, "voting", "state");
+  }
+  return { db: dbInstance, stateDocRef };
+}
+
+/**
+ * Initializes real-time live synchronization via Firestore onSnapshot.
+ * Any vote cast on any device (phone, desktop, other browsers) pushes updates
+ * in real time (~100ms) without polling.
+ */
+export function initRealtimeCloudSync() {
+  try {
+    const { stateDocRef } = getFirestoreInstance();
+
+    onSnapshot(stateDocRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const cloudData = docSnap.data();
+        if (cloudData) {
+          mergeCloudData(cloudData);
+          saveLocalFallback(getState());
+        }
+      }
+    }, (err) => {
+      console.warn("Firestore live listener encountered an issue, loading local fallback:", err);
+      const fallback = loadLocalFallback();
+      if (fallback) {
+        mergeCloudData(fallback);
+      }
+    });
+  } catch (err) {
+    console.warn("Could not establish Firestore live listener:", err);
+  }
+}
+
+/**
+ * One-off fetch of the latest shared state from Cloud Firestore.
  */
 export async function fetchCloudState() {
   try {
-    const response = await fetch(CLOUD_SYNC_URL, { cache: "no-store" });
-    if (!response.ok) throw new Error("Cloud fetch status: " + response.status);
-    const result = await response.json();
-    if (result && result.data) {
-      mergeCloudData(result.data);
-      saveLocalFallback(getState());
+    const { stateDocRef } = getFirestoreInstance();
+    const docSnap = await getDoc(stateDocRef);
+    if (docSnap.exists()) {
+      const cloudData = docSnap.data();
+      if (cloudData) {
+        mergeCloudData(cloudData);
+        saveLocalFallback(getState());
+      }
     }
   } catch (err) {
-    console.warn("Cloud sync unavailable, loading local fallback:", err);
+    console.warn("Firestore fetch error, loading local fallback:", err);
     const fallback = loadLocalFallback();
     if (fallback) {
       mergeCloudData(fallback);
@@ -28,7 +94,7 @@ export async function fetchCloudState() {
 }
 
 /**
- * Pushes current local state to the cloud endpoint.
+ * Pushes current local state to Cloud Firestore so all connected devices update instantly.
  */
 export async function pushCloudState() {
   const currentState = getState();
@@ -36,22 +102,17 @@ export async function pushCloudState() {
   saveLocalFallback(currentState);
 
   const payload = {
-    name: "Lietuvos_Bukiausias_Sync",
-    data: {
-      votes: currentState.votes,
-      customContestants: currentState.contestants.filter(c => c.category === "custom"),
-      voterLedger: currentState.voterLedger
-    }
+    votes: currentState.votes,
+    customContestants: currentState.contestants.filter(c => c.category === "custom"),
+    voterLedger: currentState.voterLedger,
+    updatedAt: Date.now()
   };
 
   try {
-    await fetch(CLOUD_SYNC_URL, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+    const { stateDocRef } = getFirestoreInstance();
+    await setDoc(stateDocRef, payload, { merge: true });
   } catch (err) {
-    console.warn("Offline state saved locally, failed to push cloud sync:", err);
+    console.warn("Failed to push to Cloud Firestore, local fallback saved:", err);
   } finally {
     setSyncing(false);
   }

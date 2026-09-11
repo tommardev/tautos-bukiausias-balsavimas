@@ -1,6 +1,6 @@
 # 🤡 Lietuvos / Tautos Bukiausias – Balsavimo Sistema (2026)
 
-[![Version](https://img.shields.io/badge/version-v1.2.0-amber.svg)](https://github.com/tommardev/tautos-bukiausias-balsavimas/releases)
+[![Version](https://img.shields.io/badge/version-v1.2.1-amber.svg)](https://github.com/tommardev/tautos-bukiausias-balsavimas/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Hosting](https://img.shields.io/badge/hosting-Firebase_Live-orange.svg)](https://balsavimas-vaciukai.web.app)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -27,9 +27,9 @@ Sukurta draugų kompanijai ir bendruomenei: balsuokite už mėgstamiausius perso
 4. **Naujo kandidato pasiūlymas**: Galimybė akimirksniu įtraukti savo draugą ar kitą žinomą veidą į kandidatų sąrašą per modalinį langą.
 5. **Chart.js rezultatų diagrama ir lyderių lentelė**: Interaktyvi stulpelinė diagrama su neapkarpytomis žymomis bei dinamiška lyderių rikiuotė su procentais ir Top 3 apdovanojimų medaliais.
 6. **Skaidrus audito žurnalas**: Išsamus paskutinių balsų sąrašas su laiko žymomis ir pasirinkimais.
-7. **Debesų sinchronizavimas realiu laiku**: Būsena sinchronizuojama per REST API debesyje su foniniu atnaujinimu bei patikima vietine `localStorage` atsargine kopija esant ryšio trikdžiams.
+7. **Momentinė Firebase Firestore sinchronizacija**: Visi atiduoti balsai realiu laiku per WebSocket'us (~100ms) sinchronizuojami tarp visų telefonų, kompiuterių ir naršyklių be jokių limitų.
 8. **Dizaino inžinerijos kokybė (Emil Kowalski standartas)**: Nulis dirbtinio triukšmo (anti-slop), taktilinis mygtukų atsakas (`:active { transform: scale(0.97) }`), greiti perėjimai (< 220ms) bei prieinamumo palaikymas (`prefers-reduced-motion`).
-9. **Versijos sekimas**: Poraštėje realiu laiku rodoma diegimo versija (`v1.2.0`), leidžianti tiksliai žinoti, kuri versija veikia gamybinėje aplinkoje.
+9. **Versijos sekimas ir talpyklos apsauga**: Poraštėje realiu laiku rodoma diegimo versija (`v1.2.1`), o diegimo taisyklės automatiškai atnaujina naršyklės talpyklą (Cache-Control: no-cache).
 
 ---
 
