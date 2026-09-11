@@ -22,6 +22,8 @@ export function closeAddModal() {
   document.getElementById("addContestantForm")?.reset();
 }
 
+const ALLOWED_EMOJIS = new Set(["🤡", "🥴", "🤓", "🤪", "🤠", "⚡"]);
+
 /**
  * Handles custom candidate form submission.
  * @param {Event} e 
@@ -33,18 +35,20 @@ export async function handleAddContestantSubmit(e) {
   const taglineInput = document.getElementById("newCandidateTagline");
   const emojiInput = document.getElementById("selectedEmoji");
 
-  const name = (nameInput?.value || "").trim();
-  const alias = (aliasInput?.value || "").trim();
-  const tagline = (taglineInput?.value || "").trim();
-  const avatar = emojiInput?.value || "🤡";
+  const name = (nameInput?.value || "").trim().slice(0, 40);
+  const aliasRaw = (aliasInput?.value || "").trim().slice(0, 40);
+  const tagline = (taglineInput?.value || "").trim().slice(0, 100);
+  const rawAvatar = (emojiInput?.value || "").trim();
+  const avatar = ALLOWED_EMOJIS.has(rawAvatar) ? rawAvatar : "🤡";
 
-  if (!name || !alias || !tagline) return;
+  if (!name || !aliasRaw || !tagline) return;
 
+  const alias = aliasRaw.startsWith("„") ? aliasRaw : `„${aliasRaw}“`;
   const newId = "custom_" + Date.now().toString(36);
   const newCandidate = {
     id: newId,
     name,
-    alias: alias.startsWith("„") ? alias : `„${alias}“`,
+    alias,
     tagline,
     avatar,
     category: "custom",

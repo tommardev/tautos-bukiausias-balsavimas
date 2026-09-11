@@ -49,7 +49,7 @@ export function renderContestants(state) {
     return `
       <article 
         class="contestant-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" 
-        data-id="${c.id}"
+        data-id="${escapeHTML(c.id)}"
         tabindex="${isDisabled ? '-1' : '0'}"
         role="button"
         aria-pressed="${isSelected}"
@@ -57,7 +57,7 @@ export function renderContestants(state) {
       >
         <div class="card-top">
           <div class="card-avatar-pod">
-            <span class="card-avatar">${c.avatar}</span>
+            <span class="card-avatar">${escapeHTML(c.avatar)}</span>
           </div>
           <span class="card-check" aria-hidden="true">${isSelected ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}</span>
         </div>

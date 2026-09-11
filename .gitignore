@@ -8,3 +8,9 @@ node_modules/
 
 # Installed agent skills (restore with: npx skills experimental_install --yes)
 .agents/skills/
+
+# Secrets & Credentials
+.env*
+*.pem
+*.key
+*serviceAccount*.json

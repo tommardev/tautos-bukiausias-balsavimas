@@ -134,15 +134,17 @@ function initApp() {
   // 10. Initialize modal handlers
   initModal();
 
-  // 11. Reset data button (Discrete test reset in footer)
-  document.getElementById("resetDataBtn")?.addEventListener("click", () => {
-    if (confirm("Ar tikrai norite atstatyti visus balsus ir pradėti iš naujo?")) {
-      resetAllData();
-      saveLocalFallback(getState());
-      pushCloudState();
-      showToast("Visi balsai sėkmingai atstatyti.", "toast-success");
-    }
-  });
+  // 11. Optional developer debug console helper (local only, never pushes to cloud)
+  if (typeof window !== "undefined") {
+    window.__TAUTOS_DEBUG__ = {
+      resetLocal: () => {
+        resetAllData();
+        saveLocalFallback(getState());
+        renderAll(getState());
+        console.log("Local voting state reset.");
+      }
+    };
+  }
 
   // 12. Version tracking badge
   const versionBadge = document.getElementById("appVersionBadge");

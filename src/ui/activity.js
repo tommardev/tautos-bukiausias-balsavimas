@@ -31,7 +31,7 @@ export function renderActivity(state) {
   listEl.innerHTML = ledger.slice(0, 15).map(item => {
     const candidateChips = item.choices.map(id => {
       const c = state.contestants.find(cand => cand.id === id);
-      return `<span class="choice-chip">${c ? c.avatar + ' ' + escapeHTML(c.name) : id}</span>`;
+      return `<span class="choice-chip">${c ? escapeHTML(c.avatar) + ' ' + escapeHTML(c.name) : escapeHTML(id)}</span>`;
     }).join("");
 
     return `

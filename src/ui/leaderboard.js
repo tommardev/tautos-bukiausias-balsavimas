@@ -62,7 +62,7 @@ export function renderLeaderboard(state) {
     return `
       <div class="leaderboard-row ${rankClass}">
         <span class="leaderboard-rank">#${rank}</span>
-        <span class="leaderboard-avatar">${c.avatar}</span>
+        <span class="leaderboard-avatar">${escapeHTML(c.avatar)}</span>
         <div class="leaderboard-details">
           <div class="leaderboard-names">
             <span class="leaderboard-name">${escapeHTML(c.name)}</span>

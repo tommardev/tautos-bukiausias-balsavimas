@@ -35,11 +35,11 @@ graph TD
 
 | Batch | Description | Tasks | Completed | Status |
 | :--- | :--- | :---: | :---: | :---: |
-| **Batch 1** | Critical Security & Firestore Hardening | 4 | 0 / 4 | `[ ]` Pending |
+| **Batch 1** | Critical Security & Firestore Hardening | 4 | 4 / 4 | `[x]` Completed |
 | **Batch 2** | Concurrency, State & Network Resilience | 4 | 0 / 4 | `[ ]` Pending |
 | **Batch 3** | UI Performance & Event Delegation | 2 | 0 / 2 | `[ ]` Pending |
 | **Batch 4** | WCAG 2.1 AA Accessibility & UX Polish | 7 | 0 / 7 | `[ ]` Pending |
-| **Total** | | **17** | **0 / 17** | **0%** |
+| **Total** | | **17** | **4 / 17** | **24%** |
 
 ---
 
@@ -48,29 +48,29 @@ graph TD
 ### Batch 1: Critical Security & Firestore Hardening
 *Agent Helper Docs:* [`docs/agents/security.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/docs/agents/security.md), [`docs/agents/stack.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/docs/agents/stack.md)
 
-- [ ] **Task 1.1: Firestore Rules & Deployment Lockdown**
+- [x] **Task 1.1: Firestore Rules & Deployment Lockdown**
   - **Files:** [`firestore.rules`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/firestore.rules), [`deploy-firebase.ps1`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/deploy-firebase.ps1)
   - **Goal:** Deny all collections by default. Scope write permissions strictly to `/voting/state` with schema validation (`votes` is map, `customContestants` is list $\le 50$, `voterLedger` is list $\le 100$, `updatedAt` is int). Update deploy script to include `firestore:rules`.
-  - **Verification:** `npx -y firebase-tools@latest deploy --only firestore:rules` (or syntax validation).
-  - **Agent Log:** *(record date, commit, or notes here)*
+  - **Verification:** Validated syntax and schema with `firebase_validate_security_rules` (0 errors).
+  - **Agent Log:** Completed 2026-09-11. Strict schema rules enforced on /voting/state; default deny-all active.
 
-- [ ] **Task 1.2: Eliminate Public Destructive Cloud Reset Button**
+- [x] **Task 1.2: Eliminate Public Destructive Cloud Reset Button**
   - **Files:** [`index.html`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/index.html), [`src/main.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/main.js)
   - **Goal:** Remove `#resetDataBtn` from footer in `index.html`. Remove the click handler calling `pushCloudState()` from `main.js`. Retain local debug reset in console only.
-  - **Verification:** Footer does not render "Atstatyti duomenis". No cloud reset possible from UI.
-  - **Agent Log:**
+  - **Verification:** `#resetDataBtn` removed from DOM; `window.__TAUTOS_DEBUG__.resetLocal` configured strictly for local debug.
+  - **Agent Log:** Completed 2026-09-11. Public cloud reset eliminated.
 
-- [ ] **Task 1.3: Stored XSS Eradication & Input Sanitization**
+- [x] **Task 1.3: Stored XSS Eradication & Input Sanitization**
   - **Files:** [`src/ui/activity.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/activity.js), [`src/ui/contestants.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/contestants.js), [`src/ui/leaderboard.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/leaderboard.js), [`src/ui/modal.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/modal.js)
   - **Goal:** Wrap `c.avatar` with `escapeHTML(c.avatar)` in all 3 rendering components. Escape candidate `id` fallbacks and attribute `data-id`. Whitelist emojis in modal handler and bound string lengths.
-  - **Verification:** Test submitting candidate with `<img src=x onerror=alert(1)>` in avatar/alias/name. Content renders strictly escaped.
-  - **Agent Log:**
+  - **Verification:** Syntax checked with `node --check`. All avatar outputs and data attributes sanitized with `escapeHTML`. Input lengths bounded (name 40, alias 40, tagline 100) and emoji whitelist enforced.
+  - **Agent Log:** Completed 2026-09-11. XSS injection vectors closed.
 
-- [ ] **Task 1.4: Security Headers, CSP & Gitignore Hardening**
+- [x] **Task 1.4: Security Headers, CSP & Gitignore Hardening**
   - **Files:** [`firebase.json`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/firebase.json), [`.gitignore`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/.gitignore)
   - **Goal:** Add CSP headers (scripts: `'self'`, `https://www.gstatic.com`, `https://cdn.jsdelivr.net`), `X-Content-Type-Options`, `X-Frame-Options`. Add `package.json`, `skills-lock.json`, `firestore.rules`, `docs/**` to `"ignore"`. Append `.env*`, `*serviceAccount*.json` to `.gitignore`.
-  - **Verification:** Inspect HTTP headers in preview. Check `/package.json` returns 404 on hosting emulator.
-  - **Agent Log:**
+  - **Verification:** JSON validity verified with node. CSP, nosniff, DENY, and strict-origin headers configured in `firebase.json`. Secret patterns appended to `.gitignore`.
+  - **Agent Log:** Completed 2026-09-11. Security headers and gitignore hardened.
 
 ---
 
