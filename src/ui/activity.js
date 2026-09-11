@@ -29,16 +29,21 @@ export function renderActivity(state) {
   if (emptyMsg) emptyMsg.classList.add("hidden");
 
   listEl.innerHTML = ledger.slice(0, 15).map(item => {
-    const candidateChips = item.choices.map(id => {
+    if (!item || typeof item !== "object") return "";
+    const choices = Array.isArray(item.choices) ? item.choices : [];
+    const candidateChips = choices.map(id => {
       const c = state.contestants.find(cand => cand.id === id);
       return `<span class="choice-chip">${c ? escapeHTML(c.avatar) + ' ' + escapeHTML(c.name) : escapeHTML(id)}</span>`;
     }).join("");
 
+    const voterName = (typeof item.voter === "string" && item.voter.trim()) ? item.voter.trim() : "Balsuotojas";
+    const timeDisplay = (typeof item.timestamp === "string") ? item.timestamp : "";
+
     return `
       <div class="activity-item">
         <div class="activity-voter-info">
-          <span class="activity-time">${escapeHTML(item.timestamp || '')}</span>
-          <span class="activity-voter-name">${escapeHTML(item.voter)}</span>
+          <span class="activity-time">${escapeHTML(timeDisplay)}</span>
+          <span class="activity-voter-name">${escapeHTML(voterName)}</span>
         </div>
         <div class="activity-choices">
           ${candidateChips}

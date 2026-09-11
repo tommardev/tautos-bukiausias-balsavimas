@@ -3,7 +3,7 @@
  */
 
 import { addCustomContestant } from "../state/store.js";
-import { pushCloudState } from "../services/api.js";
+import { addCustomContestantToCloud } from "../services/api.js";
 import { showToast } from "./toast.js";
 
 let previousActiveElement = null;
@@ -71,7 +71,7 @@ export async function handleAddContestantSubmit(e) {
   closeAddModal();
   showToast(`${name} įtrauktas į kandidatų sąrašą!`, "toast-success");
 
-  await pushCloudState();
+  await addCustomContestantToCloud(newCandidate);
 }
 
 /**

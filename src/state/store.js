@@ -103,7 +103,15 @@ export function setStandingsView(view) {
   }
 }
 
-let lastLocalVoteTime = 0;
+const inFlightVotes = [];
+
+function makeVoteSignature(entry) {
+  if (!entry || typeof entry !== "object") return "";
+  const voter = (entry.voter || "").trim();
+  const timestamp = (entry.timestamp || "").trim();
+  const choices = Array.isArray(entry.choices) ? [...entry.choices].sort().join(",") : "";
+  return `${voter}_${timestamp}_${choices}`;
+}
 
 /**
  * Records a new vote submission.
@@ -117,13 +125,14 @@ export function recordVote({ voter, choices, timestamp }) {
     state.votes[id] = (state.votes[id] || 0) + 1;
   });
 
-  lastLocalVoteTime = Date.now();
-
-  state.voterLedger.push({
+  const voteEntry = {
     voter,
     choices,
     timestamp
-  });
+  };
+
+  inFlightVotes.push(voteEntry);
+  state.voterLedger.push(voteEntry);
 
   state.selectedCandidates.clear();
   notify();
@@ -181,15 +190,13 @@ export function mergeCloudData(cloudData) {
   // 2. Vote Counts: Only merge votes for valid, recognized contestants
   if (cloudData.votes && typeof cloudData.votes === "object") {
     const validIds = new Set(state.contestants.map(c => c.id));
-    const serverTimestamp = Number(cloudData.updatedAt) || 0;
-    // If incoming cloud snapshot is older than a vote cast locally in-flight, preserve the local increment
-    const isLocalVoteInFlight = lastLocalVoteTime > 0 && serverTimestamp > 0 && serverTimestamp < lastLocalVoteTime;
+    const hasInFlight = inFlightVotes.length > 0;
 
     Object.entries(cloudData.votes).forEach(([id, count]) => {
-      if (!validIds.has(id)) return; // Reject orphan / invalid keys like "1"
+      if (!validIds.has(id)) return; // Reject orphan / invalid keys
       const serverVal = Number(count) || 0;
       const localVal = state.votes[id] || 0;
-      const targetVal = isLocalVoteInFlight ? Math.max(localVal, serverVal) : serverVal;
+      const targetVal = hasInFlight ? Math.max(localVal, serverVal) : serverVal;
       if (state.votes[id] !== targetVal) {
         state.votes[id] = targetVal;
         changed = true;
@@ -214,44 +221,30 @@ export function mergeCloudData(cloudData) {
     }
   });
 
-  // 3. Voter Ledger: Deduplicate entries by unique signature (voter_timestamp_choices)
+  // 3. Voter Ledger: Cloud Firestore is canonical source of truth.
+  // Replaces stale local cache with clean server ledger while preserving in-flight session submissions.
   if (Array.isArray(cloudData.voterLedger)) {
-    // If cloud data cleared the ledger (and no local vote is currently in-flight)
-    if (cloudData.voterLedger.length === 0 && lastLocalVoteTime === 0) {
-      if (state.voterLedger.length > 0) {
-        state.voterLedger = [];
-        changed = true;
+    const validCloudEntries = cloudData.voterLedger.filter(entry =>
+      entry && typeof entry === "object" && typeof entry.voter === "string" && Array.isArray(entry.choices)
+    );
+
+    const cloudSignatures = new Set(validCloudEntries.map(makeVoteSignature));
+
+    // Reconcile and prune any in-flight votes that are now confirmed in the cloud ledger
+    for (let i = inFlightVotes.length - 1; i >= 0; i--) {
+      if (cloudSignatures.has(makeVoteSignature(inFlightVotes[i]))) {
+        inFlightVotes.splice(i, 1);
       }
-    } else {
-      const makeSignature = (entry) => {
-        if (!entry || typeof entry !== "object") return "";
-        const voter = entry.voter || "";
-        const timestamp = entry.timestamp || "";
-        const choices = Array.isArray(entry.choices) ? [...entry.choices].sort().join(",") : "";
-        return `${voter}_${timestamp}_${choices}`;
-      };
+    }
 
-      const seenSignatures = new Set();
-      const combinedLedger = [];
+    // Retain only active, unconfirmed votes from this session on top of cloud entries
+    const activeUnconfirmed = inFlightVotes.filter(v => !cloudSignatures.has(makeVoteSignature(v)));
+    const boundedLedger = [...validCloudEntries, ...activeUnconfirmed].slice(-100);
 
-      // Prioritize preserving both local entries and incoming cloud entries without duplication
-      [...state.voterLedger, ...cloudData.voterLedger].forEach(entry => {
-        if (entry && typeof entry === "object") {
-          const sig = makeSignature(entry);
-          if (sig && !seenSignatures.has(sig)) {
-            seenSignatures.add(sig);
-            combinedLedger.push(entry);
-          }
-        }
-      });
-
-      // Enforce Firestore schema bounds (max 100 entries)
-      const boundedLedger = combinedLedger.slice(-100);
-      if (boundedLedger.length !== state.voterLedger.length || 
-          JSON.stringify(boundedLedger) !== JSON.stringify(state.voterLedger)) {
-        state.voterLedger = boundedLedger;
-        changed = true;
-      }
+    if (boundedLedger.length !== state.voterLedger.length || 
+        JSON.stringify(boundedLedger) !== JSON.stringify(state.voterLedger)) {
+      state.voterLedger = boundedLedger;
+      changed = true;
     }
   }
 
@@ -318,7 +311,7 @@ export function hydrateFromLocalStorage(fallback) {
  * Resets all votes and voter ledger to initial clean state.
  */
 export function resetAllData() {
-  lastLocalVoteTime = 0;
+  inFlightVotes.length = 0;
   state.votes = {};
   DEFAULT_CONTESTANTS.forEach(c => {
     state.votes[c.id] = 0;

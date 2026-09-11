@@ -38,7 +38,8 @@ async function loadFirebaseModules() {
       getFirestore: firestoreMod.getFirestore,
       doc: firestoreMod.doc,
       onSnapshot: firestoreMod.onSnapshot,
-      setDoc: firestoreMod.setDoc
+      setDoc: firestoreMod.setDoc,
+      runTransaction: firestoreMod.runTransaction
     };
     return firebaseModules;
   } catch (err) {
@@ -109,6 +110,137 @@ export async function initRealtimeCloudSync() {
 }
 
 /**
+ * Atomically submits a vote to Cloud Firestore using a transaction.
+ * Reads the latest server state, increments the votes for selected choices,
+ * appends the new entry to voterLedger (max 100 entries), and updates the document.
+ * This guarantees multi-device concurrency without dropping votes or resurrecting stale cache.
+ * @param {Object} param0
+ * @param {string} param0.voter
+ * @param {string[]} param0.choices
+ * @param {string} param0.timestamp
+ */
+export async function submitVoteToCloud({ voter, choices, timestamp }) {
+  const currentState = getState();
+  saveLocalFallback(currentState);
+
+  const newEntry = {
+    voter,
+    choices,
+    timestamp
+  };
+
+  try {
+    const instance = await getFirestoreInstance();
+    if (!instance) {
+      console.warn("Submit vote to cloud skipped (offline or SDK unreachable). Local state preserved.");
+      return;
+    }
+
+    const { db, stateDocRef: docRef, modules } = instance;
+
+    if (typeof modules.runTransaction === "function") {
+      await modules.runTransaction(db, async (transaction) => {
+        const docSnap = await transaction.get(docRef);
+        if (!docSnap.exists()) {
+          // Initialize state document if it doesn't exist
+          const validIds = new Set(currentState.contestants.map(c => c.id));
+          const cleanVotes = {};
+          validIds.forEach(id => {
+            cleanVotes[id] = currentState.votes[id] || 0;
+          });
+          choices.forEach(id => {
+            if (validIds.has(id)) {
+              cleanVotes[id] = (cleanVotes[id] || 0) + 1;
+            }
+          });
+          transaction.set(docRef, {
+            votes: cleanVotes,
+            customContestants: currentState.contestants.filter(c => c.category === "custom"),
+            voterLedger: [newEntry],
+            updatedAt: Date.now()
+          });
+          return;
+        }
+
+        const data = docSnap.data() || {};
+        const serverVotes = { ...(data.votes || {}) };
+        choices.forEach(id => {
+          serverVotes[id] = (Number(serverVotes[id]) || 0) + 1;
+        });
+
+        const currentLedger = Array.isArray(data.voterLedger) ? data.voterLedger : [];
+        const updatedLedger = [...currentLedger, newEntry].slice(-100);
+
+        transaction.set(docRef, {
+          votes: serverVotes,
+          customContestants: Array.isArray(data.customContestants) ? data.customContestants : [],
+          voterLedger: updatedLedger,
+          updatedAt: Date.now()
+        });
+      });
+      return;
+    }
+  } catch (err) {
+    console.warn("Transaction failed or unsupported, falling back to pushCloudState:", err);
+  }
+
+  // Fallback to pushCloudState if transaction fails or is unsupported
+  await pushCloudState();
+}
+
+/**
+ * Atomically adds a custom contestant to Cloud Firestore.
+ * @param {Object} contestant 
+ */
+export async function addCustomContestantToCloud(contestant) {
+  const currentState = getState();
+  saveLocalFallback(currentState);
+
+  try {
+    const instance = await getFirestoreInstance();
+    if (!instance) {
+      console.warn("Add custom contestant skipped (offline). Local state preserved.");
+      return;
+    }
+
+    const { db, stateDocRef: docRef, modules } = instance;
+
+    if (typeof modules.runTransaction === "function") {
+      await modules.runTransaction(db, async (transaction) => {
+        const docSnap = await transaction.get(docRef);
+        if (!docSnap.exists()) {
+          await pushCloudState();
+          return;
+        }
+
+        const data = docSnap.data() || {};
+        const serverCustoms = Array.isArray(data.customContestants) ? [...data.customContestants] : [];
+        if (!serverCustoms.some(c => c && c.id === contestant.id)) {
+          serverCustoms.push(contestant);
+        }
+
+        const serverVotes = { ...(data.votes || {}) };
+        if (serverVotes[contestant.id] === undefined) {
+          serverVotes[contestant.id] = 1;
+        }
+
+        transaction.set(docRef, {
+          votes: serverVotes,
+          customContestants: serverCustoms.slice(-50),
+          voterLedger: Array.isArray(data.voterLedger) ? data.voterLedger : [],
+          updatedAt: Date.now()
+        });
+      });
+      return;
+    }
+  } catch (err) {
+    console.warn("Transaction for custom contestant failed, falling back to pushCloudState:", err);
+  }
+
+  await pushCloudState();
+}
+
+/**
  * Pushes current local state to Cloud Firestore so all connected devices update instantly.
  */
 export async function pushCloudState() {
@@ -151,3 +283,4 @@ if (typeof window !== "undefined") {
     await pushCloudState();
   });
 }
+

@@ -14,8 +14,8 @@ import {
   resetAllData, 
   hydrateFromLocalStorage 
 } from "./state/store.js";
-import { pushCloudState, initRealtimeCloudSync } from "./services/api.js";
-import { loadLocalFallback, saveLocalFallback } from "./services/storage.js";
+import { pushCloudState, submitVoteToCloud, initRealtimeCloudSync } from "./services/api.js";
+import { loadLocalFallback, saveLocalFallback, purgeLegacyStorageKeys } from "./services/storage.js";
 import { renderAll } from "./ui/render.js";
 import { updateDockControls } from "./ui/dock.js";
 import { initModal } from "./ui/modal.js";
@@ -75,7 +75,11 @@ async function handleVoteSubmit() {
   showToast(`Ačiū, ${voterName}! Tavo balsas sėkmingai užfiksuotas.`, "toast-success");
 
   try {
-    await pushCloudState();
+    await submitVoteToCloud({
+      voter: voterName,
+      choices: selectedIds,
+      timestamp: timeStr
+    });
   } finally {
     if (submitBtn) {
       submitBtn.textContent = originalBtnText;
@@ -88,10 +92,13 @@ async function handleVoteSubmit() {
  * Initializes the application once the DOM is ready.
  */
 function initApp() {
-  // 1. Subscribe render coordinator to store updates
+  // 1. Purge legacy localStorage keys from older versions
+  purgeLegacyStorageKeys();
+
+  // 2. Subscribe render coordinator to store updates
   subscribe(renderAll);
 
-  // 2. Hydrate from localStorage fallback immediately for instant first paint
+  // 3. Hydrate from localStorage fallback immediately for instant first paint
   const localFallback = loadLocalFallback();
   if (localFallback) {
     hydrateFromLocalStorage(localFallback);

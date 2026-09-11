@@ -35,3 +35,26 @@ export function loadLocalFallback() {
     return null;
   }
 }
+
+/**
+ * Purges obsolete localStorage keys from previous builds to prevent ghost data resurrecting.
+ */
+export function purgeLegacyStorageKeys() {
+  const legacyKeys = [
+    "tautos_bukiausias_v3_state",
+    "tautos_bukiausias_v2_state",
+    "tautos_bukiausias_state_v1",
+    "tautos_bukiausias_voting_v1"
+  ];
+
+  legacyKeys.forEach(key => {
+    try {
+      if (localStorage.getItem(key) !== null) {
+        localStorage.removeItem(key);
+      }
+    } catch {
+      // Ignore security errors in restricted sandbox contexts
+    }
+  });
+}
+
