@@ -17,7 +17,7 @@ export function renderLeaderboard(state) {
     voteCount: state.votes[c.id] || 0
   })).sort((a, b) => b.voteCount - a.voteCount);
 
-  const totalVotes = Object.values(state.votes).reduce((sum, v) => sum + v, 0) || 1;
+  const totalVotes = contestantsWithVotes.reduce((sum, c) => sum + c.voteCount, 0) || 1;
 
   container.innerHTML = contestantsWithVotes.map((c, idx) => {
     const rank = idx + 1;

@@ -12,6 +12,12 @@
       "firestore.indexes.json",
       "docs/**",
       "TASK_TRACKER.md",
+      "**/*.env*",
+      "**/*.pem",
+      "**/*.key",
+      "**/*service-account*.json",
+      "**/*firebase-adminsdk*.json",
+      "**/*credentials*.json",
       "**/.*",
       "**/node_modules/**"
     ],

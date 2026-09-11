@@ -143,9 +143,42 @@ export function mergeCloudData(cloudData) {
   if (!cloudData || typeof cloudData !== "object") return;
   let changed = false;
 
-  // 1. Vote Counts: Use Math.max to prevent concurrent votes in-flight from being dropped
+  // 1. Custom Contestants: Validate schema and uniqueness before adding
+  // Process custom contestants FIRST so newly arrived candidates are recognized when merging votes
+  if (Array.isArray(cloudData.customContestants)) {
+    cloudData.customContestants.forEach(customC => {
+      if (
+        customC &&
+        typeof customC === "object" &&
+        typeof customC.id === "string" &&
+        typeof customC.name === "string" &&
+        typeof customC.alias === "string" &&
+        typeof customC.tagline === "string" &&
+        typeof customC.avatar === "string"
+      ) {
+        if (!state.contestants.some(c => c.id === customC.id)) {
+          state.contestants.push({
+            id: customC.id,
+            name: customC.name,
+            alias: customC.alias,
+            tagline: customC.tagline,
+            avatar: customC.avatar,
+            category: "custom"
+          });
+          if (state.votes[customC.id] === undefined) {
+            state.votes[customC.id] = 1;
+          }
+          changed = true;
+        }
+      }
+    });
+  }
+
+  // 2. Vote Counts: Only merge votes for valid, recognized contestants
   if (cloudData.votes && typeof cloudData.votes === "object") {
+    const validIds = new Set(state.contestants.map(c => c.id));
     Object.entries(cloudData.votes).forEach(([id, count]) => {
+      if (!validIds.has(id)) return; // Reject orphan / invalid keys like "1"
       const serverVal = Number(count) || 0;
       const localVal = state.votes[id] || 0;
       const mergedVal = Math.max(localVal, serverVal);
@@ -156,7 +189,16 @@ export function mergeCloudData(cloudData) {
     });
   }
 
-  // 2. Voter Ledger: Deduplicate entries by unique signature (voter_timestamp_choices)
+  // Purge any orphan / invalid keys from state.votes
+  const validIds = new Set(state.contestants.map(c => c.id));
+  Object.keys(state.votes).forEach(key => {
+    if (!validIds.has(key)) {
+      delete state.votes[key];
+      changed = true;
+    }
+  });
+
+  // 3. Voter Ledger: Deduplicate entries by unique signature (voter_timestamp_choices)
   if (Array.isArray(cloudData.voterLedger)) {
     const makeSignature = (entry) => {
       if (!entry || typeof entry !== "object") return "";
@@ -189,36 +231,6 @@ export function mergeCloudData(cloudData) {
     }
   }
 
-  // 3. Custom Contestants: Validate schema and uniqueness before adding
-  if (Array.isArray(cloudData.customContestants)) {
-    cloudData.customContestants.forEach(customC => {
-      if (
-        customC &&
-        typeof customC === "object" &&
-        typeof customC.id === "string" &&
-        typeof customC.name === "string" &&
-        typeof customC.alias === "string" &&
-        typeof customC.tagline === "string" &&
-        typeof customC.avatar === "string"
-      ) {
-        if (!state.contestants.some(c => c.id === customC.id)) {
-          state.contestants.push({
-            id: customC.id,
-            name: customC.name,
-            alias: customC.alias,
-            tagline: customC.tagline,
-            avatar: customC.avatar,
-            category: "custom"
-          });
-          if (state.votes[customC.id] === undefined) {
-            state.votes[customC.id] = 1;
-          }
-          changed = true;
-        }
-      }
-    });
-  }
-
   if (changed) {
     notify();
   }
@@ -232,22 +244,7 @@ export function hydrateFromLocalStorage(fallback) {
   if (!fallback || typeof fallback !== "object") return;
   let changed = false;
 
-  if (fallback.votes && typeof fallback.votes === "object") {
-    Object.entries(fallback.votes).forEach(([id, count]) => {
-      const storedCount = Number(count) || 0;
-      if (storedCount > (state.votes[id] || 0)) {
-        state.votes[id] = storedCount;
-        changed = true;
-      }
-    });
-  }
-
-  if (Array.isArray(fallback.voterLedger) && fallback.voterLedger.length > 0) {
-    state.voterLedger = fallback.voterLedger.slice(-100);
-    changed = true;
-  }
-
-  // Retain DEFAULT_CONTESTANTS as base; only restore user-proposed custom contestants
+  // 1. Retain DEFAULT_CONTESTANTS as base; restore user-proposed custom contestants FIRST
   if (Array.isArray(fallback.contestants)) {
     const savedCustoms = fallback.contestants.filter(c => c && c.category === "custom");
     savedCustoms.forEach(customC => {
@@ -256,6 +253,34 @@ export function hydrateFromLocalStorage(fallback) {
         changed = true;
       }
     });
+  }
+
+  // 2. Hydrate votes only for recognized contestants
+  if (fallback.votes && typeof fallback.votes === "object") {
+    const validIds = new Set(state.contestants.map(c => c.id));
+    Object.entries(fallback.votes).forEach(([id, count]) => {
+      if (!validIds.has(id)) return; // Ignore orphan keys
+      const storedCount = Number(count) || 0;
+      if (storedCount > (state.votes[id] || 0)) {
+        state.votes[id] = storedCount;
+        changed = true;
+      }
+    });
+  }
+
+  // Purge any orphan keys from state.votes
+  const validIds = new Set(state.contestants.map(c => c.id));
+  Object.keys(state.votes).forEach(key => {
+    if (!validIds.has(key)) {
+      delete state.votes[key];
+      changed = true;
+    }
+  });
+
+  // 3. Voter ledger
+  if (Array.isArray(fallback.voterLedger) && fallback.voterLedger.length > 0) {
+    state.voterLedger = fallback.voterLedger.slice(-100);
+    changed = true;
   }
 
   if (changed) {

@@ -169,7 +169,7 @@ function initApp() {
   // 10. Initialize modal handlers
   initModal();
 
-  // 11. Optional developer debug console helper (local only, never pushes to cloud)
+  // 11. Optional developer debug console helper
   if (typeof window !== "undefined") {
     window.__TAUTOS_DEBUG__ = {
       resetLocal: () => {
@@ -177,6 +177,17 @@ function initApp() {
         saveLocalFallback(getState());
         renderAll(getState());
         console.log("Local voting state reset.");
+      },
+      resetCloud: async () => {
+        resetAllData();
+        await pushCloudState();
+        renderAll(getState());
+        console.log("Cloud voting state reset.");
+      },
+      cleanOrphanVotes: async () => {
+        await pushCloudState();
+        renderAll(getState());
+        console.log("Orphan votes cleaned from cloud.");
       }
     };
   }

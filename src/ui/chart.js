@@ -34,7 +34,7 @@ export function renderChart(state) {
     voteCount: state.votes[c.id] || 0
   })).sort((a, b) => b.voteCount - a.voteCount);
 
-  const totalVotes = Object.values(state.votes).reduce((sum, v) => sum + v, 0) || 0;
+  const totalVotes = contestantsWithVotes.reduce((sum, c) => sum + c.voteCount, 0);
   const maxVotes = Math.max(...contestantsWithVotes.map(c => c.voteCount), 0);
 
   const leader = contestantsWithVotes[0];
@@ -67,7 +67,19 @@ export function renderChart(state) {
     if (totalEl) totalEl.textContent = totalVotes;
   }
 
-  if (!canvas || typeof window.Chart === "undefined") return;
+  if (!canvas) return;
+
+  if (typeof window.Chart === "undefined") {
+    // If Chart.js script is still evaluating, attach load listener to render as soon as ready
+    const chartScript = document.querySelector('script[src*="chart.umd.min.js"]');
+    if (chartScript && !chartScript.dataset.listenerAttached) {
+      chartScript.dataset.listenerAttached = "true";
+      chartScript.addEventListener("load", () => {
+        renderChart(state);
+      }, { once: true });
+    }
+    return;
+  }
 
   // Labels: emoji + short name
   const labels = contestantsWithVotes.map(c => `${c.avatar} ${formatShortName(c.name)}`);

@@ -14,3 +14,8 @@ node_modules/
 *.pem
 *.key
 *serviceAccount*.json
+*service-account*.json
+*-firebase-adminsdk-*.json
+*credentials*.json
+client_secret*.json
+

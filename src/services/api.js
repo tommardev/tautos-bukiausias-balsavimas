@@ -115,8 +115,15 @@ export async function pushCloudState() {
   const currentState = getState();
   saveLocalFallback(currentState);
 
+  // Sanitize votes to only include known contestants
+  const validIds = new Set(currentState.contestants.map(c => c.id));
+  const cleanVotes = {};
+  validIds.forEach(id => {
+    cleanVotes[id] = currentState.votes[id] || 0;
+  });
+
   const payload = {
-    votes: currentState.votes,
+    votes: cleanVotes,
     customContestants: currentState.contestants.filter(c => c.category === "custom"),
     voterLedger: currentState.voterLedger,
     updatedAt: Date.now()
@@ -129,7 +136,8 @@ export async function pushCloudState() {
       return;
     }
 
-    await instance.modules.setDoc(instance.stateDocRef, payload, { merge: true });
+    // Set doc without { merge: true } to ensure orphan/legacy keys are cleanly expunged
+    await instance.modules.setDoc(instance.stateDocRef, payload);
   } catch (err) {
     console.warn("Failed to push to Cloud Firestore, local fallback saved:", err);
   }
