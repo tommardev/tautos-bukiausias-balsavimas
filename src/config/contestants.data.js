@@ -131,24 +131,20 @@ export const DEFAULT_CONTESTANTS = [
 ];
 
 export const INITIAL_VOTES = {
-  oksana: 6,
-  ausra: 5,
-  simona: 7,
-  danas: 3,
-  zilvinas: 4,
-  ineta: 2,
-  ironvytas: 5,
-  gabrielius: 3,
-  agne: 2,
-  kaniusonis: 2,
-  joana: 2,
-  rumsas: 6,
-  katleris: 3,
-  bartusevicius: 4
+  oksana: 0,
+  ausra: 0,
+  simona: 0,
+  danas: 0,
+  zilvinas: 0,
+  ineta: 0,
+  ironvytas: 0,
+  gabrielius: 0,
+  agne: 0,
+  kaniusonis: 0,
+  joana: 0,
+  rumsas: 0,
+  katleris: 0,
+  bartusevicius: 0
 };
 
-export const INITIAL_VOTER_LEDGER = [
-  { voter: "Mantas K.", choices: ["oksana", "rumsas", "simona"], timestamp: "11:30" },
-  { voter: "Karolis", choices: ["simona", "ausra", "ironvytas"], timestamp: "12:15" },
-  { voter: "Monika", choices: ["oksana", "zilvinas", "gabrielius"], timestamp: "12:40" }
-];
+export const INITIAL_VOTER_LEDGER = [];

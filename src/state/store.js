@@ -103,6 +103,8 @@ export function setStandingsView(view) {
   }
 }
 
+let lastLocalVoteTime = 0;
+
 /**
  * Records a new vote submission.
  * @param {Object} param0 
@@ -114,6 +116,8 @@ export function recordVote({ voter, choices, timestamp }) {
   choices.forEach(id => {
     state.votes[id] = (state.votes[id] || 0) + 1;
   });
+
+  lastLocalVoteTime = Date.now();
 
   state.voterLedger.push({
     voter,
@@ -177,13 +181,25 @@ export function mergeCloudData(cloudData) {
   // 2. Vote Counts: Only merge votes for valid, recognized contestants
   if (cloudData.votes && typeof cloudData.votes === "object") {
     const validIds = new Set(state.contestants.map(c => c.id));
+    const serverTimestamp = Number(cloudData.updatedAt) || 0;
+    // If incoming cloud snapshot is older than a vote cast locally in-flight, preserve the local increment
+    const isLocalVoteInFlight = lastLocalVoteTime > 0 && serverTimestamp > 0 && serverTimestamp < lastLocalVoteTime;
+
     Object.entries(cloudData.votes).forEach(([id, count]) => {
       if (!validIds.has(id)) return; // Reject orphan / invalid keys like "1"
       const serverVal = Number(count) || 0;
       const localVal = state.votes[id] || 0;
-      const mergedVal = Math.max(localVal, serverVal);
-      if (state.votes[id] !== mergedVal) {
-        state.votes[id] = mergedVal;
+      const targetVal = isLocalVoteInFlight ? Math.max(localVal, serverVal) : serverVal;
+      if (state.votes[id] !== targetVal) {
+        state.votes[id] = targetVal;
+        changed = true;
+      }
+    });
+
+    // Ensure all valid contestants exist in state.votes
+    validIds.forEach(id => {
+      if (state.votes[id] === undefined) {
+        state.votes[id] = Number(cloudData.votes[id]) || 0;
         changed = true;
       }
     });
@@ -261,7 +277,7 @@ export function hydrateFromLocalStorage(fallback) {
     Object.entries(fallback.votes).forEach(([id, count]) => {
       if (!validIds.has(id)) return; // Ignore orphan keys
       const storedCount = Number(count) || 0;
-      if (storedCount > (state.votes[id] || 0)) {
+      if (state.votes[id] !== storedCount) {
         state.votes[id] = storedCount;
         changed = true;
       }
@@ -292,6 +308,7 @@ export function hydrateFromLocalStorage(fallback) {
  * Resets all votes and voter ledger to initial clean state.
  */
 export function resetAllData() {
+  lastLocalVoteTime = 0;
   state.votes = {};
   DEFAULT_CONTESTANTS.forEach(c => {
     state.votes[c.id] = 0;
