@@ -19,6 +19,7 @@
   border-bottom: 1px solid var(--border-subtle);
 }
 
+.activity-title h2,
 .activity-title h3 {
   font-size: 1.1rem;
   font-weight: 700;

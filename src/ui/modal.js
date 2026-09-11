@@ -6,11 +6,16 @@ import { addCustomContestant } from "../state/store.js";
 import { pushCloudState } from "../services/api.js";
 import { showToast } from "./toast.js";
 
+let previousActiveElement = null;
+
 /**
  * Opens the add candidate modal.
  */
 export function openAddModal() {
-  document.getElementById("addContestantModal")?.classList.remove("hidden");
+  previousActiveElement = document.activeElement;
+  const modal = document.getElementById("addContestantModal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
   document.getElementById("newCandidateName")?.focus();
 }
 
@@ -18,8 +23,15 @@ export function openAddModal() {
  * Closes the add candidate modal and resets the form.
  */
 export function closeAddModal() {
-  document.getElementById("addContestantModal")?.classList.add("hidden");
+  const modal = document.getElementById("addContestantModal");
+  if (!modal) return;
+  modal.classList.add("hidden");
   document.getElementById("addContestantForm")?.reset();
+  if (previousActiveElement && typeof previousActiveElement.focus === "function") {
+    previousActiveElement.focus();
+  } else {
+    document.getElementById("openAddModalBtn")?.focus();
+  }
 }
 
 const ALLOWED_EMOJIS = new Set(["🤡", "🥴", "🤓", "🤪", "🤠", "⚡"]);
@@ -83,6 +95,31 @@ export function initModal() {
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && modalOverlay && !modalOverlay.classList.contains("hidden")) {
       closeAddModal();
+    }
+  });
+
+  // Accessible keyboard Tab trap inside modal dialog
+  modalOverlay?.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+    const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusable = Array.from(modalOverlay.querySelectorAll(focusableSelectors)).filter(
+      el => !el.disabled && el.offsetParent !== null
+    );
+    if (focusable.length === 0) return;
+
+    const firstEl = focusable[0];
+    const lastEl = focusable[focusable.length - 1];
+
+    if (e.shiftKey) {
+      if (document.activeElement === firstEl) {
+        e.preventDefault();
+        lastEl.focus();
+      }
+    } else {
+      if (document.activeElement === lastEl) {
+        e.preventDefault();
+        firstEl.focus();
+      }
     }
   });
 

@@ -4,7 +4,7 @@
  * Built according to Emil Kowalski & Karpathy simplicity standards.
  */
 
-import { escapeHTML } from "../utils/dom.js";
+import { escapeHTML, formatVotesLt } from "../utils/dom.js";
 
 let chartInstance = null;
 
@@ -39,7 +39,7 @@ export function renderChart(state) {
 
   const leader = contestantsWithVotes[0];
   const leaderLabel = totalVotes > 0 && leader && leader.voteCount > 0
-    ? `Dabartinis lyderis: <strong>${escapeHTML(leader.name)}</strong> (${leader.voteCount} ${leader.voteCount === 1 ? 'balsas' : 'balsai'})`
+    ? `Dabartinis lyderis: <strong>${escapeHTML(leader.name)}</strong> (${formatVotesLt(leader.voteCount)})`
     : "Balsavimas atidarytas • Atiduokite savo balsą žemiau";
 
   // Check if wrapper markup already exists
@@ -89,6 +89,8 @@ export function renderChart(state) {
   });
 
   const yHeadroom = Math.max(maxVotes + (maxVotes > 10 ? 3 : 2), 4);
+  const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const animDuration = prefersReducedMotion ? 0 : 220;
 
   // If chart already exists, update data smoothly
   if (chartInstance) {
@@ -97,6 +99,7 @@ export function renderChart(state) {
     chartInstance.data.datasets[0].backgroundColor = bgColors;
     chartInstance.data.datasets[0].borderColor = borderColors;
     chartInstance.options.scales.y.suggestedMax = yHeadroom;
+    chartInstance.options.animation.duration = animDuration;
     chartInstance.update();
     return;
   }
@@ -133,7 +136,7 @@ export function renderChart(state) {
       responsive: true,
       maintainAspectRatio: false,
       animation: {
-        duration: 220,
+        duration: animDuration,
         easing: "easeOutQuart"
       },
       layout: {

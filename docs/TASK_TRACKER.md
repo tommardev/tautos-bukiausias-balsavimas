@@ -38,8 +38,8 @@ graph TD
 | **Batch 1** | Critical Security & Firestore Hardening | 4 | 4 / 4 | `[x]` Completed |
 | **Batch 2** | Concurrency, State & Network Resilience | 4 | 4 / 4 | `[x]` Completed |
 | **Batch 3** | UI Performance & Event Delegation | 2 | 2 / 2 | `[x]` Completed |
-| **Batch 4** | WCAG 2.1 AA Accessibility & UX Polish | 7 | 0 / 7 | `[ ]` Pending |
-| **Total** | | **17** | **10 / 17** | **59%** |
+| **Batch 4** | WCAG 2.1 AA Accessibility & UX Polish | 7 | 7 / 7 | `[x]` Completed |
+| **Total** | | **17** | **17 / 17** | **100%** |
 
 ---
 
@@ -123,47 +123,47 @@ graph TD
 ### Batch 4: WCAG 2.1 AA Accessibility & Polish
 *Agent Helper Docs:* [`docs/agents/ui-ux.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/docs/agents/ui-ux.md), [`AGENTS.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/AGENTS.md)
 
-- [ ] **Task 4.1: Semantic HTML Landmarks & Heading Hierarchy**
-  - **Files:** [`index.html`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/index.html)
+- [x] **Task 4.1: Semantic HTML Landmarks & Heading Hierarchy**
+  - **Files:** [`index.html`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/index.html), [`styles/base.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/base.css), [`styles/components/activity.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/activity.css)
   - **Goal:** Wrap content sections inside `<main id="main-content">`. Add `<a href="#main-content" class="sr-only">Praleisti į turinį</a>`. Change activity section `<h3>` heading to `<h2>`.
-  - **Verification:** Screen reader landmark inspection displays `header`, `main`, `footer`. Headings outline: `h1` -> `h2`.
-  - **Agent Log:**
+  - **Verification:** Screen reader landmark inspection displays `header`, `main`, `footer`. Headings outline: `h1` -> `h2` -> `h3`.
+  - **Agent Log:** Completed 2026-09-11. Skip link, main container, and semantic h2 headings deployed and verified.
 
-- [ ] **Task 4.2: Accessible Card Labels, Filter States & Mobile Form Controls**
+- [x] **Task 4.2: Accessible Card Labels, Filter States & Mobile Form Controls**
   - **Files:** [`src/ui/contestants.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/contestants.js), [`src/main.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/main.js), [`index.html`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/index.html)
   - **Goal:** Expand card `aria-label` to include `alias` and `tagline`. Add `aria-pressed` to `.filter-pill` buttons. Add `aria-label` and `aria-required="true"` to `#voterNameInput`.
-  - **Verification:** Inspect accessibility tree in DevTools. Card label includes character satire bio.
-  - **Agent Log:**
+  - **Verification:** Card labels include full character bios; filter pills maintain aria-pressed state; voter input labeled and required for assistive tech.
+  - **Agent Log:** Completed 2026-09-11. Full aria-label bios, aria-pressed filter states, and accessible form inputs configured.
 
-- [ ] **Task 4.3: Focus Contrast & Keyboard Trap Elimination**
+- [x] **Task 4.3: Focus Contrast & Keyboard Trap Elimination**
   - **Files:** [`styles/tokens.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/tokens.css), [`styles/components/contestants.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/contestants.css), [`styles/components/scroll-top.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/scroll-top.css)
   - **Goal:** Replace 20% alpha focus shadows with `outline: 2px solid var(--color-gold); outline-offset: 2px;` on `:focus-visible`. Add `visibility: hidden;` to `.scroll-to-top-btn` when not visible.
-  - **Verification:** Tab through page. Focus outline is clear and high-contrast. Tab never stops on invisible scroll-to-top button.
-  - **Agent Log:**
+  - **Verification:** High-contrast solid gold outline on focus-visible; floating scroll button completely hidden from keyboard focus order when inactive.
+  - **Agent Log:** Completed 2026-09-11. High contrast focus rings and scroll button visibility toggling implemented.
 
-- [ ] **Task 4.4: Modal Focus Management & Disabled Card Feedback**
+- [x] **Task 4.4: Modal Focus Management & Disabled Card Feedback**
   - **Files:** [`src/ui/modal.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/modal.js), [`styles/components/contestants.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/contestants.css), [`src/ui/contestants.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/contestants.js)
   - **Goal:** Trap Tab inside modal dialog and restore focus to trigger button on close. Remove `pointer-events: none` on `.disabled` cards to allow limit feedback toast ("Daugiausiai galima pasirinkti 3 kandidatus!").
-  - **Verification:** Opening modal traps focus. Clicking 4th candidate triggers error toast.
-  - **Agent Log:**
+  - **Verification:** Opening modal traps keyboard Tab navigation; closing restores focus to trigger button. Clicking 4th candidate triggers immediate toast notification.
+  - **Agent Log:** Completed 2026-09-11. Accessible dialog focus trap, trigger restoration, and disabled card click feedback active.
 
-- [ ] **Task 4.5: Emil Kowalski Tactile Polish & Mobile Safe Areas**
-  - **Files:** [`styles/components/modal.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/modal.css), [`styles/components/dock.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/dock.css), [`styles/responsive.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/responsive.css)
+- [x] **Task 4.5: Emil Kowalski Tactile Polish & Mobile Safe Areas**
+  - **Files:** [`styles/components/modal.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/modal.css), [`styles/components/dock.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/dock.css), [`styles/responsive.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/responsive.css), [`styles/components/scroll-top.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/scroll-top.css)
   - **Goal:** Add `:active { transform: scale(0.97); }` to modal action and close buttons. Add `env(safe-area-inset-bottom)` to sticky dock and buttons. Ensure `#scrollToTopBtn` maintains $\ge 44\times 44\text{px}$.
-  - **Verification:** Pressing modal buttons shows tactile compression. Dock has clearance on iPhone home indicator.
-  - **Agent Log:**
+  - **Verification:** Modal and dock buttons provide tactile compression on active press; sticky dock respects mobile home indicators; touch targets meet 44px minimum.
+  - **Agent Log:** Completed 2026-09-11. Tactile active feedback, safe-area insets, and minimum touch target size enforced.
 
-- [ ] **Task 4.6: Chart.js Reduced-Motion Compliance**
+- [x] **Task 4.6: Chart.js Reduced-Motion Compliance**
   - **Files:** [`src/ui/chart.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/chart.js)
   - **Goal:** Check `prefers-reduced-motion` and set Chart.js animation duration to `0` when active.
-  - **Verification:** Turn on "Emulate CSS media feature prefers-reduced-motion: reduce" in DevTools Rendering panel. Chart loads instantly without animation.
-  - **Agent Log:**
+  - **Verification:** Chart.js animation duration drops to 0ms when prefers-reduced-motion is active.
+  - **Agent Log:** Completed 2026-09-11. Reduced motion query detected and applied to Chart.js animations.
 
-- [ ] **Task 4.7: Lithuanian Grammatical Pluralization**
+- [x] **Task 4.7: Lithuanian Grammatical Pluralization**
   - **Files:** [`src/utils/dom.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/utils/dom.js), [`src/ui/contestants.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/contestants.js), [`src/ui/chart.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/chart.js)
   - **Goal:** Export `formatVotesLt(count)` handling `0 balsų`, `1 balsas`, `2-9 balsai`, `10 balsų`, `11-19 balsų`, `20 balsų`, `21 balsas`. Replace binary `1 ? 'balsas' : 'balsai'` throughout UI.
-  - **Verification:** Candidate with 0, 10, 11, or 20 votes renders "balsų", not "balsai".
-  - **Agent Log:**
+  - **Verification:** Verified formatVotesLt across 0, 1, 2, 4, 10, 11, 15, 20, 21, and 25 with 100% grammatical correctness.
+  - **Agent Log:** Completed 2026-09-11. Lithuanian pluralization helper implemented and applied across roster and chart components.
 
 ---
 

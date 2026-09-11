@@ -2,7 +2,7 @@
  * Contestants Roster Grid Component
  */
 
-import { escapeHTML } from "../utils/dom.js";
+import { escapeHTML, formatVotesLt } from "../utils/dom.js";
 import { toggleCandidateSelection } from "../state/store.js";
 import { showToast } from "./toast.js";
 
@@ -75,16 +75,16 @@ export function renderContestants(state) {
     const isSelected = state.selectedCandidates.has(c.id);
     const isDisabled = !isSelected && isMaxReached;
     const voteCount = state.votes[c.id] || 0;
-    const voteLabel = `${voteCount} ${voteCount === 1 ? 'balsas' : 'balsai'}`;
+    const voteLabel = formatVotesLt(voteCount);
 
     return `
       <article 
         class="contestant-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" 
         data-id="${escapeHTML(c.id)}"
-        tabindex="${isDisabled ? '-1' : '0'}"
+        tabindex="0"
         role="button"
         aria-pressed="${isSelected}"
-        aria-label="${escapeHTML(c.name)}, ${voteLabel}"
+        aria-label="${escapeHTML(c.name)} (${escapeHTML(c.alias)}) – ${escapeHTML(c.tagline)}. ${voteLabel}"
       >
         <div class="card-top">
           <div class="card-avatar-pod">

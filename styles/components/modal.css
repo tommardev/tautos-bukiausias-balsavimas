@@ -59,11 +59,15 @@
   line-height: 1;
   padding: 4px;
   border-radius: var(--radius-sm);
-  transition: color var(--duration-fast) var(--ease-out);
+  transition: color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 
 .modal-close-btn:hover {
   color: var(--text-primary);
+}
+
+.modal-close-btn:active {
+  transform: scale(0.97);
 }
 
 .form-group {
@@ -114,7 +118,11 @@
   font-size: 1.3rem;
   padding: 6px 12px;
   cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.emoji-btn:active {
+  transform: scale(0.97);
 }
 
 .emoji-btn.active {
@@ -138,6 +146,11 @@
   font-family: var(--font-main);
   font-size: 0.88rem;
   cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.btn-modal-cancel:active {
+  transform: scale(0.97);
 }
 
 .btn-modal-submit {
@@ -150,9 +163,13 @@
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-out);
+  transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 
 .btn-modal-submit:hover {
   background: var(--color-gold-hover);
+}
+
+.btn-modal-submit:active {
+  transform: scale(0.97);
 }

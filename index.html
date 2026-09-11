@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="style.css?v=1.2.1">
 </head>
 <body>
+  <a href="#main-content" class="sr-only">Praleisti į turinį</a>
 
   <div class="app-container">
 
@@ -42,8 +43,10 @@
       </p>
     </header>
 
-    <!-- Top Section: Live Standings / Vote Chart -->
-    <section class="standings-section" id="standingsSection">
+    <main id="main-content">
+
+      <!-- Top Section: Live Standings / Vote Chart -->
+      <section class="standings-section" id="standingsSection">
       <div class="standings-header">
         <div class="standings-title-group">
           <h2>
@@ -105,10 +108,10 @@
       <!-- Filter & Search Toolbar -->
       <div class="roster-toolbar">
         <div class="filter-pills" id="categoryFilters">
-          <button type="button" class="filter-pill active" data-category="all">Visi (<span id="totalContestantsCount">14</span>)</button>
-          <button type="button" class="filter-pill" data-category="pupil">Mokiniai</button>
-          <button type="button" class="filter-pill" data-category="teacher">Mokytojai</button>
-          <button type="button" class="filter-pill" data-category="custom">Pasiūlyti</button>
+          <button type="button" class="filter-pill active" data-category="all" aria-pressed="true">Visi (<span id="totalContestantsCount">14</span>)</button>
+          <button type="button" class="filter-pill" data-category="pupil" aria-pressed="false">Mokiniai</button>
+          <button type="button" class="filter-pill" data-category="teacher" aria-pressed="false">Mokytojai</button>
+          <button type="button" class="filter-pill" data-category="custom" aria-pressed="false">Pasiūlyti</button>
         </div>
 
         <div class="toolbar-actions">
@@ -145,6 +148,8 @@
               placeholder="Įrašyk savo vardą..." 
               autocomplete="name"
               maxlength="40"
+              aria-label="Tavo vardas ar pravardė"
+              aria-required="true"
             />
           </div>
 
@@ -170,7 +175,7 @@
     <section class="activity-section" id="activitySection">
       <div class="activity-header">
         <div class="activity-title">
-          <h3>Paskutiniai balsai</h3>
+          <h2>Paskutiniai balsai</h2>
           <p>Skaidrus atiduotų balsų žurnalas</p>
         </div>
         <span class="activity-count" id="totalVotersBadge">Balsavo: 0</span>
@@ -183,6 +188,8 @@
         Balsų kol kas nėra. Būk pirmasis atidavęs balsą!
       </div>
     </section>
+
+    </main>
 
     <!-- Footer -->
     <footer class="app-footer">

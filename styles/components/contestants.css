@@ -143,9 +143,9 @@
 }
 
 .contestant-card:focus-visible {
-  outline: none;
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
   border-color: var(--border-selected);
-  box-shadow: var(--shadow-focus);
 }
 
 @media (hover: hover) {
@@ -172,7 +172,6 @@
 .contestant-card.disabled {
   opacity: 0.45;
   cursor: not-allowed;
-  pointer-events: none;
 }
 
 .card-top {

@@ -112,8 +112,12 @@ function initApp() {
   // 6. Category filter pills
   document.querySelectorAll(".filter-pill").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".filter-pill").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".filter-pill").forEach(b => {
+        b.classList.remove("active");
+        b.setAttribute("aria-pressed", "false");
+      });
       btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
       const category = btn.getAttribute("data-category") || "all";
       setFilter(category);
     });
