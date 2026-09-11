@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Hosting](https://img.shields.io/badge/hosting-Firebase_Live-orange.svg)](https://balsavimas-vaciukai.web.app)
 [![CI](https://github.com/tommardev/tautos-bukiausias-balsavimas/actions/workflows/ci.yml/badge.svg)](https://github.com/tommardev/tautos-bukiausias-balsavimas/actions)
+[![CodeQL](https://github.com/tommardev/tautos-bukiausias-balsavimas/actions/workflows/codeql.yml/badge.svg)](https://github.com/tommardev/tautos-bukiausias-balsavimas/actions/workflows/codeql.yml)
 [![Security Policy](https://img.shields.io/badge/security-hardened-green.svg)](SECURITY.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
