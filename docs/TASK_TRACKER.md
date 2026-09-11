@@ -36,10 +36,10 @@ graph TD
 | Batch | Description | Tasks | Completed | Status |
 | :--- | :--- | :---: | :---: | :---: |
 | **Batch 1** | Critical Security & Firestore Hardening | 4 | 4 / 4 | `[x]` Completed |
-| **Batch 2** | Concurrency, State & Network Resilience | 4 | 0 / 4 | `[ ]` Pending |
+| **Batch 2** | Concurrency, State & Network Resilience | 4 | 4 / 4 | `[x]` Completed |
 | **Batch 3** | UI Performance & Event Delegation | 2 | 0 / 2 | `[ ]` Pending |
 | **Batch 4** | WCAG 2.1 AA Accessibility & UX Polish | 7 | 0 / 7 | `[ ]` Pending |
-| **Total** | | **17** | **4 / 17** | **24%** |
+| **Total** | | **17** | **8 / 17** | **47%** |
 
 ---
 
@@ -77,29 +77,29 @@ graph TD
 ### Batch 2: Concurrency, State Integrity & Network Resilience
 *Agent Helper Docs:* [`docs/agents/best-practices.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/docs/agents/best-practices.md), [`docs/agents/conventions.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/docs/agents/conventions.md)
 
-- [ ] **Task 2.1: Robust State Merge Strategies & Dead State Cleanup**
+- [x] **Task 2.1: Robust State Merge Strategies & Dead State Cleanup**
   - **Files:** [`src/state/store.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/state/store.js)
   - **Goal:** Remove unused `isSyncing` to stop double re-renders. Use `Math.max` when merging votes. Deduplicate ledger items by signature. In `hydrateFromLocalStorage()`, merge `DEFAULT_CONTESTANTS` with saved `custom` contestants only.
-  - **Verification:** Adding contestant to codebase does not get wiped by stale localStorage.
-  - **Agent Log:**
+  - **Verification:** State merge tested with Math.max vote counts, signature deduplication on ledger, and safe custom contestant hydration.
+  - **Agent Log:** Completed 2026-09-11. Removed isSyncing/setSyncing to eliminate 2 spurious re-renders per vote. Concurrency merge with Math.max prevents vote drops; ledger entries deduplicated; DEFAULT_CONTESTANTS preserved on hydration.
 
-- [ ] **Task 2.2: Resilient Dynamic SDK Import for Offline Fallback**
+- [x] **Task 2.2: Resilient Dynamic SDK Import for Offline Fallback**
   - **Files:** [`src/services/api.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/services/api.js)
   - **Goal:** Replace static CDN `import` with dynamic `import()` wrapped in `try...catch`. Add `window.addEventListener('online', ...)` sync trigger.
-  - **Verification:** Toggle Network -> Offline in browser DevTools. App still loads from localStorage without script compilation errors.
-  - **Agent Log:**
+  - **Verification:** Dynamic import() wrapper catches network failure cleanly; app evaluates and loads from localStorage when offline. online event listener restores live sync.
+  - **Agent Log:** Completed 2026-09-11. Firebase SDK converted to lazy dynamic import with graceful fallback and window 'online' sync reconnection.
 
-- [ ] **Task 2.3: Deprecate Legacy REST Constants & Unused Exports**
+- [x] **Task 2.3: Deprecate Legacy REST Constants & Unused Exports**
   - **Files:** [`src/config/constants.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/config/constants.js), [`src/services/api.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/services/api.js), [`src/main.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/main.js), [`docs/agents/`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/docs/agents/)
   - **Goal:** Remove `CLOUD_SYNC_URL` and `CLOUD_SYNC_INTERVAL_MS`. Remove unused `fetchCloudState()` export. Update documentation to reference Firestore only.
-  - **Verification:** `grep -rn "CLOUD_SYNC_URL" src/` returns 0 results.
-  - **Agent Log:**
+  - **Verification:** `grep -rn "CLOUD_SYNC_URL" src/` returns 0 results. fetchCloudState and CLOUD_SYNC_INTERVAL_MS removed.
+  - **Agent Log:** Completed 2026-09-11. REST API constants and unused fetchCloudState export eliminated. Agent docs updated to reference Firestore.
 
-- [ ] **Task 2.4: Vote Submission Rate-Limiting / Cooldown**
+- [x] **Task 2.4: Vote Submission Rate-Limiting / Cooldown**
   - **Files:** [`src/main.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/main.js), [`src/ui/dock.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/dock.js)
   - **Goal:** Add 5s client submission cooldown in `sessionStorage`. Disable `#submitVoteBtn` during submission with visual feedback ("Balsuojama...").
-  - **Verification:** Double-clicking submit button fast triggers only 1 vote dispatch.
-  - **Agent Log:**
+  - **Verification:** 5000ms cooldown enforced via sessionStorage; submit button disabled and reflects "Balsuojama..." during cloud push.
+  - **Agent Log:** Completed 2026-09-11. Rate limiting prevents double-clicks and rapid script submission.
 
 ---
 

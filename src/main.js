@@ -3,18 +3,18 @@
  * Main Application Bootstrap & Controller (ES Module)
  */
 
-import { CLOUD_SYNC_INTERVAL_MS, APP_VERSION } from "./config/constants.js";
+import { APP_VERSION } from "./config/constants.js";
 import { 
   getState, 
   subscribe, 
   setFilter, 
   setSearchQuery, 
-  setStandingsView,
+  setStandingsView, 
   recordVote, 
   resetAllData, 
   hydrateFromLocalStorage 
 } from "./state/store.js";
-import { fetchCloudState, pushCloudState, initRealtimeCloudSync } from "./services/api.js";
+import { pushCloudState, initRealtimeCloudSync } from "./services/api.js";
 import { loadLocalFallback, saveLocalFallback } from "./services/storage.js";
 import { renderAll } from "./ui/render.js";
 import { updateDockControls } from "./ui/dock.js";
@@ -22,8 +22,11 @@ import { initModal } from "./ui/modal.js";
 import { showToast } from "./ui/toast.js";
 import { triggerConfetti } from "./utils/effects.js";
 
+/** Cooldown duration between vote submissions in milliseconds (5s) */
+const VOTE_COOLDOWN_MS = 5000;
+
 /**
- * Handles the vote submission workflow.
+ * Handles the vote submission workflow with cooldown and double-click prevention.
  */
 async function handleVoteSubmit() {
   const voterNameInput = document.getElementById("voterNameInput");
@@ -41,9 +44,25 @@ async function handleVoteSubmit() {
     return;
   }
 
+  // Rate limiting check: prevent rapid submissions or accidental double clicks
+  const lastVoteTimestamp = Number(sessionStorage.getItem("tautos_last_vote_timestamp")) || 0;
+  const now = Date.now();
+  if (now - lastVoteTimestamp < VOTE_COOLDOWN_MS) {
+    const remainingSec = Math.ceil((VOTE_COOLDOWN_MS - (now - lastVoteTimestamp)) / 1000);
+    showToast(`Prašome palaukti ${remainingSec} sek. prieš kitą balsavimą!`, "toast-error");
+    return;
+  }
+
+  const submitBtn = document.getElementById("submitVoteBtn");
+  const originalBtnText = submitBtn ? submitBtn.textContent : "Balsuoti";
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Balsuojama...";
+  }
+
   const selectedIds = Array.from(state.selectedCandidates);
-  const now = new Date();
-  const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+  const nowDate = new Date();
+  const timeStr = `${nowDate.getHours().toString().padStart(2, '0')}:${nowDate.getMinutes().toString().padStart(2, '0')}`;
 
   recordVote({
     voter: voterName,
@@ -51,10 +70,18 @@ async function handleVoteSubmit() {
     timestamp: timeStr
   });
 
+  sessionStorage.setItem("tautos_last_vote_timestamp", String(Date.now()));
   triggerConfetti();
   showToast(`Ačiū, ${voterName}! Tavo balsas sėkmingai užfiksuotas.`, "toast-success");
 
-  await pushCloudState();
+  try {
+    await pushCloudState();
+  } finally {
+    if (submitBtn) {
+      submitBtn.textContent = originalBtnText;
+    }
+    updateDockControls(getState());
+  }
 }
 
 /**

@@ -19,8 +19,8 @@ Manifests and config files (`firebase.json`, `index.html`) are this project's st
 
 ## Persistence & Cloud Synchronization
 
-- **Shared Cloud Object:** RESTful API Dev object store via `fetch` (`https://api.restful-api.dev/objects/ff808181a067127101a08072620147f6`).
-- **Client Persistence:** Browser `localStorage` key `tautos_bukiausias_v3_state` (`src/config/constants.js`).
+- **Shared Cloud State:** Firebase Cloud Firestore live listener (`onSnapshot` on document `/voting/state`) for real-time bi-directional sync without polling.
+- **Client Persistence:** Browser `localStorage` key `tautos_bukiausias_v3_state` (`src/config/constants.js`) with dynamic SDK import fallback.
 
 ---
 

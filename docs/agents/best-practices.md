@@ -36,10 +36,12 @@ export function renderAll(state) {
 
 ### Canonical
 - Single state container in `src/state/store.js` holding contestants, selected candidates (max 3), filter category, search query, and audit log, with subscriber notification on state changes.
-- Cloud sync via RESTful API with local fallback (`src/services/api.js`):
+- Real-time cloud sync via Firebase Cloud Firestore (`src/services/api.js`):
 ```javascript
-const response = await fetch(CLOUD_SYNC_URL, { cache: "no-store" });
-const data = await response.json();
+const { stateDocRef, modules } = await getFirestoreInstance();
+modules.onSnapshot(stateDocRef, (docSnap) => {
+  if (docSnap.exists()) mergeCloudData(docSnap.data());
+});
 ```
 - Dual persistence with graceful conflict resolution and offline `localStorage` fallback (`src/services/storage.js`).
 

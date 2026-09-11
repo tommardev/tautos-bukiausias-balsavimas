@@ -28,4 +28,4 @@ We take the security of **Tautos Bukiausias** seriously. If you discover a secur
 
 - **XSS Prevention:** All user-supplied inputs (voter names, custom contestant additions, aliases) are strictly sanitized via `escapeHTML()` before DOM insertion.
 - **No Third-Party Tracker Cookies:** The application operates without tracker cookies, authentication cookies, or third-party analytics pixels.
-- **Public Cloud Sync:** The application syncs state to a shared public endpoint (`api.restful-api.dev`). Do not submit sensitive, private, or confidential information through voter names or candidate bios.
+- **Cloud Sync Security:** Shared voting state is synchronized in real time via Firebase Cloud Firestore (`/voting/state`) and locked down with schema-validating `firestore.rules`. Anonymous visitors cannot inject arbitrary collections or write out-of-schema documents. Do not submit sensitive, private, or confidential information through voter names or candidate bios.

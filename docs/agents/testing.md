@@ -31,9 +31,9 @@ Load before verifying changes.
    - Verify the submitted vote appears in the "Kas už ką balsavo" audit table with timestamp, voter name, and selected candidates.
 
 4. **Cloud Synchronization:**
-   - Click "Atnaujinti" (`manualSyncBtn`).
-   - Verify request to `CLOUD_SYNC_URL` completes successfully and status indicator displays "Sinchronizuota".
-   - Test offline fallback by disabling network in DevTools and verifying votes persist to `localStorage`.
+   - Verify real-time updates across multiple tabs or browsers via Firestore live listener.
+   - Test offline fallback by disabling network in DevTools (Offline mode) and verifying votes persist to `localStorage`.
+   - Verify that reconnecting the network flushes pending state to Firestore.
 
 5. **Responsiveness & Accessibility:**
    - Test viewports: 375px (mobile), 768px (tablet), 1280px (desktop).

@@ -11,8 +11,8 @@ How new code should look, where it goes, and the quality bar it must meet. Load 
 ## Naming and Layout
 
 - **Modular project layout:** Root entry files: `index.html`, `style.css`, `firebase.json`, `deploy-firebase.ps1`; Modular directories: `src/` (ES2022+ modules: `config/`, `state/`, `services/`, `ui/`, `utils/`) and `styles/` (`tokens.css`, `base.css`, `components/`, `responsive.css`).
-- **Constants:** `SCREAMING_SNAKE_CASE` (`CLOUD_SYNC_URL`, `LOCAL_STORAGE_KEY`, `DEFAULT_CONTESTANTS`).
-- **Functions:** `camelCase` (`fetchCloudState`, `renderLeaderboard`, `showToast`).
+- **Constants:** `SCREAMING_SNAKE_CASE` (`FIREBASE_CONFIG`, `LOCAL_STORAGE_KEY`, `DEFAULT_CONTESTANTS`).
+- **Functions:** `camelCase` (`pushCloudState`, `initRealtimeCloudSync`, `renderLeaderboard`, `showToast`).
 - **DOM IDs:** `camelCase` (`voterNameInput`, `submitVoteBtn`, `contestantsGrid`).
 - **CSS classes:** `kebab-case` (`contestant-card`, `btn-submit-vote`, `leaderboard-row`).
 

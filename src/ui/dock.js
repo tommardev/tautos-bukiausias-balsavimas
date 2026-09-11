@@ -29,6 +29,10 @@ export function updateDockControls(state) {
   }
 
   if (submitBtn) {
-    submitBtn.disabled = !(selectedCount > 0 && voterName.length >= 2);
+    if (submitBtn.textContent === "Balsuojama...") {
+      submitBtn.disabled = true;
+    } else {
+      submitBtn.disabled = !(selectedCount > 0 && voterName.length >= 2);
+    }
   }
 }

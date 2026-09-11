@@ -65,7 +65,7 @@ GEMINI.md                               Antigravity native instructions pointer
 **Seams** (where new work plugs in):
 - Contestant roster: `DEFAULT_CONTESTANTS` array in `src/config/contestants.data.js`
 - State & Data models: `state` structure and mutations in `src/state/store.js`
-- Cloud Sync: `fetchCloudState` / `pushCloudState` in `src/services/api.js`
+- Cloud Sync: `initRealtimeCloudSync` / `pushCloudState` in `src/services/api.js`
 - UI Rendering: Components in `src/ui/` coordinated by `src/ui/render.js`
 - Styles & Tokens: Design tokens in `styles/tokens.css` and component sheets in `styles/components/`
 - Markup & Containers: Semantic containers in `index.html`
@@ -93,7 +93,7 @@ GEMINI.md                               Antigravity native instructions pointer
 ## Boundaries
 
 - **Always:** Use semantic tokens from `style.css` `:root`; keep DOM updates idempotent; test voting and sync in browser before deploying.
-- **Ask first:** Adding a JS build step or bundler (e.g. Vite), altering `CLOUD_SYNC_URL` schema, changing Firebase Hosting rewrites or public dir.
+- **Ask first:** Adding a JS build step or bundler (e.g. Vite), altering Firestore voting state schema, changing Firebase Hosting rewrites or public dir.
 - **Never:** Introduce AI slop (blur glow spheres, neon soup, unsolicited audio synthesis, emoji spam, or unneeded speculative widgets); commit API keys or credentials; swallow network errors without updating UI sync status; replace vanilla JS with heavy frameworks without approval.
 
 ## Testing

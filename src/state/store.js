@@ -12,7 +12,6 @@ const state = {
   selectedCandidates: new Set(),
   activeFilter: "all",
   searchQuery: "",
-  isSyncing: false,
   standingsView: "chart"
 };
 
@@ -45,14 +44,6 @@ export function getState() {
   return state;
 }
 
-/**
- * Sets the syncing indicator flag.
- * @param {boolean} isSyncing 
- */
-export function setSyncing(isSyncing) {
-  state.isSyncing = isSyncing;
-  notify();
-}
 
 /**
  * Toggles selection of a candidate (up to MAX_SELECTED_CANDIDATES).
@@ -145,27 +136,85 @@ export function addCustomContestant(contestant) {
 }
 
 /**
- * Merges cloud payload into the local state.
+ * Merges cloud payload into the local state using robust concurrency strategies.
  * @param {Object} cloudData 
  */
 export function mergeCloudData(cloudData) {
+  if (!cloudData || typeof cloudData !== "object") return;
   let changed = false;
 
-  if (cloudData.votes) {
-    state.votes = { ...state.votes, ...cloudData.votes };
-    changed = true;
+  // 1. Vote Counts: Use Math.max to prevent concurrent votes in-flight from being dropped
+  if (cloudData.votes && typeof cloudData.votes === "object") {
+    Object.entries(cloudData.votes).forEach(([id, count]) => {
+      const serverVal = Number(count) || 0;
+      const localVal = state.votes[id] || 0;
+      const mergedVal = Math.max(localVal, serverVal);
+      if (state.votes[id] !== mergedVal) {
+        state.votes[id] = mergedVal;
+        changed = true;
+      }
+    });
   }
 
+  // 2. Voter Ledger: Deduplicate entries by unique signature (voter_timestamp_choices)
   if (Array.isArray(cloudData.voterLedger)) {
-    state.voterLedger = cloudData.voterLedger;
-    changed = true;
+    const makeSignature = (entry) => {
+      if (!entry || typeof entry !== "object") return "";
+      const voter = entry.voter || "";
+      const timestamp = entry.timestamp || "";
+      const choices = Array.isArray(entry.choices) ? [...entry.choices].sort().join(",") : "";
+      return `${voter}_${timestamp}_${choices}`;
+    };
+
+    const seenSignatures = new Set();
+    const combinedLedger = [];
+
+    // Prioritize preserving both local entries and incoming cloud entries without duplication
+    [...state.voterLedger, ...cloudData.voterLedger].forEach(entry => {
+      if (entry && typeof entry === "object") {
+        const sig = makeSignature(entry);
+        if (sig && !seenSignatures.has(sig)) {
+          seenSignatures.add(sig);
+          combinedLedger.push(entry);
+        }
+      }
+    });
+
+    // Enforce Firestore schema bounds (max 100 entries)
+    const boundedLedger = combinedLedger.slice(-100);
+    if (boundedLedger.length !== state.voterLedger.length || 
+        JSON.stringify(boundedLedger) !== JSON.stringify(state.voterLedger)) {
+      state.voterLedger = boundedLedger;
+      changed = true;
+    }
   }
 
+  // 3. Custom Contestants: Validate schema and uniqueness before adding
   if (Array.isArray(cloudData.customContestants)) {
     cloudData.customContestants.forEach(customC => {
-      if (!state.contestants.some(c => c.id === customC.id)) {
-        state.contestants.push(customC);
-        changed = true;
+      if (
+        customC &&
+        typeof customC === "object" &&
+        typeof customC.id === "string" &&
+        typeof customC.name === "string" &&
+        typeof customC.alias === "string" &&
+        typeof customC.tagline === "string" &&
+        typeof customC.avatar === "string"
+      ) {
+        if (!state.contestants.some(c => c.id === customC.id)) {
+          state.contestants.push({
+            id: customC.id,
+            name: customC.name,
+            alias: customC.alias,
+            tagline: customC.tagline,
+            avatar: customC.avatar,
+            category: "custom"
+          });
+          if (state.votes[customC.id] === undefined) {
+            state.votes[customC.id] = 1;
+          }
+          changed = true;
+        }
       }
     });
   }
@@ -176,19 +225,42 @@ export function mergeCloudData(cloudData) {
 }
 
 /**
- * Hydrates state from localStorage fallback.
+ * Hydrates state from localStorage fallback without overwriting codebase roster updates.
  * @param {Object} fallback 
  */
 export function hydrateFromLocalStorage(fallback) {
-  if (!fallback) return;
+  if (!fallback || typeof fallback !== "object") return;
+  let changed = false;
 
-  if (fallback.votes) state.votes = fallback.votes;
-  if (Array.isArray(fallback.voterLedger)) state.voterLedger = fallback.voterLedger;
-  if (Array.isArray(fallback.contestants) && fallback.contestants.length > 0) {
-    state.contestants = fallback.contestants;
+  if (fallback.votes && typeof fallback.votes === "object") {
+    Object.entries(fallback.votes).forEach(([id, count]) => {
+      const storedCount = Number(count) || 0;
+      if (storedCount > (state.votes[id] || 0)) {
+        state.votes[id] = storedCount;
+        changed = true;
+      }
+    });
   }
 
-  notify();
+  if (Array.isArray(fallback.voterLedger) && fallback.voterLedger.length > 0) {
+    state.voterLedger = fallback.voterLedger.slice(-100);
+    changed = true;
+  }
+
+  // Retain DEFAULT_CONTESTANTS as base; only restore user-proposed custom contestants
+  if (Array.isArray(fallback.contestants)) {
+    const savedCustoms = fallback.contestants.filter(c => c && c.category === "custom");
+    savedCustoms.forEach(customC => {
+      if (customC?.id && !state.contestants.some(c => c.id === customC.id)) {
+        state.contestants.push(customC);
+        changed = true;
+      }
+    });
+  }
+
+  if (changed) {
+    notify();
+  }
 }
 
 /**
