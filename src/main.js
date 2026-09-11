@@ -3,7 +3,7 @@
  * Main Application Bootstrap & Controller (ES Module)
  */
 
-import { CLOUD_SYNC_INTERVAL_MS } from "./config/constants.js";
+import { CLOUD_SYNC_INTERVAL_MS, APP_VERSION } from "./config/constants.js";
 import { 
   getState, 
   subscribe, 
@@ -149,7 +149,14 @@ function initApp() {
     }
   });
 
-  // 12. Initial render pass
+  // 12. Version tracking badge
+  const versionBadge = document.getElementById("appVersionBadge");
+  if (versionBadge) {
+    versionBadge.textContent = APP_VERSION;
+    versionBadge.setAttribute("title", `Versija: ${APP_VERSION} (Gyva gamybinė versija)`);
+  }
+
+  // 13. Initial render pass
   renderAll(getState());
 }
 

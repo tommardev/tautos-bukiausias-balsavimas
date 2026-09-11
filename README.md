@@ -1,50 +1,67 @@
-﻿# 🤡 Lietuvos / Tautos Bukiausias - Balsavimo Sistema (2026)
+# 🤡 Lietuvos / Tautos Bukiausias – Balsavimo Sistema (2026)
 
-Smagi, moderni ir interaktyvi vieno puslapio balsavimo platforma, įkvėpta naujo TV3 projekto **„Tautos bukiausias“** (vedėjai Mantas Katleris ir Mantas Bartuševičius).
+[![Version](https://img.shields.io/badge/version-v1.2.0-amber.svg)](https://github.com/tommardev/tautos-bukiausias-balsavimas/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Hosting](https://img.shields.io/badge/hosting-Firebase_Live-orange.svg)](https://balsavimas-vaciukai.web.app)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-Ši sistema sukurta draugų kompanijai, kad galėtų balsuoti, sekti rezultatus realiu laiku ir smagiai diskutuoti, kas nusipelnė „Bukiausiojo“ karūnos!
+Smagi, moderni ir interaktyvi vieno puslapio atvirojo kodo balsavimo platforma, įkvėpta naujo TV3 projekto **„Tautos bukiausias“** (vedėjai Mantas Katleris ir Mantas Bartuševičius).
 
-## 🌐 Gyvos Nuorodos Internetu:
-- **Oficialus adresas:** [https://balsavimas-vaciukai.web.app](https://balsavimas-vaciukai.web.app)
+Sukurta draugų kompanijai ir bendruomenei: balsuokite už mėgstamiausius personažus, stebėkite rezultatus realiu laiku per interaktyvią diagramą bei lyderių lentelę ir skaidriai sekite atiduotus balsus.
+
+---
+
+## 🌐 Gyvos Nuorodos (Live Deployments)
+
+- **Gamybinis adresas:** [https://balsavimas-vaciukai.web.app](https://balsavimas-vaciukai.web.app)
 - **Atsarginis adresas:** [https://balsavimas-vaciukai.firebaseapp.com](https://balsavimas-vaciukai.firebaseapp.com)
+- **Išeities kodas:** [https://github.com/tommardev/tautos-bukiausias-balsavimas](https://github.com/tommardev/tautos-bukiausias-balsavimas)
 
 ---
 
 ## 🚀 Pagrindinės Savybės
 
-1. **Privalomas vardo įvedimas**: Kiekvienas balsuojantysis privalo nurodyti savo vardą, kad matytųsi skaidrus audito žurnalas („Kas už ką balsavo“).
-2. **Iki 3 pasirinkimų**: Galima pasirinkti nuo 1 iki 3 kandidatų vienu metu.
-3. **Tikri TV šou dalyviai**: Visi 12 TV3 laidos „Tautos bukiausias“ dalyvių su jų originaliomis komiškomis pravardėmis, eterio klaidomis ir frazėmis (Oksana „Pikel“, Aušra Seibutytė-Maldeikienė, Simona „Greit Nebe Lipnė“, Danas Rapšys su bandelėmis, Žilvinas Grigaitis ir kt.).
-4. **Naujo kandidato pridėjimas**: Galimybė akimirksniu pasiūlyti savo draugą ar kitą žinomą veidą į kandidatų sąrašą.
-5. **Modernios grafinės kolonos**: Animuotos, 3D stiliaus vertikalios ir horizontalios diagramos su procentais ir balsų skaičiumi.
-6. **Gėdos pakyla (Top 3)**: Pirmosios 3 vietos su auksiniais klozetais ir „dunce cap“ kepuraitėmis.
-7. **Balsavimo žurnalas (Kas už ką balsavo)**: Išsamus sąrašas su laiko žymomis, vardo paieška ir pasirinkimais.
-8. **Bendras debesų sinchronizavimas**: Rezultatai saugomi debesyje per `api.restful-api.dev` ir sinchronizuojami realiu laiku visiems draugams, atsidariusiems nuorodą (su automatiniu 6 sek. atnaujinimu bei vietine atsargine kopija per `localStorage`).
-9. **Garso efektai ir konfeti**: Žaismingi garso signalai (per Web Audio API) ir konfeti pliūpsnis atidavus balsą.
+1. **Privalomas vardo įvedimas**: Kiekvienas balsuojantysis nurodo savo vardą, kuris įrašomas į skaidrų audito žurnalą („Paskutiniai balsai“).
+2. **Iki 3 pasirinkimų**: Galima pasirinkti nuo 1 iki 3 kandidatų vienu balsavimu su patogia fiksuota apatine valdymo juosta.
+3. **Komiški TV laidos personažai**: Visi TV3 laidos „Tautos bukiausias“ dalyviai su originaliomis komiškomis pravardėmis, eterio perlais ir frazėmis.
+4. **Naujo kandidato pasiūlymas**: Galimybė akimirksniu įtraukti savo draugą ar kitą žinomą veidą į kandidatų sąrašą per modalinį langą.
+5. **Chart.js rezultatų diagrama ir lyderių lentelė**: Interaktyvi stulpelinė diagrama su neapkarpytomis žymomis bei dinamiška lyderių rikiuotė su procentais ir Top 3 apdovanojimų medaliais.
+6. **Skaidrus audito žurnalas**: Išsamus paskutinių balsų sąrašas su laiko žymomis ir pasirinkimais.
+7. **Debesų sinchronizavimas realiu laiku**: Būsena sinchronizuojama per REST API debesyje su foniniu atnaujinimu bei patikima vietine `localStorage` atsargine kopija esant ryšio trikdžiams.
+8. **Dizaino inžinerijos kokybė (Emil Kowalski standartas)**: Nulis dirbtinio triukšmo (anti-slop), taktilinis mygtukų atsakas (`:active { transform: scale(0.97) }`), greiti perėjimai (< 220ms) bei prieinamumo palaikymas (`prefers-reduced-motion`).
+9. **Versijos sekimas**: Poraštėje realiu laiku rodoma diegimo versija (`v1.2.0`), leidžianti tiksliai žinoti, kuri versija veikia gamybinėje aplinkoje.
 
 ---
 
 ## 💻 Vietinis Paleidimas (Local Development)
 
-Kadangi tai yra grynas vieno puslapio statinis tinklalapis, jį paleisti vietoje galima bet kokiu statiniu serveriu:
+Projektas sukurtas pagal Vanilla Web standartą — nereikia jokių kompiliavimo žingsnių ar karkasų.
 
-```bash
-npx -y serve .
-```
+1. **Klonuokite saugyklą:**
+   ```bash
+   git clone https://github.com/tommardev/tautos-bukiausias-balsavimas.git
+   cd tautos-bukiausias-balsavimas
+   ```
 
-arba tiesiog atverkite `index.html` savo naršyklėje.
+2. **Paleiskite statinį serverį:**
+   ```bash
+   npx -y serve .
+   ```
+   *arba tiesiog atverkite `index.html` bet kurioje šiuolaikinėje naršyklėje.*
+
+3. Atverkite `http://localhost:3000`.
 
 ---
 
 ## 📦 Kaip atnaujinti svetainę (Deploy)
 
-Norėdami atnaujinti svetainę atlikę pakeitimus, tiesiog paleiskite:
+Norėdami paskelbti naujausią versiją į Firebase Hosting:
 
 ```powershell
 .\deploy-firebase.ps1
 ```
 
-arba:
+arba per npm skriptą / tiesiogiai:
 
 ```bash
 npx -y firebase-tools@latest deploy --only hosting
@@ -52,8 +69,31 @@ npx -y firebase-tools@latest deploy --only hosting
 
 ---
 
-## 🤖 AI Agentinis Programavimas
+## 🛠️ Architektūra ir Technologijos
 
-- Coding agents: `AGENTS.md`.
-- Humans (AI workflow): `AI_CODING_README.md`. Intros: `AI_CODING_LEARN.md`.
-- Naujam komandos nariui klonuotoje saugykloje: atkurti įgūdžius su `npx skills experimental_install --yes`, patikrinti Antigravity MCP serverius (Context7, Sonatype).
+- **HTML5 & CSS3:** Semantinis žymėjimas, moduliniai stiliai (`styles/tokens.css`, `styles/components/`, `styles/responsive.css`).
+- **JavaScript (ES2022+):** Gryni vietiniai ES moduliai (`src/main.js`, `src/state/`, `src/services/`, `src/ui/`, `src/utils/`).
+- **Išorinės bibliotekos (CDN):** Chart.js 4.4.7 + chartjs-plugin-datalabels, Canvas Confetti 1.9.3.
+- **Debesis:** RESTful API debesų sinchronizavimas + Firebase Hosting.
+
+---
+
+## 🤝 Prisidėjimas (Contributing)
+
+Projektas yra atvirojo kodo! Laukiame klaidų pataisymų, dizaino patobulinimų ir idėjų.
+Prieš siųsdami pull request'ą, prašome perskaityti:
+- [Prisidėjimo gaires (CONTRIBUTING.md)](CONTRIBUTING.md)
+- [Elgesio kodeksą (CODE_OF_CONDUCT.md)](CODE_OF_CONDUCT.md)
+- [Saugumo politiką (SECURITY.md)](SECURITY.md)
+
+---
+
+## 📄 Licencija
+
+Šis projektas licencijuotas pagal **[MIT Licenciją](LICENSE)** – galite laisvai naudoti, modifikuoti ir platinti.
+
+---
+
+## ⚠️ Teisinė Pastaba / Disclaimer
+
+Šis projektas yra nepriklausoma humoristinė parodija ir draugų kompanijos pramoga, įkvėpta TV3 laidos. Visi prekių ženklai ir laidos elementai priklauso jų teisėtiems savininkams.

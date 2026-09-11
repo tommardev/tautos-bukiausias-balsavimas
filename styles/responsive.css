@@ -141,4 +141,19 @@
     font-size: 0.92rem;
     height: 40px;
   }
+
+  .app-footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .footer-left,
+  .footer-center,
+  .footer-right {
+    justify-content: center;
+    width: 100%;
+  }
 }
+

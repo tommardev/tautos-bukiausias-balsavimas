@@ -1,0 +1,33 @@
+{
+  "name": "tautos-bukiausias-balsavimas",
+  "version": "1.2.0",
+  "description": "Interaktyvi realaus laiko balsavimo platforma Lietuvos TV3 komedijos parodijai „Tautos bukiausias“ (2026)",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve .",
+    "deploy": "firebase deploy --only hosting"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tommardev/tautos-bukiausias-balsavimas.git"
+  },
+  "keywords": [
+    "voting",
+    "balsavimas",
+    "tv3",
+    "parody",
+    "vanilla-js",
+    "chartjs",
+    "canvas-confetti",
+    "firebase-hosting",
+    "anti-slop"
+  ],
+  "author": "Tomas <tommardev>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tommardev/tautos-bukiausias-balsavimas/issues"
+  },
+  "homepage": "https://balsavimas-vaciukai.web.app"
+}
