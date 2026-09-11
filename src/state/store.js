@@ -216,34 +216,42 @@ export function mergeCloudData(cloudData) {
 
   // 3. Voter Ledger: Deduplicate entries by unique signature (voter_timestamp_choices)
   if (Array.isArray(cloudData.voterLedger)) {
-    const makeSignature = (entry) => {
-      if (!entry || typeof entry !== "object") return "";
-      const voter = entry.voter || "";
-      const timestamp = entry.timestamp || "";
-      const choices = Array.isArray(entry.choices) ? [...entry.choices].sort().join(",") : "";
-      return `${voter}_${timestamp}_${choices}`;
-    };
-
-    const seenSignatures = new Set();
-    const combinedLedger = [];
-
-    // Prioritize preserving both local entries and incoming cloud entries without duplication
-    [...state.voterLedger, ...cloudData.voterLedger].forEach(entry => {
-      if (entry && typeof entry === "object") {
-        const sig = makeSignature(entry);
-        if (sig && !seenSignatures.has(sig)) {
-          seenSignatures.add(sig);
-          combinedLedger.push(entry);
-        }
+    // If cloud data cleared the ledger (and no local vote is currently in-flight)
+    if (cloudData.voterLedger.length === 0 && lastLocalVoteTime === 0) {
+      if (state.voterLedger.length > 0) {
+        state.voterLedger = [];
+        changed = true;
       }
-    });
+    } else {
+      const makeSignature = (entry) => {
+        if (!entry || typeof entry !== "object") return "";
+        const voter = entry.voter || "";
+        const timestamp = entry.timestamp || "";
+        const choices = Array.isArray(entry.choices) ? [...entry.choices].sort().join(",") : "";
+        return `${voter}_${timestamp}_${choices}`;
+      };
 
-    // Enforce Firestore schema bounds (max 100 entries)
-    const boundedLedger = combinedLedger.slice(-100);
-    if (boundedLedger.length !== state.voterLedger.length || 
-        JSON.stringify(boundedLedger) !== JSON.stringify(state.voterLedger)) {
-      state.voterLedger = boundedLedger;
-      changed = true;
+      const seenSignatures = new Set();
+      const combinedLedger = [];
+
+      // Prioritize preserving both local entries and incoming cloud entries without duplication
+      [...state.voterLedger, ...cloudData.voterLedger].forEach(entry => {
+        if (entry && typeof entry === "object") {
+          const sig = makeSignature(entry);
+          if (sig && !seenSignatures.has(sig)) {
+            seenSignatures.add(sig);
+            combinedLedger.push(entry);
+          }
+        }
+      });
+
+      // Enforce Firestore schema bounds (max 100 entries)
+      const boundedLedger = combinedLedger.slice(-100);
+      if (boundedLedger.length !== state.voterLedger.length || 
+          JSON.stringify(boundedLedger) !== JSON.stringify(state.voterLedger)) {
+        state.voterLedger = boundedLedger;
+        changed = true;
+      }
     }
   }
 
@@ -294,9 +302,11 @@ export function hydrateFromLocalStorage(fallback) {
   });
 
   // 3. Voter ledger
-  if (Array.isArray(fallback.voterLedger) && fallback.voterLedger.length > 0) {
-    state.voterLedger = fallback.voterLedger.slice(-100);
-    changed = true;
+  if (Array.isArray(fallback.voterLedger)) {
+    if (state.voterLedger.length !== fallback.voterLedger.length || JSON.stringify(state.voterLedger) !== JSON.stringify(fallback.voterLedger)) {
+      state.voterLedger = fallback.voterLedger.slice(-100);
+      changed = true;
+    }
   }
 
   if (changed) {
