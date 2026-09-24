@@ -13,7 +13,11 @@ Coding work follows coleam00 skills. Do not invent a parallel process. Cole deci
 - Tiny/mechanical (typo, rename, obvious one-file fix): skip the PIV loop.
 - During implement: do the asked work with surgical diffs (karpathy-guidelines). Load the matching Addy skill when the slice is UI, API, security, performance, or ship. Don't shrink or refuse the request.
 
+Taste skills for new marketing, landing, and portfolio UI. Emil skills for product surfaces, motion, and reviews. Never load style variants together. Never let Taste rewrite a dashboard, table, or native app.
+
 # Tools (always)
+
+- Read and edit files with Read, Grep, and StrReplace. Use the shell for commands that have to run, such as dotnet test, git, and builds. Do not use the shell to print, search, or rewrite file contents.
 
 - Docs/APIs: Context7 MCP for library/API docs, setup, migrations, and to confirm current usage patterns - prefer it over training memory and client web search.
 - Web Search & Research: Exa MCP (`https://mcp.exa.ai`) using `web_search_exa`, `web_search_advanced_exa`, `web_fetch_exa`, and `agent_run` for live web lookups and page fetching.
