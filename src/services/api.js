@@ -4,6 +4,7 @@
 
 import { getState, mergeCloudData } from "../state/store.js";
 import { saveLocalFallback, loadLocalFallback } from "./storage.js";
+import { getFirestoreDocName, isDevEnvironment } from "../config/constants.js";
 
 /**
  * Official Firebase Web configuration for project 'balsavimas-vaciukai'.
@@ -60,9 +61,12 @@ async function getFirestoreInstance() {
   if (!modules) return null;
 
   try {
-    const app = modules.initializeApp(FIREBASE_CONFIG, "tautos-bukiausias-prod");
+    const isDev = isDevEnvironment();
+    const appName = isDev ? "tautos-bukiausias-dev" : "tautos-bukiausias-prod";
+    const app = modules.initializeApp(FIREBASE_CONFIG, appName);
     dbInstance = modules.getFirestore(app);
-    stateDocRef = modules.doc(dbInstance, "voting", "state");
+    const docName = getFirestoreDocName();
+    stateDocRef = modules.doc(dbInstance, "voting", docName);
     return { db: dbInstance, stateDocRef, modules };
   } catch (err) {
     console.warn("Could not initialize Firebase Firestore instance:", err);

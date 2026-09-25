@@ -28,10 +28,11 @@ service cloud.firestore {
       );
     }
 
-    // Scoped rules for voting state document
-    match /voting/state {
-      allow read: if true;
-      allow write: if isValidVotingPayload(request.resource.data)
+    // Scoped rules for voting state documents (production 'state' and development 'state_dev')
+    match /voting/{docId} {
+      allow read: if docId in ['state', 'state_dev'];
+      allow write: if docId in ['state', 'state_dev']
+        && isValidVotingPayload(request.resource.data)
         && isSafeUpdate(resource, request.resource.data);
     }
   }

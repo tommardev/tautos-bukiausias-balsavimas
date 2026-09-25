@@ -3,7 +3,7 @@
  * Main Application Bootstrap & Controller (ES Module)
  */
 
-import { APP_VERSION } from "./config/constants.js";
+import { APP_VERSION, isDevEnvironment } from "./config/constants.js";
 import { 
   getState, 
   subscribe, 
@@ -68,12 +68,15 @@ async function handleVoteSubmit() {
 
   const selectedIds = Array.from(state.selectedCandidates);
   const nowDate = new Date();
-  const timeStr = `${nowDate.getHours().toString().padStart(2, '0')}:${nowDate.getMinutes().toString().padStart(2, '0')}`;
+  const pad = (n) => n.toString().padStart(2, "0");
+  const dateStr = `${nowDate.getFullYear()}-${pad(nowDate.getMonth() + 1)}-${pad(nowDate.getDate())}`;
+  const timeStr = `${pad(nowDate.getHours())}:${pad(nowDate.getMinutes())}`;
+  const fullTimestamp = `${dateStr} ${timeStr}`;
 
   recordVote({
     voter: voterName,
     choices: selectedIds,
-    timestamp: timeStr
+    timestamp: fullTimestamp
   });
 
   sessionStorage.setItem("tautos_last_vote_timestamp", String(Date.now()));
@@ -84,7 +87,7 @@ async function handleVoteSubmit() {
     await submitVoteToCloud({
       voter: voterName,
       choices: selectedIds,
-      timestamp: timeStr
+      timestamp: fullTimestamp
     });
   } finally {
     if (submitBtn) {
@@ -100,6 +103,17 @@ async function handleVoteSubmit() {
 function initApp() {
   // 1. Purge legacy localStorage keys from older versions
   purgeLegacyStorageKeys();
+
+  // 1.1 Show dev environment indicator badge if running in dev/test mode
+  if (isDevEnvironment()) {
+    const envPill = document.getElementById("envIndicatorPill");
+    if (envPill) envPill.classList.remove("hidden");
+    const appVersionBadge = document.getElementById("appVersionBadge");
+    if (appVersionBadge) {
+      appVersionBadge.textContent = `${APP_VERSION} [DEV: state_dev]`;
+      appVersionBadge.title = "Veikia lokaliu / testiniu režimu (Firestore: voting/state_dev)";
+    }
+  }
 
   // 2. Subscribe render coordinator to store updates
   subscribe(renderAll);

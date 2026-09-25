@@ -474,4 +474,40 @@ describe("Tautos Bukiausias - System & Version Consistency", () => {
       assert.equal(openBraces, closeBraces, `Brace mismatch in ${relPath}: { count (${openBraces}) != } count (${closeBraces})`);
     }
   });
+
+  test("Environment isolation (state_dev vs state) and storage keys", async () => {
+    const { 
+      isDevEnvironment, 
+      getFirestoreDocName, 
+      getActiveStorageKey, 
+      LOCAL_STORAGE_KEY_PROD, 
+      LOCAL_STORAGE_KEY_DEV 
+    } = await import("../src/config/constants.js");
+
+    // Default Node environment (without window)
+    assert.equal(isDevEnvironment(), false, "Default non-browser should evaluate to prod");
+    assert.equal(getFirestoreDocName(), "state", "Production should target 'state' document");
+    assert.equal(getActiveStorageKey(), LOCAL_STORAGE_KEY_PROD, "Production should use prod storage key");
+
+    // Simulated browser localhost
+    globalThis.window = {
+      location: { hostname: "localhost", search: "", protocol: "http:" }
+    };
+    globalThis.localStorage = {
+      getItem: () => null
+    };
+
+    assert.equal(isDevEnvironment(), true, "localhost should evaluate to dev environment");
+    assert.equal(getFirestoreDocName(), "state_dev", "Localhost should target 'state_dev' document");
+    assert.equal(getActiveStorageKey(), LOCAL_STORAGE_KEY_DEV, "Localhost should use dev storage key");
+
+    // Simulated explicit ?env=prod query override
+    globalThis.window.location.search = "?env=prod";
+    assert.equal(isDevEnvironment(), false, "?env=prod query param should force production");
+    assert.equal(getFirestoreDocName(), "state");
+
+    // Cleanup globals
+    delete globalThis.window;
+    delete globalThis.localStorage;
+  });
 });

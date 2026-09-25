@@ -29,6 +29,20 @@
   border-radius: var(--radius-pill);
 }
 
+.env-pill {
+  display: inline-block;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
 .repo-badge-link {
   display: inline-flex;
   align-items: center;
