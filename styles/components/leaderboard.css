@@ -104,11 +104,26 @@
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  transition: background-color var(--duration-fast) var(--ease-out);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 
 .leaderboard-row:hover {
   background: var(--bg-surface-hover);
+  border-color: var(--border-subtle-hover);
+  transform: translateX(3px);
+}
+
+.leaderboard-row:active {
+  transform: scale(0.99) translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leaderboard-row:hover,
+  .leaderboard-row:active {
+    transform: none;
+  }
 }
 
 .leaderboard-row.rank-1 {

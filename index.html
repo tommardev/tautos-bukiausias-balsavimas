@@ -7,7 +7,7 @@
   <meta name="description" content="Oficialus draugų kompanijos balsavimas už TV3 šou „Tautos bukiausias“ dalyvius. Išrinkite didžiausią klasės genijų!">
   
   <!-- Security Headers (Defense-in-depth Content Security Policy) -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://cdn.jsdelivr.net; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com;">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   
   <!-- Google Fonts -->
@@ -22,7 +22,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
-  <link rel="stylesheet" href="style.css?v=1.3.1">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤡</text></svg>">
+  <link rel="stylesheet" href="style.css?v=1.4.0">
 </head>
 <body>
   <a href="#main-content" class="sr-only">Praleisti į turinį</a>
@@ -113,19 +114,23 @@
       <div class="roster-toolbar">
         <div class="filter-pills" id="categoryFilters">
           <button type="button" class="filter-pill active" data-category="all" aria-pressed="true">Visi (<span id="totalContestantsCount">14</span>)</button>
-          <button type="button" class="filter-pill" data-category="pupil" aria-pressed="false">Mokiniai</button>
-          <button type="button" class="filter-pill" data-category="teacher" aria-pressed="false">Mokytojai</button>
-          <button type="button" class="filter-pill" data-category="custom" aria-pressed="false">Pasiūlyti</button>
+          <button type="button" class="filter-pill" data-category="pupil" aria-pressed="false">Mokiniai (<span id="countFilterPupil">0</span>)</button>
+          <button type="button" class="filter-pill" data-category="teacher" aria-pressed="false">Mokytojai (<span id="countFilterTeacher">0</span>)</button>
+          <button type="button" class="filter-pill" data-category="custom" aria-pressed="false">Pasiūlyti (<span id="countFilterCustom">0</span>)</button>
         </div>
 
         <div class="toolbar-actions">
-          <input 
-            type="text" 
-            id="searchInput" 
-            class="search-input" 
-            placeholder="Ieškoti pretendento..." 
-            aria-label="Ieškoti pretendento"
-          />
+          <div class="search-input-wrapper">
+            <label for="searchInput" class="sr-only">Ieškoti pretendento</label>
+            <input 
+              type="text" 
+              id="searchInput" 
+              class="search-input" 
+              placeholder="Ieškoti pretendento (arba /)..." 
+              aria-label="Ieškoti pretendento"
+            />
+            <button type="button" id="searchClearBtn" class="search-clear-btn hidden" aria-label="Išvalyti paiešką" title="Išvalyti paiešką">&times;</button>
+          </div>
           <button type="button" id="openAddModalBtn" class="btn-secondary">
             Pasiūlyti kandidatą
           </button>
@@ -139,6 +144,11 @@
 
       <!-- Focused Voting Action Dock -->
       <div class="voting-dock" id="votingDock">
+        <!-- Selected Candidates Chip Tray -->
+        <div class="dock-tray hidden" id="dockSelectedTray" aria-label="Pasirinkti kandidatai">
+          <!-- Injected dynamically by dock.js -->
+        </div>
+
         <div class="dock-inner">
           
           <div class="voter-identity">
@@ -202,7 +212,7 @@
       </div>
 
       <div class="footer-center">
-        <span class="footer-version-tag" id="appVersionBadge" title="Dabartinė gamybinė versija">v1.3.1</span>
+        <span class="footer-version-tag" id="appVersionBadge" title="Dabartinė gamybinė versija">v1.4.0</span>
         <span class="footer-dot-divider" aria-hidden="true">•</span>
         <a href="https://github.com/tommardev/tautos-bukiausias-balsavimas" target="_blank" rel="noopener noreferrer" class="footer-link" title="GitHub atvirojo kodo saugykla">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -225,6 +235,28 @@
         <button type="button" class="modal-close-btn" id="closeModalBtn" aria-label="Uždaryti langą">&times;</button>
       </div>
 
+      <!-- Live Card Preview -->
+      <div class="modal-preview-wrapper" aria-hidden="true">
+        <div class="preview-badge">Kortelės peržiūra realiuoju laiku</div>
+        <article class="contestant-card preview-card">
+          <div class="card-top">
+            <div class="card-avatar-pod">
+              <span class="card-avatar" id="modalPreviewAvatar">🤡</span>
+            </div>
+            <span class="card-category-tag">Pasiūlyti</span>
+          </div>
+          <div class="card-body">
+            <h3 class="contestant-name" id="modalPreviewName">Vardas Pavardė</h3>
+            <div class="contestant-alias" id="modalPreviewAlias">„Pravardė / Titras“</div>
+            <p class="contestant-tagline" id="modalPreviewTagline">Čia bus rodomas kandidato nuopelnas šou...</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-vote-count">1 balsas (pradinis)</span>
+            <span class="card-action-status">Peržiūra</span>
+          </div>
+        </article>
+      </div>
+
       <form id="addContestantForm">
         <div class="form-group">
           <label for="newCandidateName">Vardas ir Pavardė <span class="required-star">*</span></label>
@@ -238,12 +270,15 @@
 
         <div class="form-group">
           <label for="newCandidateTagline">Kuo nusipelnė atsidurti šou? <span class="required-star">*</span></label>
-          <textarea id="newCandidateTagline" class="form-textarea" required placeholder="Pvz.: Bandė atidaryti duris traukdamas, nors buvo parašyta STUMTI..." maxlength="140"></textarea>
+          <textarea id="newCandidateTagline" class="form-textarea" required placeholder="Pvz.: Bandė atidaryti duris traukdamas, nors buvo parašyta STUMTI..." maxlength="100"></textarea>
+          <div class="char-count-wrapper">
+            <span id="taglineCharCount">0</span> / 100 simbolių
+          </div>
         </div>
 
         <div class="form-group">
-          <label>Pasirink avatarą:</label>
-          <div class="emoji-options" id="emojiOptions">
+          <div id="emojiPickerLabel" class="form-label-title">Pasirink avatarą:</div>
+          <div class="emoji-options" id="emojiOptions" role="group" aria-labelledby="emojiPickerLabel">
             <button type="button" class="emoji-btn active" data-emoji="🤡">🤡</button>
             <button type="button" class="emoji-btn" data-emoji="🥴">🥴</button>
             <button type="button" class="emoji-btn" data-emoji="🤓">🤓</button>
@@ -272,6 +307,6 @@
     </svg>
   </button>
 
-  <script type="module" src="./src/main.js?v=1.3.1"></script>
+  <script type="module" src="./src/main.js?v=1.4.0"></script>
 </body>
 </html>

@@ -39,7 +39,8 @@ graph TD
 | **Batch 2** | Concurrency, State & Network Resilience | 4 | 4 / 4 | `[x]` Completed |
 | **Batch 3** | UI Performance & Event Delegation | 2 | 2 / 2 | `[x]` Completed |
 | **Batch 4** | WCAG 2.1 AA Accessibility & UX Polish | 7 | 7 / 7 | `[x]` Completed |
-| **Total** | | **17** | **17 / 17** | **100%** |
+| **Batch 5** | High-Craft UI/UX Engineering & Interaction Polish | 7 | 7 / 7 | `[x]` Completed |
+| **Total** | | **24** | **24 / 24** | **100%** |
 
 ---
 
@@ -164,6 +165,53 @@ graph TD
   - **Goal:** Export `formatVotesLt(count)` handling `0 balsų`, `1 balsas`, `2-9 balsai`, `10 balsų`, `11-19 balsų`, `20 balsų`, `21 balsas`. Replace binary `1 ? 'balsas' : 'balsai'` throughout UI.
   - **Verification:** Verified formatVotesLt across 0, 1, 2, 4, 10, 11, 15, 20, 21, and 25 with 100% grammatical correctness.
   - **Agent Log:** Completed 2026-09-11. Lithuanian pluralization helper implemented and applied across roster and chart components.
+
+---
+
+### Batch 5: High-Craft UI/UX Engineering & Interaction Polish
+*Agent Helper Docs:* [`docs/ui-ux-enhancement-plan.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/docs/ui-ux-enhancement-plan.md), [`docs/agents/ui-ux.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/docs/agents/ui-ux.md), [`AGENTS.md`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/AGENTS.md)
+
+- [x] **Task 5.1: Selected-Candidate Tray in Sticky Voting Dock**
+  - **Files:** [`src/ui/dock.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/dock.js), [`styles/components/dock.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/dock.css), [`index.html`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/index.html)
+  - **Goal:** Display selected candidate chips in the dock with 1-click `✕` remove button and "Išvalyti visus" link so users never lose visibility of their choices while browsing.
+  - **Verification:** Dynamically renders `.dock-candidate-chip` chips with avatars, names, and remove buttons; "Išvalyti visus" resets selection seamlessly.
+  - **Agent Log:** Completed 2026-09-25. Selected chips tray rendered in sticky dock with delegated 1-click removal and clear-all action.
+
+- [x] **Task 5.2: Search Zero-State & Dynamic Category Counts**
+  - **Files:** [`src/ui/contestants.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/contestants.js), [`styles/components/contestants.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/contestants.css), [`src/main.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/main.js), [`index.html`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/index.html)
+  - **Goal:** Replace empty blank grid on non-matching searches with a polite, witty empty state card + "Išvalyti paiešką" button, and add dynamic count badges to all category filter pills.
+  - **Verification:** Non-matching search renders `.roster-empty-state` with 1-click reset; inline `✕` clear button appears when query is entered; `/` keyboard shortcut focuses search.
+  - **Agent Log:** Completed 2026-09-25. Zero-state card, dynamic filter pill counts, inline search clear, and '/' keyboard shortcut active.
+
+- [x] **Task 5.3: Bidirectional Standings-to-Roster Navigation**
+  - **Files:** [`src/ui/leaderboard.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/leaderboard.js), [`src/ui/chart.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/chart.js), [`styles/components/contestants.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/contestants.css), [`styles/components/leaderboard.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/leaderboard.css), [`src/utils/dom.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/utils/dom.js)
+  - **Goal:** Clicking a contestant in the leaderboard or bar chart smoothly scrolls to and flash-highlights their card in the roster.
+  - **Verification:** Clicking any leaderboard row or chart bar triggers `navigateToContestantCard(id)`, resetting any blocking filters and applying 1400ms amber pulse outline; honors `prefers-reduced-motion`.
+  - **Agent Log:** Completed 2026-09-25. Bidirectional click navigation from leaderboard and Chart.js bars to candidate cards implemented with pulse highlight.
+
+- [x] **Task 5.4: Tactile Form Error Feedback & Input Shake**
+  - **Files:** [`src/main.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/main.js), [`styles/components/dock.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/dock.css)
+  - **Goal:** Add `aria-invalid="true"`, red border transition, and a subtle 160ms horizontal wiggle/shake animation when trying to vote without a name.
+  - **Verification:** Submitting with empty or single-character name sets `aria-invalid="true"`, triggers `.input-error` shake animation, and auto-clears error state when typing resumes.
+  - **Agent Log:** Completed 2026-09-25. Tactile shake animation and accessible aria-invalid feedback deployed on voter name input.
+
+- [x] **Task 5.5: Suggestion Modal Live Card Preview & Character Counter**
+  - **Files:** [`src/ui/modal.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/modal.js), [`styles/components/modal.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/modal.css), [`index.html`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/index.html)
+  - **Goal:** Provide a live candidate card mockup inside the modal updating as the user types name/alias/tagline and picks an avatar, plus a dynamic character counter for tagline.
+  - **Verification:** Modal dynamically reflects real-time typing across avatar, name, alias, and tagline in `.preview-card`; character counter tracks `X/100` with warning highlight.
+  - **Agent Log:** Completed 2026-09-25. Live candidate card mockup and 100-char tagline counter added to suggestion modal.
+
+- [x] **Task 5.6: Real-Time Activity Feed Entry Micro-animations**
+  - **Files:** [`src/ui/activity.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/activity.js), [`styles/components/activity.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/activity.css)
+  - **Goal:** Animate incoming live votes with a smooth 200ms slide-in and gentle amber highlight fade instead of jarring DOM replacement.
+  - **Verification:** Newly arrived ledger entries receive `.activity-item-new` with slide-down and subtle gold highlight fade; initial paint is un-animated; reduced motion respected.
+  - **Agent Log:** Completed 2026-09-25. Real-time vote feed micro-animations and signature tracking active.
+
+- [x] **Task 5.7: Mobile Toast Stacking & Safe-Area Protection**
+  - **Files:** [`styles/components/toast.css`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/styles/components/toast.css), [`src/ui/toast.js`](file:///d:/Workplace/_FastSimple/tautos-bukiausias/src/ui/toast.js)
+  - **Goal:** Move toast container to the top of the screen on mobile devices (< 640px) to prevent overlapping the sticky bottom voting dock.
+  - **Verification:** Media query `@media (max-width: 640px)` positions toasts at top center with downward slide-in; desktop retains bottom-right placement.
+  - **Agent Log:** Completed 2026-09-25. Mobile toast positioning at top viewport protects bottom action dock and virtual keyboards.
 
 ---
 

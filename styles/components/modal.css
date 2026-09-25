@@ -70,11 +70,86 @@
   transform: scale(0.97);
 }
 
+/* Modal Live Candidate Card Preview */
+.modal-preview-wrapper {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed var(--border-subtle-hover);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 20px;
+}
+
+.preview-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gold);
+  margin-bottom: 8px;
+}
+
+.preview-card {
+  pointer-events: none;
+  cursor: default;
+  transform: none !important;
+  border-color: rgba(245, 158, 11, 0.3);
+  padding: 12px 14px;
+  margin-bottom: 0;
+  background: var(--bg-surface);
+}
+
+.preview-card .card-top {
+  margin-bottom: 8px;
+}
+
+.preview-card .card-avatar-pod {
+  width: 36px;
+  height: 36px;
+}
+
+.preview-card .card-avatar {
+  font-size: 1.25rem;
+}
+
+.preview-card .contestant-name {
+  font-size: 0.95rem;
+}
+
+.preview-card .contestant-alias {
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+.preview-card .contestant-tagline {
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.preview-card .card-footer {
+  padding-top: 8px;
+  font-size: 0.75rem;
+}
+
+.char-count-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.char-count-warning {
+  color: var(--color-gold) !important;
+  font-weight: 700;
+}
+
 .form-group {
   margin-bottom: 16px;
 }
 
-.form-group label {
+.form-group label,
+.form-label-title {
   display: block;
   font-size: 0.82rem;
   font-weight: 600;

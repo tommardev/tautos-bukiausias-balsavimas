@@ -1,8 +1,33 @@
-/**
- * Live Horizontal Leaderboard Component
- */
+import { escapeHTML, navigateToContestantCard } from "../utils/dom.js";
 
-import { escapeHTML } from "../utils/dom.js";
+/**
+ * Attaches a single delegated click and keydown listener to the leaderboard container.
+ * @param {HTMLElement} container 
+ */
+function initDelegatedLeaderboardListeners(container) {
+  if (!container || container.dataset.delegated === "true") return;
+
+  container.addEventListener("click", (e) => {
+    const row = e.target.closest(".leaderboard-row");
+    if (row) {
+      const id = row.getAttribute("data-contestant-id");
+      if (id) navigateToContestantCard(id);
+    }
+  });
+
+  container.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      const row = e.target.closest(".leaderboard-row");
+      if (row) {
+        e.preventDefault();
+        const id = row.getAttribute("data-contestant-id");
+        if (id) navigateToContestantCard(id);
+      }
+    }
+  });
+
+  container.dataset.delegated = "true";
+}
 
 /**
  * Renders the ranked leaderboard rows into #leaderboardList.
@@ -11,6 +36,8 @@ import { escapeHTML } from "../utils/dom.js";
 export function renderLeaderboard(state) {
   const container = document.getElementById("leaderboardList");
   if (!container) return;
+
+  initDelegatedLeaderboardListeners(container);
 
   const contestantsWithVotes = state.contestants.map(c => ({
     ...c,
@@ -25,9 +52,16 @@ export function renderLeaderboard(state) {
     const pct = Math.round((c.voteCount / totalVotes) * 100);
 
     return `
-      <div class="leaderboard-row ${rankClass}">
+      <div 
+        class="leaderboard-row ${rankClass}" 
+        data-contestant-id="${escapeHTML(c.id)}"
+        role="button"
+        tabindex="0"
+        title="Spustelėkite, norėdami pamatyti ${escapeHTML(c.name)} kortelę sąraše"
+        aria-label="#${rank} vieta: ${escapeHTML(c.name)}, ${c.voteCount} balsų (${pct}%). Spustelėkite, norėdami atiduoti balsą."
+      >
         <span class="leaderboard-rank">#${rank}</span>
-        <span class="leaderboard-avatar">${escapeHTML(c.avatar)}</span>
+        <span class="leaderboard-avatar" aria-hidden="true">${escapeHTML(c.avatar)}</span>
         <div class="leaderboard-details">
           <div class="leaderboard-names">
             <span class="leaderboard-name">${escapeHTML(c.name)}</span>
@@ -45,3 +79,4 @@ export function renderLeaderboard(state) {
     `;
   }).join("");
 }
+

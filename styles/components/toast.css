@@ -48,3 +48,38 @@
 .toast.toast-error {
   border-color: rgba(239, 68, 68, 0.4);
 }
+
+@media (max-width: 640px) {
+  .toast-container {
+    top: calc(16px + env(safe-area-inset-top, 0px));
+    bottom: auto;
+    left: 16px;
+    right: 16px;
+    align-items: center;
+  }
+
+  .toast {
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    animation: toastEnterMobile var(--duration-fast) var(--ease-out) forwards;
+  }
+
+  @keyframes toastEnterMobile {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
+

@@ -53,6 +53,39 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   font-size: 0.85rem;
+  transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.activity-item.activity-item-new {
+  animation: activitySlideIn 240ms var(--ease-out) forwards, activityHighlightFade 1600ms ease-out forwards;
+}
+
+@keyframes activitySlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes activityHighlightFade {
+  0% {
+    border-color: rgba(245, 158, 11, 0.85);
+    background: rgba(245, 158, 11, 0.12);
+  }
+  100% {
+    border-color: var(--border-subtle);
+    background: rgba(255, 255, 255, 0.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-item.activity-item-new {
+    animation: none;
+  }
 }
 
 .activity-voter-info {

@@ -1,9 +1,5 @@
-/**
- * Contestants Roster Grid Component
- */
-
 import { escapeHTML, formatVotesLt } from "../utils/dom.js";
-import { toggleCandidateSelection } from "../state/store.js";
+import { toggleCandidateSelection, setFilter, setSearchQuery } from "../state/store.js";
 import { showToast } from "./toast.js";
 
 /**
@@ -25,6 +21,26 @@ function initDelegatedGridListeners(grid) {
   if (!grid || grid.dataset.delegated === "true") return;
 
   grid.addEventListener("click", (e) => {
+    // Check if clicked the clear search/filter button in empty state
+    if (e.target.closest("#clearSearchBtn")) {
+      setFilter("all");
+      setSearchQuery("");
+      const searchInput = document.getElementById("searchInput");
+      if (searchInput) {
+        searchInput.value = "";
+        searchInput.focus();
+      }
+      const searchClearBtn = document.getElementById("searchClearBtn");
+      if (searchClearBtn) searchClearBtn.classList.add("hidden");
+
+      document.querySelectorAll(".filter-pill").forEach(b => {
+        const isAll = b.getAttribute("data-category") === "all";
+        b.classList.toggle("active", isAll);
+        b.setAttribute("aria-pressed", isAll ? "true" : "false");
+      });
+      return;
+    }
+
     const card = e.target.closest(".contestant-card");
     if (card) {
       const id = card.getAttribute("data-id");
@@ -47,7 +63,28 @@ function initDelegatedGridListeners(grid) {
 }
 
 /**
- * Renders filtered contestant cards into #contestantsGrid.
+ * Updates filter pill count badges with live numbers.
+ * @param {Object} state 
+ */
+function updateCategoryFilterCounts(state) {
+  const total = state.contestants.length;
+  const pupilCount = state.contestants.filter(c => c.category === "pupil").length;
+  const teacherCount = state.contestants.filter(c => c.category === "teacher").length;
+  const customCount = state.contestants.filter(c => c.category === "custom").length;
+
+  const totalCountEl = document.getElementById("totalContestantsCount");
+  const pupilEl = document.getElementById("countFilterPupil");
+  const teacherEl = document.getElementById("countFilterTeacher");
+  const customEl = document.getElementById("countFilterCustom");
+
+  if (totalCountEl) totalCountEl.textContent = total;
+  if (pupilEl) pupilEl.textContent = pupilCount;
+  if (teacherEl) teacherEl.textContent = teacherCount;
+  if (customEl) customEl.textContent = customCount;
+}
+
+/**
+ * Renders filtered contestant cards into #contestantsGrid or displays a zero-state.
  * @param {Object} state 
  */
 export function renderContestants(state) {
@@ -55,6 +92,7 @@ export function renderContestants(state) {
   if (!grid) return;
 
   initDelegatedGridListeners(grid);
+  updateCategoryFilterCounts(state);
 
   const query = state.searchQuery.toLowerCase();
   const filtered = state.contestants.filter(c => {
@@ -66,8 +104,23 @@ export function renderContestants(state) {
     return matchesCategory && matchesSearch;
   });
 
-  const totalCountEl = document.getElementById("totalContestantsCount");
-  if (totalCountEl) totalCountEl.textContent = state.contestants.length;
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="roster-empty-state" role="status">
+        <div class="empty-state-icon" aria-hidden="true">🔍</div>
+        <h3 class="empty-state-title">Kandidatų nerasta</h3>
+        <p class="empty-state-text">
+          ${query 
+            ? `Pagal paieškos užklausą „<strong>${escapeHTML(state.searchQuery)}</strong>“ nieko neradome.` 
+            : 'Šioje kategorijoje kandidatų kol kas nėra.'}
+        </p>
+        <button type="button" class="btn-clear-search" id="clearSearchBtn">
+          Išvalyti filtrus ir paiešką
+        </button>
+      </div>
+    `;
+    return;
+  }
 
   const isMaxReached = state.selectedCandidates.size >= 3;
 
@@ -106,3 +159,4 @@ export function renderContestants(state) {
     `;
   }).join("");
 }
+
