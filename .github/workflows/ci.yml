@@ -28,6 +28,12 @@ jobs:
           find src/ -name "*.js" -exec node --check {} +
           echo "✅ All JavaScript files passed syntax verification."
 
+      - name: Run Automated Test Suite
+        run: |
+          echo "🧪 Running automated test suite..."
+          npm test
+          echo "✅ All automated tests passed."
+
       - name: Validate JSON Files
         run: |
           echo "🔍 Validating JSON files..."
