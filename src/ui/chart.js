@@ -4,9 +4,10 @@
  * Built according to Emil Kowalski & Karpathy simplicity standards.
  */
 
-import { escapeHTML, formatVotesLt } from "../utils/dom.js";
+import { escapeHTML, formatVotesLt, navigateToContestantCard } from "../utils/dom.js";
 
 let chartInstance = null;
+let currentSortedContestants = [];
 
 /**
  * Formats contestant name for clean display.
@@ -33,6 +34,8 @@ export function renderChart(state) {
     ...c,
     voteCount: state.votes[c.id] || 0
   })).sort((a, b) => b.voteCount - a.voteCount);
+
+  currentSortedContestants = contestantsWithVotes;
 
   const totalVotes = contestantsWithVotes.reduce((sum, c) => sum + c.voteCount, 0);
   const maxVotes = Math.max(...contestantsWithVotes.map(c => c.voteCount), 0);
@@ -147,6 +150,20 @@ export function renderChart(state) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      onClick: (event, elements) => {
+        if (elements && elements.length > 0) {
+          const itemIndex = elements[0].index;
+          const targetContestant = currentSortedContestants[itemIndex];
+          if (targetContestant) {
+            navigateToContestantCard(targetContestant.id);
+          }
+        }
+      },
+      onHover: (event, elements) => {
+        if (event && event.native && event.native.target) {
+          event.native.target.style.cursor = (elements && elements.length > 0) ? "pointer" : "default";
+        }
+      },
       animation: {
         duration: animDuration,
         easing: "easeOutQuart"

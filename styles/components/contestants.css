@@ -74,16 +74,22 @@
   flex-wrap: wrap;
 }
 
+.search-input-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .search-input {
   background: var(--bg-surface);
   color: var(--text-primary);
   font-family: var(--font-main);
   font-size: 0.85rem;
-  padding: 7px 12px;
+  padding: 7px 32px 7px 12px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   outline: none;
-  min-width: 180px;
+  min-width: 200px;
   transition: border-color var(--duration-fast) var(--ease-out);
 }
 
@@ -94,6 +100,32 @@
 
 .search-input::placeholder {
   color: var(--text-muted);
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  transition: color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.search-clear-btn:hover {
+  color: var(--text-primary);
+}
+
+.search-clear-btn:active {
+  transform: scale(0.92);
+}
+
+.search-clear-btn.hidden {
+  display: none;
 }
 
 .btn-secondary {
@@ -284,3 +316,101 @@
 .contestant-card.selected .card-action-status {
   color: var(--color-gold);
 }
+
+/* Standings-to-Roster Card Pulse Highlight (Emil Kowalski standard) */
+.contestant-card.card-pulse-highlight {
+  animation: cardPulse 1400ms var(--ease-out) forwards;
+}
+
+@keyframes cardPulse {
+  0% {
+    outline: 2px solid var(--color-gold);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+  30% {
+    outline: 2px solid var(--color-gold);
+    box-shadow: 0 0 24px 6px rgba(245, 158, 11, 0.45);
+  }
+  100% {
+    outline: 2px solid transparent;
+    box-shadow: none;
+  }
+}
+
+/* Search & Filter Zero-State */
+.roster-empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-subtle-hover);
+  border-radius: var(--radius-lg);
+  margin: 12px 0;
+  animation: emptyStateFade var(--duration-fast) var(--ease-out) forwards;
+}
+
+@keyframes emptyStateFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.empty-state-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+
+.empty-state-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.empty-state-text {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  max-width: 400px;
+  margin-bottom: 18px;
+  line-height: 1.45;
+}
+
+.btn-clear-search {
+  background: var(--bg-surface-hover);
+  border: 1px solid var(--border-subtle-hover);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.btn-clear-search:hover {
+  background: var(--bg-surface-active);
+  border-color: var(--color-gold);
+}
+
+.btn-clear-search:active {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roster-empty-state,
+  .contestant-card.card-pulse-highlight {
+    animation: none;
+  }
+}
+

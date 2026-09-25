@@ -9,6 +9,69 @@ import { showToast } from "./toast.js";
 let previousActiveElement = null;
 
 /**
+ * Updates the modal's live candidate card preview and character counter.
+ */
+function updateLivePreview() {
+  const nameVal = (document.getElementById("newCandidateName")?.value || "").trim();
+  const aliasVal = (document.getElementById("newCandidateAlias")?.value || "").trim();
+  const taglineInput = document.getElementById("newCandidateTagline");
+  const tagVal = (taglineInput?.value || "").trim();
+  const emojiVal = (document.getElementById("selectedEmoji")?.value || "🤡").trim();
+
+  const previewName = document.getElementById("modalPreviewName");
+  const previewAlias = document.getElementById("modalPreviewAlias");
+  const previewTagline = document.getElementById("modalPreviewTagline");
+  const previewAvatar = document.getElementById("modalPreviewAvatar");
+  const charCountEl = document.getElementById("taglineCharCount");
+
+  if (previewName) {
+    previewName.textContent = nameVal || "Vardas Pavardė";
+  }
+
+  if (previewAlias) {
+    if (!aliasVal) {
+      previewAlias.textContent = "„Pravardė / Titras“";
+    } else {
+      previewAlias.textContent = aliasVal.startsWith("„") ? aliasVal : `„${aliasVal}“`;
+    }
+  }
+
+  if (previewTagline) {
+    previewTagline.textContent = tagVal || "Čia bus rodomas kandidato nuopelnas šou...";
+  }
+
+  if (previewAvatar) {
+    previewAvatar.textContent = emojiVal || "🤡";
+  }
+
+  if (charCountEl && taglineInput) {
+    const len = taglineInput.value.length;
+    charCountEl.textContent = len;
+    charCountEl.classList.toggle("char-count-warning", len > 90);
+  }
+}
+
+/**
+ * Resets the modal live preview card and counters back to defaults.
+ */
+function resetLivePreview() {
+  const previewName = document.getElementById("modalPreviewName");
+  const previewAlias = document.getElementById("modalPreviewAlias");
+  const previewTagline = document.getElementById("modalPreviewTagline");
+  const previewAvatar = document.getElementById("modalPreviewAvatar");
+  const charCountEl = document.getElementById("taglineCharCount");
+
+  if (previewName) previewName.textContent = "Vardas Pavardė";
+  if (previewAlias) previewAlias.textContent = "„Pravardė / Titras“";
+  if (previewTagline) previewTagline.textContent = "Čia bus rodomas kandidato nuopelnas šou...";
+  if (previewAvatar) previewAvatar.textContent = "🤡";
+  if (charCountEl) {
+    charCountEl.textContent = "0";
+    charCountEl.classList.remove("char-count-warning");
+  }
+}
+
+/**
  * Opens the add candidate modal.
  */
 export function openAddModal() {
@@ -16,6 +79,7 @@ export function openAddModal() {
   const modal = document.getElementById("addContestantModal");
   if (!modal) return;
   modal.classList.remove("hidden");
+  updateLivePreview();
   document.getElementById("newCandidateName")?.focus();
 }
 
@@ -27,6 +91,7 @@ export function closeAddModal() {
   if (!modal) return;
   modal.classList.add("hidden");
   document.getElementById("addContestantForm")?.reset();
+  resetLivePreview();
   if (previousActiveElement && typeof previousActiveElement.focus === "function") {
     previousActiveElement.focus();
   } else {
@@ -123,6 +188,11 @@ export function initModal() {
     }
   });
 
+  // Real-time live card preview inputs
+  document.getElementById("newCandidateName")?.addEventListener("input", updateLivePreview);
+  document.getElementById("newCandidateAlias")?.addEventListener("input", updateLivePreview);
+  document.getElementById("newCandidateTagline")?.addEventListener("input", updateLivePreview);
+
   // Emoji buttons selector
   document.querySelectorAll(".emoji-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -132,6 +202,7 @@ export function initModal() {
       if (emojiInput) {
         emojiInput.value = btn.getAttribute("data-emoji") || "🤡";
       }
+      updateLivePreview();
     });
   });
 }

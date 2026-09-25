@@ -3,7 +3,7 @@
  * Main Application Bootstrap & Controller (ES Module)
  */
 
-import { APP_VERSION } from "./config/constants.js";
+import { APP_VERSION, isDevEnvironment } from "./config/constants.js";
 import { 
   getState, 
   subscribe, 
@@ -33,8 +33,14 @@ async function handleVoteSubmit() {
   const voterName = (voterNameInput?.value || "").trim().slice(0, 40);
 
   if (!voterName || voterName.length < 2) {
+    if (voterNameInput) {
+      voterNameInput.setAttribute("aria-invalid", "true");
+      voterNameInput.classList.remove("input-error");
+      void voterNameInput.offsetWidth; // force reflow for animation restart
+      voterNameInput.classList.add("input-error");
+      voterNameInput.focus();
+    }
     showToast("Įveskite savo vardą balsavimui!", "toast-error");
-    voterNameInput?.focus();
     return;
   }
 
@@ -62,12 +68,15 @@ async function handleVoteSubmit() {
 
   const selectedIds = Array.from(state.selectedCandidates);
   const nowDate = new Date();
-  const timeStr = `${nowDate.getHours().toString().padStart(2, '0')}:${nowDate.getMinutes().toString().padStart(2, '0')}`;
+  const pad = (n) => n.toString().padStart(2, "0");
+  const dateStr = `${nowDate.getFullYear()}-${pad(nowDate.getMonth() + 1)}-${pad(nowDate.getDate())}`;
+  const timeStr = `${pad(nowDate.getHours())}:${pad(nowDate.getMinutes())}`;
+  const fullTimestamp = `${dateStr} ${timeStr}`;
 
   recordVote({
     voter: voterName,
     choices: selectedIds,
-    timestamp: timeStr
+    timestamp: fullTimestamp
   });
 
   sessionStorage.setItem("tautos_last_vote_timestamp", String(Date.now()));
@@ -78,7 +87,7 @@ async function handleVoteSubmit() {
     await submitVoteToCloud({
       voter: voterName,
       choices: selectedIds,
-      timestamp: timeStr
+      timestamp: fullTimestamp
     });
   } finally {
     if (submitBtn) {
@@ -95,6 +104,17 @@ function initApp() {
   // 1. Purge legacy localStorage keys from older versions
   purgeLegacyStorageKeys();
 
+  // 1.1 Show dev environment indicator badge if running in dev/test mode
+  if (isDevEnvironment()) {
+    const envPill = document.getElementById("envIndicatorPill");
+    if (envPill) envPill.classList.remove("hidden");
+    const appVersionBadge = document.getElementById("appVersionBadge");
+    if (appVersionBadge) {
+      appVersionBadge.textContent = `${APP_VERSION} [DEV: state_dev]`;
+      appVersionBadge.title = "Veikia lokaliu / testiniu režimu (Firestore: voting/state_dev)";
+    }
+  }
+
   // 2. Subscribe render coordinator to store updates
   subscribe(renderAll);
 
@@ -107,9 +127,13 @@ function initApp() {
   // 3. Connect to live Realtime Cloud Firestore sync (instant push updates across all devices)
   initRealtimeCloudSync();
 
-  // 4. Voter Name input listener
+  // 4. Voter Name input listener (resets error state on typing)
   const voterInput = document.getElementById("voterNameInput");
   voterInput?.addEventListener("input", () => {
+    if (voterInput.value.trim().length >= 2) {
+      voterInput.removeAttribute("aria-invalid");
+      voterInput.classList.remove("input-error");
+    }
     updateDockControls(getState());
   });
 
@@ -130,13 +154,37 @@ function initApp() {
     });
   });
 
-  // 7. Search filter input (debounced by 150ms to prevent render cascade on fast typing)
+  // 7. Search filter input & clear button (debounced by 150ms)
+  const searchInput = document.getElementById("searchInput");
+  const searchClearBtn = document.getElementById("searchClearBtn");
   let searchDebounceTimer = null;
-  document.getElementById("searchInput")?.addEventListener("input", (e) => {
+
+  searchInput?.addEventListener("input", (e) => {
+    const val = e.target.value;
+    if (searchClearBtn) {
+      searchClearBtn.classList.toggle("hidden", !val);
+    }
     clearTimeout(searchDebounceTimer);
     searchDebounceTimer = setTimeout(() => {
-      setSearchQuery(e.target.value);
+      setSearchQuery(val);
     }, 150);
+  });
+
+  searchClearBtn?.addEventListener("click", () => {
+    if (searchInput) {
+      searchInput.value = "";
+      searchInput.focus();
+    }
+    searchClearBtn.classList.add("hidden");
+    setSearchQuery("");
+  });
+
+  // Keyboard shortcut: '/' focuses search input when outside form inputs
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "/" && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) {
+      e.preventDefault();
+      searchInput?.focus();
+    }
   });
 
   // 8. View switcher buttons (Chart vs List)

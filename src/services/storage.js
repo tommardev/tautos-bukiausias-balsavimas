@@ -2,7 +2,7 @@
  * LocalStorage Persistence Service
  */
 
-import { LOCAL_STORAGE_KEY } from "../config/constants.js";
+import { getActiveStorageKey } from "../config/constants.js";
 
 /**
  * Saves relevant state fields to localStorage as offline fallback.
@@ -15,7 +15,7 @@ export function saveLocalFallback(state) {
       voterLedger: state.voterLedger,
       contestants: state.contestants
     };
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(payload));
+    localStorage.setItem(getActiveStorageKey(), JSON.stringify(payload));
   } catch (err) {
     console.warn("Unable to save state to localStorage:", err);
   }
@@ -27,7 +27,7 @@ export function saveLocalFallback(state) {
  */
 export function loadLocalFallback() {
   try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const raw = localStorage.getItem(getActiveStorageKey());
     if (!raw) return null;
     return JSON.parse(raw);
   } catch (err) {

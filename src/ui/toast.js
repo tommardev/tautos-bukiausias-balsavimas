@@ -17,8 +17,9 @@ export function showToast(message, type = "toast-success") {
   container.appendChild(toast);
 
   setTimeout(() => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth <= 640;
     toast.style.opacity = '0';
-    toast.style.transform = 'translateY(6px) scale(0.96)';
+    toast.style.transform = isMobile ? 'translateY(-6px) scale(0.96)' : 'translateY(6px) scale(0.96)';
     setTimeout(() => toast.remove(), 180);
   }, 3500);
 }

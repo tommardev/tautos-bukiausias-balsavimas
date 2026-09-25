@@ -72,8 +72,132 @@
   box-shadow: var(--shadow-focus);
 }
 
+.voter-input.input-error {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.35);
+  animation: inputShake 200ms var(--ease-out);
+}
+
+@keyframes inputShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
 .voter-input::placeholder {
   color: var(--text-muted);
+}
+
+/* Dock Selection Tray */
+.dock-tray {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+  animation: trayEnter var(--duration-fast) var(--ease-out) forwards;
+}
+
+.dock-tray.hidden {
+  display: none;
+}
+
+@keyframes trayEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dock-tray-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dock-candidate-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px 4px 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.dock-candidate-chip:active {
+  transform: scale(0.97);
+}
+
+.dock-chip-avatar {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.dock-chip-name {
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dock-chip-remove {
+  background: transparent;
+  border: none;
+  color: var(--color-gold);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0 0 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.dock-chip-remove:hover {
+  color: #FFFFFF;
+  transform: scale(1.15);
+}
+
+.dock-clear-all-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 3px 6px;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.dock-clear-all-btn:hover {
+  color: var(--color-danger);
+}
+
+.dock-clear-all-btn:active {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock-tray,
+  .voter-input.input-error {
+    animation: none;
+  }
 }
 
 .dock-status-counter {
