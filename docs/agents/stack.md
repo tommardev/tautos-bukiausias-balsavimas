@@ -28,4 +28,5 @@ Manifests and config files (`firebase.json`, `index.html`) are this project's st
 
 - **Hosting Provider:** Firebase Hosting (`firebase.json`, `.firebaserc`, Project: `balsavimas-vaciukai`).
 - **Domains:** `https://balsavimas-vaciukai.web.app`, `https://balsavimas-vaciukai.firebaseapp.com`.
-- **Deployment Tool:** `firebase-tools` CLI (`npx -y firebase-tools@latest deploy --only hosting`) / PowerShell script (`deploy-firebase.ps1`).
+- **Deployment Tool:** GitHub Actions Continuous Deployment (`.github/workflows/ci.yml`), `firebase-tools` CLI (`npm run deploy`), PowerShell script (`deploy-firebase.ps1`).
+- **CI/CD Pipeline:** Automated testing, security scanning, and deployment to Firebase Hosting & Firestore Rules on push to `master`/`main`.

@@ -73,7 +73,8 @@ GEMINI.md                               Antigravity native instructions pointer
 ## Commands
 
 - Dev / Local Preview: `npx -y serve .` (or open `index.html` in browser)
-- Deploy: `.\deploy-firebase.ps1` (or `npx -y firebase-tools@latest deploy --only hosting`)
+- Deploy (Auto CD): Pushes to `master` automatically validate and deploy via GitHub Actions (`.github/workflows/ci.yml`)
+- Deploy (Manual): `.\deploy-firebase.ps1` (or `npm run deploy` / `npx -y firebase-tools@latest deploy --only hosting,firestore:rules`)
 - Restore agent skills: `npx skills experimental_install --yes`
 
 ## Tools

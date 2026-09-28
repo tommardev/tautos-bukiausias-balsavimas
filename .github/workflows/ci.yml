@@ -1,4 +1,4 @@
-name: CI & Security Audit
+name: CI/CD & Security Audit
 
 on:
   push:
@@ -63,3 +63,46 @@ jobs:
             exit 1
           fi
           echo "✅ No secrets or private keys detected in repository."
+
+  deploy:
+    name: Deploy to Firebase (CD)
+    needs: validate
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      - name: Verify Deployment Credentials
+        run: |
+          if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT_BALSAVIMAS_VACIUAI }}" ] && [ -z "${{ secrets.FIREBASE_TOKEN }}" ]; then
+            echo "❌ ERROR: No Firebase deployment credentials found in GitHub Secrets!"
+            echo "To enable automatic CD, please add either:"
+            echo "  1) FIREBASE_SERVICE_ACCOUNT_BALSAVIMAS_VACIUAI (Recommended: GCP Service Account JSON key)"
+            echo "  2) FIREBASE_TOKEN (Generated via 'firebase login:ci')"
+            echo "to your GitHub Repository -> Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+
+      - name: Authenticate via Google Cloud Service Account
+        if: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_BALSAVIMAS_VACIUAI != '' }}"
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_BALSAVIMAS_VACIUAI }}"
+
+      - name: Deploy to Firebase Hosting & Rules
+        env:
+          FIREBASE_TOKEN: "${{ secrets.FIREBASE_TOKEN }}"
+        run: |
+          echo "🚀 Automatically deploying new version to Firebase Hosting & Rules..."
+          npx -y firebase-tools@latest deploy --only hosting,firestore:rules --project balsavimas-vaciukai --non-interactive
+          echo "✅ Production deployment completed! Live at: https://balsavimas-vaciukai.web.app"
+

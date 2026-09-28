@@ -11,6 +11,7 @@
       "firestore.rules",
       "firestore.indexes.json",
       "docs/**",
+      "tests/**",
       "TASK_TRACKER.md",
       "**/*.env*",
       "**/*.pem",

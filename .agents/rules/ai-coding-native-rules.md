@@ -21,6 +21,7 @@ Taste skills for new marketing, landing, and portfolio UI. Emil skills for produ
 
 - Docs/APIs: Context7 MCP for library/API docs, setup, migrations, and to confirm current usage patterns - prefer it over training memory and client web search.
 - Web Search & Research: Exa MCP (`https://mcp.exa.ai`) using `web_search_exa`, `web_search_advanced_exa`, `web_fetch_exa`, and `agent_run` for live web lookups and page fetching.
+- Browser debug and verification: Chrome Devtools for Agents. Use it to test pages, emulate users, and inspect Chrome when the work is user-visible.
 - GitHub: `gh` CLI only (no GitHub MCP).
 - Deps: Sonatype MCP before adding or upgrading packages.
 - UI from Figma: FigmaLocal MCP + the Figma MCP flow, token-driven layout. Only when I gave a Figma URL/node or asked to implement a design.
