@@ -82,8 +82,12 @@ jobs:
           node-version: 20
 
       - name: Verify Deployment Credentials
+        id: check_credentials
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BALSAVIMAS_VACIUAI }}
+          CI_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT_BALSAVIMAS_VACIUAI }}" ] && [ -z "${{ secrets.FIREBASE_TOKEN }}" ]; then
+          if [ -z "$SERVICE_ACCOUNT" ] && [ -z "$CI_TOKEN" ]; then
             echo "❌ ERROR: No Firebase deployment credentials found in GitHub Secrets!"
             echo "To enable automatic CD, please add either:"
             echo "  1) FIREBASE_SERVICE_ACCOUNT_BALSAVIMAS_VACIUAI (Recommended: GCP Service Account JSON key)"
@@ -91,9 +95,14 @@ jobs:
             echo "to your GitHub Repository -> Settings -> Secrets and variables -> Actions."
             exit 1
           fi
+          if [ -n "$SERVICE_ACCOUNT" ]; then
+            echo "has_service_account=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_service_account=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Authenticate via Google Cloud Service Account
-        if: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_BALSAVIMAS_VACIUAI != '' }}"
+        if: steps.check_credentials.outputs.has_service_account == 'true'
         uses: google-github-actions/auth@v2
         with:
           credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_BALSAVIMAS_VACIUAI }}"
