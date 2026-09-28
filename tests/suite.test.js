@@ -506,6 +506,13 @@ describe("Tautos Bukiausias - System & Version Consistency", () => {
     assert.equal(isDevEnvironment(), false, "?env=prod query param should force production");
     assert.equal(getFirestoreDocName(), "state");
 
+    // Simulated Firebase Hosting preview channel subdomain
+    globalThis.window.location.search = "";
+    globalThis.window.location.hostname = "balsavimas-vaciukai--preview-ab12cd34.web.app";
+    assert.equal(isDevEnvironment(), true, "Firebase preview channel domain should evaluate to dev environment");
+    assert.equal(getFirestoreDocName(), "state_dev", "Preview channel should target 'state_dev' document");
+    assert.equal(getActiveStorageKey(), LOCAL_STORAGE_KEY_DEV, "Preview channel should use dev storage key");
+
     // Cleanup globals
     delete globalThis.window;
     delete globalThis.localStorage;

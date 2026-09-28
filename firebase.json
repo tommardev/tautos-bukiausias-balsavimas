@@ -5,6 +5,7 @@
       "firebase.json",
       ".firebaserc",
       "deploy-firebase.ps1",
+      "deploy-preview.ps1",
       "package.json",
       "package-lock.json",
       "skills-lock.json",

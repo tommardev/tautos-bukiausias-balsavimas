@@ -28,7 +28,14 @@ export function isDevEnvironment() {
     }
 
     const host = window.location.hostname;
-    return host === "localhost" || host === "127.0.0.1" || host === "" || window.location.protocol === "file:";
+    return (
+      host === "localhost" ||
+      host === "127.0.0.1" ||
+      host === "" ||
+      window.location.protocol === "file:" ||
+      host.includes("--") ||
+      host.includes("preview")
+    );
   } catch {
     return false;
   }

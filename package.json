@@ -10,7 +10,8 @@
     "test": "node --test tests/suite.test.js",
     "test:syntax": "node --check src/main.js",
     "test:all": "node --check src/main.js && node --test tests/suite.test.js",
-    "deploy": "npx -y firebase-tools@latest deploy --only hosting,firestore:rules"
+    "deploy": "npx -y firebase-tools@latest deploy --only hosting,firestore:rules",
+    "deploy:preview": "npx -y firebase-tools@latest hosting:channel:deploy preview --expires 7d"
   },
   "repository": {
     "type": "git",
