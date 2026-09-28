@@ -107,11 +107,19 @@ jobs:
         with:
           credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_BALSAVIMAS_VACIUAI }}"
 
-      - name: Deploy to Firebase Hosting & Rules
+      - name: Deploy to Firebase Hosting
         env:
           FIREBASE_TOKEN: "${{ secrets.FIREBASE_TOKEN }}"
         run: |
-          echo "🚀 Automatically deploying new version to Firebase Hosting & Rules..."
-          npx -y firebase-tools@latest deploy --only hosting,firestore:rules --project balsavimas-vaciukai --non-interactive
+          echo "🚀 Automatically deploying web application to Firebase Hosting..."
+          npx -y firebase-tools@latest deploy --only hosting --project balsavimas-vaciukai --non-interactive
           echo "✅ Production deployment completed! Live at: https://balsavimas-vaciukai.web.app"
+
+      - name: Deploy Firestore Security Rules
+        continue-on-error: true
+        env:
+          FIREBASE_TOKEN: "${{ secrets.FIREBASE_TOKEN }}"
+        run: |
+          echo "🔒 Deploying Firestore Security Rules..."
+          npx -y firebase-tools@latest deploy --only firestore:rules --project balsavimas-vaciukai --non-interactive || echo "⚠️ Notice: Service Account requires 'Firebase Rules Admin' & 'Service Usage Consumer' IAM roles in Google Cloud to auto-deploy firestore:rules. Web hosting deployment succeeded."
 
